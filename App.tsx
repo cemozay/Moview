@@ -1,20 +1,90 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View, TextInput, StyleSheet ,Dimensions } from 'react-native';
 
-export default function App() {
+import HomeScreen from '../reMoview/MainPages/HomePage/HomePage';
+import Drafts from '../reMoview/MainPages/Drafts/Drafts';
+import ListPages from '../reMoview/MainPages/ListPage/ListPage';
+import ReviewPage from '../reMoview/MainPages/ReviewPage/ReviewPage';
+import ProfilePage from '../reMoview/MainPages/ProfilePage/ProfilePage';
+
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faHouse, faPlus, faUser, faFilm, faList } from '@fortawesome/free-solid-svg-icons';
+
+
+const Tab = createBottomTabNavigator();
+
+
+
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false, // Set this to false to hide the header (tab bar)
+        }}
+        tabBarOptions={{
+          activeTintColor: 'red', // Change this to the desired focused tab color
+          inactiveTintColor: 'black',
+          style: {
+            backgroundColor: 'black',
+          },
+        }}
+      >
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            tabBarLabel: '',
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesomeIcon icon={faHouse} size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Drafts"
+          component={Drafts}
+          options={{
+            tabBarLabel: '',
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesomeIcon icon={faFilm} size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="ReviewPage"
+          component={ReviewPage}
+          options={{
+            tabBarLabel: '',
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesomeIcon icon={faPlus} size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="ListPages"
+          component={ListPages}
+          options={{
+            tabBarLabel: '',
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesomeIcon icon={faList} size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="ProfilePage"
+          component={ProfilePage}
+          options={{
+            tabBarLabel: '',
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesomeIcon icon={faUser} size={size} color={color} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
