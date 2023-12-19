@@ -3,11 +3,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, TextInput, StyleSheet ,Dimensions } from 'react-native';
 
-import HomeScreen from '../reMoview/MainPages/HomePage/HomePage';
-import Drafts from '../reMoview/MainPages/Drafts/Drafts';
-import ListPages from '../reMoview/MainPages/ListPage/ListPage';
-import ReviewPage from '../reMoview/MainPages/ReviewPage/ReviewPage';
-import ProfilePage from '../reMoview/MainPages/ProfilePage/ProfilePage';
+import HomeScreen from '../Moview/MainPages/HomePage/HomePage';
+import Drafts from '../Moview/MainPages/Drafts/Drafts';
+import ListPages from '../Moview/MainPages/ListPage/ListPage';
+import ReviewPage from '../Moview/MainPages/ReviewPage/ReviewPage';
+import ProfilePage from '../Moview/MainPages/ProfilePage/ProfilePage';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHouse, faPlus, faUser, faFilm, faList } from '@fortawesome/free-solid-svg-icons';

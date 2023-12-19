@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "reMoview",
-    "slug": "reMoview",
+    "name": "Moview",
+    "slug": "Moview",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
