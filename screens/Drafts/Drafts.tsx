@@ -1,6 +1,5 @@
-// src/HomeScreen.js
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 const Drafts = () => {
   return (
@@ -15,20 +14,20 @@ const Drafts = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'red', // Arka plan rengi siyah
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "red", // Arka plan rengi siyah
   },
   box: {
-    backgroundColor: 'white', // Kutu rengi beyaz
+    backgroundColor: "white", // Kutu rengi beyaz
     padding: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   text: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black', // Metin rengi siyah
+    fontWeight: "bold",
+    color: "black", // Metin rengi siyah
   },
 });
 

@@ -1,8 +1,13 @@
-// ...
-
-import React, { useState } from 'react';
-import { View, FlatList, Image, StyleSheet, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { adaptViewConfig } from 'react-native-reanimated/lib/typescript/ConfigHelper';
+import React, { useState } from "react";
+import {
+  View,
+  FlatList,
+  Image,
+  StyleSheet,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from "react-native";
+import { adaptViewConfig } from "react-native-reanimated/lib/typescript/ConfigHelper";
 
 const AfisListesi = () => {
   const [afis, setAfis] = useState([
@@ -12,9 +17,8 @@ const AfisListesi = () => {
     "https://static.boxofficeturkiye.com/movie//poster/full/5/2015705-52458502.png",
     "https://static.boxofficeturkiye.com/movie//poster/full/68/2015768-52329591.jpg",
     "https://static.boxofficeturkiye.com/movie//poster/full/32/2013532-52266857.jpg",
-    "https://static.boxofficeturkiye.com/movie//poster/full/69/2015169-52214702.jpg"
+    "https://static.boxofficeturkiye.com/movie//poster/full/69/2015169-52214702.jpg",
   ]);
-
 
   const afisGenislik = 300; // Afiş genişliği
   const [aktifIndex, setAktifIndex] = useState(0);
@@ -30,13 +34,10 @@ const AfisListesi = () => {
 
   return (
     <View style={styles.flatlist}>
-        <FlatList
+      <FlatList
         data={afis}
         renderItem={({ item }) => (
-            <Image
-            source={{ uri: item }}
-            style={styles.afisImage}
-            />
+          <Image source={{ uri: item }} style={styles.afisImage} />
         )}
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -46,20 +47,19 @@ const AfisListesi = () => {
         onMomentumScrollEnd={handleScrollEnd}
         initialScrollIndex={aktifIndex}
         initialNumToRender={afis.length}
-        />
+      />
     </View>
-
   );
 };
 
 const styles = StyleSheet.create({
-flatlist:{
-    padding:0,
-},
-afisImage: {
+  flatlist: {
+    padding: 0,
+  },
+  afisImage: {
     height: 400,
     width: 300,
-    resizeMode: 'stretch',
+    resizeMode: "stretch",
     marginHorizontal: 10,
   },
 });
