@@ -10,6 +10,7 @@ import Onboarding from "react-native-onboarding-swiper";
 import Lottie from "lottie-react-native";
 import { useNavigation } from "@react-navigation/native";
 
+
 const { width, height } = Dimensions.get("window");
 
 export default function OnboardingScreen() {

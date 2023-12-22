@@ -4,14 +4,14 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import OnboardingScreen from "../screens/OnboardingPage/OnboardingScreen";
 import LoginScreen from "../screens/LoginPage/LoginScreen";
 import SignUpScreen from "../screens/SignUpPage/SignUpScreen";
-import HomeScreen from "../screens/HomePage/HomePage";
+import HomeScreen from "../screens/HomePage";
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigation = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Onboarding">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Onboarding"
           options={{ headerShown: false }}
