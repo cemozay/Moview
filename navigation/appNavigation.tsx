@@ -1,38 +1,45 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import OnboardingScreen from "../screens/OnboardingPage/OnboardingScreen";
-import LoginScreen from "../screens/LoginPage/LoginScreen";
-import SignUpScreen from "../screens/SignUpPage/SignUpScreen";
-import HomeScreen from "../screens/HomePage";
+import OnboardingScreen from "../screens/OnboardingScreen";
+import LoginScreen from "../screens/LoginScreen";
+import SignUpScreen from "../screens/SignUpScreen";
+import HomeScreen from "../screens/HomeScreen";
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  Onboarding: undefined;
+  Login: undefined;
+  SignUp: undefined;
+  Home: undefined;
+};
+
+const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigation = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
+      <RootStack.Navigator initialRouteName="Onboarding">
+        <RootStack.Screen
           name="Onboarding"
           options={{ headerShown: false }}
           component={OnboardingScreen}
         />
-        <Stack.Screen
+        <RootStack.Screen
           name="Login"
           options={{ headerShown: false }}
           component={LoginScreen}
         />
-        <Stack.Screen
+        <RootStack.Screen
           name="SignUp"
           options={{ headerShown: false }}
           component={SignUpScreen}
         />
-        <Stack.Screen
+        <RootStack.Screen
           name="Home"
           options={{ headerShown: false }}
           component={HomeScreen}
         />
-      </Stack.Navigator>
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 };

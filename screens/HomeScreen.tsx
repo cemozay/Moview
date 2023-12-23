@@ -13,7 +13,7 @@ import ComingSoon from "./component/ComingSoon";
 
 const { width, height } = Dimensions.get("window");
 
-const profileImage = require("../ProfilePage/avatar.jpg"); // Profil fotoğrafı URL
+const profileImage = require("./avatar.jpg"); // Profil fotoğrafı URL
 const profileName = "Ranch"; // Profil adı
 
 export default function HomeScreen() {

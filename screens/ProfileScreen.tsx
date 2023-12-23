@@ -1,5 +1,3 @@
-// ProfileScreen.js
-
 import React from "react";
 import {
   SafeAreaView,
@@ -17,8 +15,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 const { width, height } = Dimensions.get("window");
 
 const ProfileScreen = () => {
-  const backgroundImage = require("../ProfilePage/profile.jpg"); // Arka plan resmi URL
-  const profileImage = require("../ProfilePage/avatar.jpg"); // Profil fotoğrafı URL
+  const backgroundImage = require("./profile.jpg"); // Arka plan resmi URL
+  const profileImage = require("./avatar.jpg"); // Profil fotoğrafı URL
   const profileName = "Ranch"; // Profil adı
 
   const [isFollowing, setFollowing] = React.useState(false);
