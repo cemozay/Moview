@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import Onboarding from "react-native-onboarding-swiper";
 import Lottie from "lottie-react-native";
@@ -17,13 +11,11 @@ type OnboardingScreenProps = NativeStackScreenProps<
 >;
 
 const OnboardingScreen = ({ navigation }: OnboardingScreenProps) => {
-  const handleDone = () => navigation.navigate("Login");
-
-  const handleSkip = () => navigation.navigate("Login");
+  const handleDone = () => navigation.navigate("Home");
 
   const doneButton = ({ ...props }) => {
     return (
-      <TouchableOpacity {...props}>
+      <TouchableOpacity className="m-5" {...props}>
         <Text>Done</Text>
       </TouchableOpacity>
     );
@@ -32,15 +24,15 @@ const OnboardingScreen = ({ navigation }: OnboardingScreenProps) => {
   return (
     <View className="flex-1 bg-white">
       <Onboarding
-        onDone={handleDone}
         skipToPage={2}
+        onDone={handleDone}
         DoneButtonComponent={doneButton}
-        containerStyles={{ paddingHorizontal: 15 }}
+        bottomBarHighlight={false}
         pages={[
           {
             backgroundColor: "#a7f3d0",
             image: (
-              <View className="">
+              <View className="w-80 h-80">
                 {
                   <Lottie
                     source={require("../assets/Animation3.json")}
@@ -56,7 +48,7 @@ const OnboardingScreen = ({ navigation }: OnboardingScreenProps) => {
           {
             backgroundColor: "#fef3c7",
             image: (
-              <View className="">
+              <View className="w-80 h-80">
                 {
                   <Lottie
                     source={require("../assets/Animation2.json")}
@@ -72,7 +64,7 @@ const OnboardingScreen = ({ navigation }: OnboardingScreenProps) => {
           {
             backgroundColor: "#a78bfa",
             image: (
-              <View className="bg-red">
+              <View className="w-80 h-80">
                 {
                   <Lottie
                     source={require("../assets/Animation1.json")}

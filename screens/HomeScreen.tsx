@@ -1,17 +1,6 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import ComingSoon from "./component/ComingSoon";
-
-const { width, height } = Dimensions.get("window");
 
 const profileImage = require("./avatar.jpg"); // Profil fotoğrafı URL
 const profileName = "Ranch"; // Profil adı
