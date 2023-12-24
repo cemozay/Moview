@@ -11,7 +11,7 @@ type OnboardingScreenProps = NativeStackScreenProps<
 >;
 
 const OnboardingScreen = ({ navigation }: OnboardingScreenProps) => {
-  const handleDone = () => navigation.navigate("Home");
+  const handleDone = () => navigation.navigate("Login");
 
   const doneButton = ({ ...props }) => {
     return (
