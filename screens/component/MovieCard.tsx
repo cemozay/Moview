@@ -61,7 +61,7 @@ const MovieCard = (props: any) => {
           <View style={styles.genreContainer}>
             {props.genre.map((item: any) => {
               return (
-                <View key={item}>
+                <View key={item} style={styles.genreBox}>
                   <Text style={styles.genreText}>{genres[item]}</Text>
                 </View>
               );
@@ -95,6 +95,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
+  },
+  genreBox: {
+    backgroundColor: "#343A40",
+    padding: 12,
+    marginTop: 5,
+    marginHorizontal: 0,
+    borderRadius: 40,
   },
   voteText: {
     fontSize: 14,

@@ -28,17 +28,18 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
 
   return (
     <View className="flex-1">
-      <View className="w-scren h-1/3">
+      <View className="w-scren justify-end h-1/3">
         <ImageBackground className="w-full h-full" source={backgroundImage} />
+        <View className="w-screen bg-black rounded-t-full self-center absolute h-12" />
       </View>
-      <View className="flex-1 bg-white rounded p-10">
-        <Text className="mb-2">Kullanıcı Adı:</Text>
+      <View className="flex-1 bg-black rounded p-10">
+        <Text className="mb-2 color-white">Kullanıcı Adı:</Text>
         <TextInput
           className="h-10 border-gray-500 border mb-4 pl-2"
           onChangeText={(text) => setUsername(text)}
           value={username}
         />
-        <Text className="mb-2">Şifre:</Text>
+        <Text className="mb-2  color-white ">Şifre:</Text>
         <TextInput
           className="h-10 border-gray-500 border mb-4 pl-2"
           onChangeText={(text) => setPassword(text)}

@@ -1,155 +1,88 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   View,
   Text,
+  Image,
   ImageBackground,
   StyleSheet,
-  Dimensions,
-  ScrollView,
   TouchableOpacity,
+  ScrollView,
+  StatusBar,
 } from "react-native";
-import { Avatar, Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
+import { RootStackParamList } from "../navigation/AppNavigation";
 
-const { width, height } = Dimensions.get("window");
+type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, "Profile">;
 
-const ProfileScreen = () => {
-  const backgroundImage = require("./profile.jpg"); // Arka plan resmi URL
-  const profileImage = require("./avatar.jpg"); // Profil fotoğrafı URL
-  const profileName = "Ranch"; // Profil adı
-
+const ProfileScreen = ({ navigation }: ProfileScreenProps) => {
   const [isFollowing, setFollowing] = React.useState(false);
 
   const handleFollowButton = () => {
     setFollowing((prevState) => !prevState);
+    navigation.navigate("ProfileA");
   };
 
   return (
     <ScrollView
-      contentContainerStyle={styles.scrollViewContent}
+      className="flex bg-black"
+      bounces={false}
       showsHorizontalScrollIndicator={false}
     >
-      <SafeAreaView style={styles.safeAreaView}>
-        <ImageBackground
-          source={{ uri: backgroundImage }}
-          style={styles.container}
-        >
-          <View style={styles.overlay}>
-            <View style={styles.row}>
-              <Avatar
-                rounded
-                source={{ uri: profileImage }}
-                size="large"
-                containerStyle={styles.avatarContainer}
+      <StatusBar hidden />
+
+      <ImageBackground
+        className="h-72 w-screen"
+        source={require("./profile.jpg")}
+      >
+        <View className="justify-end flex-reverse items-start flex-1">
+          <View className=" flex-row">
+            <TouchableOpacity>
+              <Image
+                className="h-24 w-24 rounded-full"
+                source={require("./avatar.jpg")}
               />
-              <View style={styles.userInfo}>
-                <Text style={styles.profileName}>{profileName}</Text>
-                <View style={styles.userActions}>
-                  <Text style={styles.followInfo}>
-                    Takipçiler: 1000 | Takip Edilen: 500
+            </TouchableOpacity>
+            <View className=" w-screen h-28">
+              <View className="flex-row">
+                <View>
+                  <Text className="color-white pt-4 text-xl font-bold">
+                    Alperen Ağırman
                   </Text>
-                  <View style={styles.userActionstwo}>
-                    <TouchableOpacity
-                      style={[
-                        styles.followButton,
-                        { backgroundColor: isFollowing ? "gray" : "black" },
-                      ]}
-                      onPress={handleFollowButton}
-                    >
-                      <Text style={styles.followButtonText}>
-                        {isFollowing ? "Takip Ediliyor" : "Takip Et"}
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.iconButton}>
-                      <Icon name="ellipsis-h" size={24} color="white" />
-                    </TouchableOpacity>
+                  <View className="flex-row">
+                    <Text className="color-white text-xs pr-4">
+                      5001 Takipçi
+                    </Text>
+                    <Text className="color-white text-xs ">
+                      5001 Takip Edilen
+                    </Text>
                   </View>
+                  <View className="py-2 px-4 gap-4 flex-row">
+                    <Icon name="search" size={36} color="white" />
+                    <Icon name="search" size={36} color="white" />
+                  </View>
+                </View>
+                <View className="w-36 items-end px-3 py-4 ">
+                  <TouchableOpacity
+                    className=" bg-black w-28 h-12 justify-center items-center border-1 border-white rounded-xl"
+                    style={[
+                      { backgroundColor: isFollowing ? "gray" : "black" },
+                    ]}
+                    onPress={handleFollowButton}
+                  >
+                    <Text className="color-white">
+                      {isFollowing ? "Takip Ediliyor" : "Takip Et"}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
           </View>
-        </ImageBackground>
-      </SafeAreaView>
-      <View style={styles.box}></View>
-      <View style={styles.box}></View>
-      <View style={styles.box}></View>
-      <View style={styles.box}></View>
+        </View>
+      </ImageBackground>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  safeAreaView: {
-    flex: 1,
-    backgroundColor: "black",
-  },
-  container: {
-    width: width,
-    height: 250,
-    flex: 1,
-    resizeMode: "cover",
-  },
-  overlay: {
-    height: 250,
-    alignItems: "flex-start",
-    justifyContent: "flex-end",
-    padding: 20,
-    width: width,
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  iconButton: {
-    margin: 5,
-  },
-  avatarContainer: {
-    marginBottom: 10,
-  },
-  userInfo: {
-    marginLeft: 10,
-  },
-  profileName: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
-  },
-  userActionstwo: {
-    justifyContent: "flex-start",
-    flexDirection: "row",
-  },
-  userActions: {},
-  followInfo: {
-    color: "white",
-    marginBottom: 10,
-  },
-  followButton: {
-    alignContent: "center",
-    backgroundColor: "black",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    marginBottom: 10,
-  },
-  followButtonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-  box: {
-    width: width,
-    height: 170,
-    backgroundColor: "white",
-    borderRadius: 10,
-    alignItems: "center",
-    marginBottom: 10,
-    marginTop: 10,
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-    backgroundColor: "black",
-  },
-});
 
 export default ProfileScreen;

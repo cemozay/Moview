@@ -1,25 +1,29 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
 import ComingSoon from "./component/ComingSoon";
-
-const profileImage = require("./avatar.jpg"); // Profil fotoğrafı URL
-const profileName = "Ranch"; // Profil adı
+import Icon from "react-native-vector-icons/FontAwesome";
 
 export default function HomeScreen() {
   return (
-    <View className="flex-1 bg-black">
-      <ScrollView className="flex-grow-1">
-        <View className="flex-row justify-between items-center h-0.09 px-4">
+    <View className="flex-1 bg-black ">
+      <ScrollView>
+        <View className="flex-row justify-between items-center py-3 px-3 ">
           <View>
-            <Text className="color-white text-4xl">Moview</Text>
+            <Text className="color-white text-3xl ">Moview</Text>
           </View>
           <View className="flex-row gap-3">
             <TouchableOpacity>
-              <Image source={profileImage} className="w-10 h-10 rounded-3xl" />
-              {/* iconlar koyulacak */}
+              <Icon name="search" size={30} color="white" />
             </TouchableOpacity>
             <TouchableOpacity>
-              <Image source={profileImage} className="w-10 h-10 rounded-3xl" />
+              <Icon name="heart" size={30} color="white" />
             </TouchableOpacity>
           </View>
         </View>

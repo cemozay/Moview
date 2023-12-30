@@ -18,7 +18,6 @@ import {
 import CategoryHeader from "./CategoryHeader";
 import SubMovieCard from "./SubMovieCard";
 import MovieCard from "./MovieCard";
-
 const { width, height } = Dimensions.get("window");
 
 //Şuandaki vizyonda olan filmleri çek
@@ -41,6 +40,7 @@ const getUpcomingMoviesList = async () => {
     console.error("444", error);
   }
 };
+
 const getPopularMoviesList = async () => {
   try {
     let response = await fetch(popularMovies);
@@ -53,10 +53,11 @@ const getPopularMoviesList = async () => {
 
 //atama yap
 const HomeScreen = ({ navigation }: any) => {
-  const [nowPlayingMoviesList, setNowPlayingMoviesList] =
-    useState<any>(undefined);
   const [popularMoviesList, setPopularMoviesList] = useState<any>(undefined);
   const [upcomingMoviesList, setUpcomingMoviesList] = useState<any>(undefined);
+  const [personList, setPersonList] = useState<any>(undefined);
+  const [nowPlayingMoviesList, setNowPlayingMoviesList] =
+    useState<any>(undefined);
 
   useEffect(() => {
     (async () => {
@@ -148,7 +149,7 @@ const HomeScreen = ({ navigation }: any) => {
           <SubMovieCard
             shoudlMarginatedAtEnd={true}
             cardFunction={() => {
-              navigation.push("MovieDetails", { movieid: item.id });
+              navigation.push("MovieDetails");
             }}
             cardWidth={width / 3}
             isFirst={index == 0 ? true : false}

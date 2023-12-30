@@ -4,12 +4,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 const CategoryHeader = (props: any) => {
   return (
     <TouchableOpacity className="flex-row  items-center">
-      <Text className="color-white px-3 py-7 text-2xl">{props.title}</Text>
-      <Icon
-        className="color-white self-center"
-        name="chevron-right"
-        size={20}
-      />
+      <Text className="color-white pl-3 pr-2 py-3 text-2xl">{props.title}</Text>
+      <Icon color={"white"} name="chevron-right" size={12} />
     </TouchableOpacity>
   );
 };
