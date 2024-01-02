@@ -22,7 +22,7 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 const AppNavigation = () => {
   return (
     <NavigationContainer>
-      <RootStack.Navigator initialRouteName="Home">
+      <RootStack.Navigator initialRouteName="Onboarding">
         <RootStack.Screen
           name="Onboarding"
           options={{ headerShown: false }}

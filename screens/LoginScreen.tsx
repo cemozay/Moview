@@ -17,8 +17,8 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
-    if (username === "kullanici" && password === "sifre") {
-      navigation.navigate("Home");
+    if (username === "kullanici" && password === "sifre.123") {
+      navigation.replace("Home");
     } else {
       alert("Hatalı kullanıcı adı veya şifre.");
     }
@@ -32,14 +32,14 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
         <ImageBackground className="w-full h-full" source={backgroundImage} />
         <View className="w-screen bg-black rounded-t-full self-center absolute h-12" />
       </View>
-      <View className="flex-1 bg-black rounded p-10">
+      <View className="flex-1 bg-black p-10">
         <Text className="mb-2 color-white">Kullanıcı Adı:</Text>
         <TextInput
           className="h-10 border-gray-500 border mb-4 pl-2"
           onChangeText={(text) => setUsername(text)}
           value={username}
         />
-        <Text className="mb-2  color-white ">Şifre:</Text>
+        <Text className="mb-2 color-white ">Şifre:</Text>
         <TextInput
           className="h-10 border-gray-500 border mb-4 pl-2"
           onChangeText={(text) => setPassword(text)}
@@ -51,13 +51,5 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  formContainer: {
-    backgroundColor: "white",
-    borderRadius: 5,
-    padding: 16,
-  },
-});
 
 export default LoginScreen;
