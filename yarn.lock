@@ -8110,6 +8110,11 @@ react-native-gesture-handler@~2.12.0:
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
+react-native-mmkv@^2.11.0:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.11.0.tgz#51b9985f6a5c09fe9c16d8c1861cc2901856ace1"
+  integrity sha512-28PdUHjZJmAw3q+8zJDAAdohnZMpDC7WgRUJxACOMkcmJeqS3u5cKS/lSq2bhf1CvaeIiHYHUWiyatUjMRCDQQ==
+
 react-native-onboarding-swiper@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-native-onboarding-swiper/-/react-native-onboarding-swiper-1.2.0.tgz#4b8dd803ad88bd367e0d9914afddec9c61505946"
