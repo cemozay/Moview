@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import OnboardingScreen from "../screens/OnboardingScreen";
@@ -7,6 +7,7 @@ import SignUpScreen from "../screens/SignUpScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ProfileAyar from "../screens/ProfileAyarlar";
+import { getStorageItem } from "../utils/AsyncStorage";
 
 export type RootStackParamList = {
   Onboarding: undefined;
@@ -20,9 +21,28 @@ export type RootStackParamList = {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigation = () => {
+  const [showOnboarding, setShowOnboarding] = useState<string | null>(null);
+
+  useEffect(() => {
+    checkAlreadyOnboarded();
+  }, []);
+
+  const checkAlreadyOnboarded = async () => {
+    const alreadyOnboarded = await getStorageItem("alreadyOnboarded");
+    if (alreadyOnboarded === "true") {
+      setShowOnboarding("false");
+    } else {
+      setShowOnboarding("true");
+    }
+  };
+
+  if (showOnboarding === null) return null;
+
   return (
     <NavigationContainer>
-      <RootStack.Navigator initialRouteName="Onboarding">
+      <RootStack.Navigator
+        initialRouteName={showOnboarding == "true" ? "Onboarding" : "Home"}
+      >
         <RootStack.Screen
           name="Onboarding"
           options={{ headerShown: false }}
@@ -51,7 +71,7 @@ const AppNavigation = () => {
         <RootStack.Screen
           name="Home"
           options={{ headerShown: false }}
-          component={ProfileScreen}
+          component={HomeScreen}
         />
       </RootStack.Navigator>
     </NavigationContainer>

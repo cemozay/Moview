@@ -7,7 +7,7 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import ComingSoon from "./component/ComingSoon";
+import ComingSoon from "../components/ComingSoon";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 export default function HomeScreen() {
