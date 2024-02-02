@@ -7,7 +7,7 @@ import SignUpScreen from "../screens/SignUpScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ProfileAyar from "../screens/ProfileAyarlar";
-import { getStorageItem } from "../utils/AsyncStorage";
+import { getStorageBoolean } from "../utils/Mmkv";
 
 export type RootStackParamList = {
   Onboarding: undefined;
@@ -21,27 +21,23 @@ export type RootStackParamList = {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigation = () => {
-  const [showOnboarding, setShowOnboarding] = useState<string | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(true);
 
   useEffect(() => {
     checkAlreadyOnboarded();
   }, []);
 
-  const checkAlreadyOnboarded = async () => {
-    const alreadyOnboarded = await getStorageItem("alreadyOnboarded");
-    if (alreadyOnboarded === "true") {
-      setShowOnboarding("false");
-    } else {
-      setShowOnboarding("true");
-    }
-  };
+  const checkAlreadyOnboarded = () => {
+    const alreadyOnboarded = getStorageBoolean("alreadyOnboarded");
 
-  if (showOnboarding === null) return null;
+    if (alreadyOnboarded == null) setShowOnboarding(true);
+    else setShowOnboarding(alreadyOnboarded);
+  };
 
   return (
     <NavigationContainer>
       <RootStack.Navigator
-        initialRouteName={showOnboarding == "true" ? "Onboarding" : "Home"}
+        initialRouteName={showOnboarding == true ? "Onboarding" : "Home"}
       >
         <RootStack.Screen
           name="Onboarding"

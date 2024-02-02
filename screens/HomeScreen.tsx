@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import ComingSoon from "../components/ComingSoon";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "@expo/vector-icons/FontAwesome";
 
 export default function HomeScreen() {
   return (

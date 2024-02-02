@@ -4,7 +4,7 @@ import Onboarding from "react-native-onboarding-swiper";
 import Lottie from "lottie-react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { RootStackParamList } from "../navigation/AppNavigation";
-import { setStorageItem } from "../utils/AsyncStorage";
+import { setStorageItem } from "../utils/Mmkv";
 
 type OnboardingScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -13,7 +13,7 @@ type OnboardingScreenProps = NativeStackScreenProps<
 
 const OnboardingScreen = ({ navigation }: OnboardingScreenProps) => {
   const handleDone = () => {
-    setStorageItem("alreadyOnboarded", "true");
+    setStorageItem("alreadyOnboarded", true);
     navigation.replace("Login");
   };
 

@@ -10,7 +10,7 @@ import {
   ScrollView,
   StatusBar,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "@expo/vector-icons/FontAwesome";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { RootStackParamList } from "../navigation/AppNavigation";
 
