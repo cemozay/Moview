@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  Text,
   View,
-  TouchableOpacity,
   ScrollView,
   Dimensions,
   StatusBar,

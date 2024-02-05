@@ -21,7 +21,7 @@ export type RootStackParamList = {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigation = () => {
-  const [showOnboarding, setShowOnboarding] = useState<boolean>(true);
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
 
   useEffect(() => {
     checkAlreadyOnboarded();
@@ -31,13 +31,13 @@ const AppNavigation = () => {
     const alreadyOnboarded = getStorageBoolean("alreadyOnboarded");
 
     if (alreadyOnboarded == null) setShowOnboarding(true);
-    else setShowOnboarding(alreadyOnboarded);
+    else setShowOnboarding(alreadyOnboarded!);
   };
 
   return (
     <NavigationContainer>
       <RootStack.Navigator
-        initialRouteName={showOnboarding == true ? "Onboarding" : "Home"}
+        initialRouteName={showOnboarding == true ? "Onboarding" : "Profile"}
       >
         <RootStack.Screen
           name="Onboarding"

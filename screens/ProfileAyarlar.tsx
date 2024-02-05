@@ -100,6 +100,7 @@ const ProfilAyarlar = () => {
 
   return (
     <ScrollView style={{ backgroundColor: "black" }}>
+      <ListComp data={viewsData}></ListComp>
       {viewsData.map(
         (viewData, index) =>
           viewData.isVisible && (

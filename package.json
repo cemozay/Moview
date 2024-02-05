@@ -13,14 +13,14 @@
     "@react-navigation/native-stack": "^6.9.17",
     "expo": "~50.0.5",
     "expo-status-bar": "~1.11.1",
+    "lottie-react-native": "6.5.1",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-native": "0.73.2",
     "react-native-mmkv": "^2.11.0",
     "react-native-onboarding-swiper": "^1.2.0",
-    "react-native-screens": "~3.29.0",
     "react-native-safe-area-context": "4.8.2",
-    "lottie-react-native": "6.5.1"
+    "react-native-screens": "~3.29.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

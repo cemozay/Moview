@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import {
-  SafeAreaView,
   View,
   Text,
   Image,
   ImageBackground,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
   StatusBar,
@@ -17,7 +15,7 @@ import { RootStackParamList } from "../navigation/AppNavigation";
 type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, "Profile">;
 
 const ProfileScreen = ({ navigation }: ProfileScreenProps) => {
-  const [isFollowing, setFollowing] = React.useState(false);
+  const [isFollowing, setFollowing] = useState(false);
 
   const handleFollowButton = () => {
     setFollowing((prevState) => !prevState);

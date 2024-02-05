@@ -1,12 +1,4 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Dimensions,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import ComingSoon from "../components/ComingSoon";
 import Icon from "@expo/vector-icons/FontAwesome";
 
