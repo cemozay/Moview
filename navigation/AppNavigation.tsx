@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import LoginScreen from "../screens/LoginScreen";
 import SignUpScreen from "../screens/SignUpScreen";
+import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ProfileAyar from "../screens/ProfileAyarlar";
@@ -13,6 +14,7 @@ export type RootStackParamList = {
   Onboarding: undefined;
   Login: undefined;
   SignUp: undefined;
+  ForgotPassword: undefined;
   Home: undefined;
   Profile: undefined;
   ProfileA: undefined;
@@ -37,7 +39,7 @@ const AppNavigation = () => {
   return (
     <NavigationContainer>
       <RootStack.Navigator
-        initialRouteName={showOnboarding == true ? "Onboarding" : "Profile"}
+        initialRouteName={showOnboarding == true ? "Onboarding" : "Login"}
       >
         <RootStack.Screen
           name="Onboarding"
@@ -63,6 +65,11 @@ const AppNavigation = () => {
           name="SignUp"
           options={{ headerShown: false }}
           component={SignUpScreen}
+        />
+        <RootStack.Screen
+          name="ForgotPassword"
+          options={{ headerShown: false }}
+          component={ForgotPasswordScreen}
         />
         <RootStack.Screen
           name="Home"
