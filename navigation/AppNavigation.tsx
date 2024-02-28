@@ -1,80 +1,55 @@
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import OnboardingScreen from "../screens/OnboardingScreen";
-import LoginScreen from "../screens/LoginScreen";
-import SignUpScreen from "../screens/SignUpScreen";
-import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
-import HomeScreen from "../screens/HomeScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import ProfileAyar from "../screens/ProfileAyarlar";
-import { getStorageBoolean } from "../utils/Mmkv";
+import { User, onAuthStateChanged } from "firebase/auth";
+import { FirebaseAuth } from "../firebaseConfig";
+import OutsideNavigation from "./OutsideNavigation";
+import InsideNavigation from "./InsideNavigation";
 
 export type RootStackParamList = {
+  OutsideNav: undefined;
   Onboarding: undefined;
   Login: undefined;
   SignUp: undefined;
   ForgotPassword: undefined;
-  Home: undefined;
-  Profile: undefined;
-  ProfileA: undefined;
+  InsideStack: undefined;
+  InsideNav: undefined;
+  HomeStack: undefined;
+  ProfileStack: undefined;
+  ProfileAStack: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigation = () => {
-  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    checkAlreadyOnboarded();
+    const unsubscribe = onAuthStateChanged(FirebaseAuth, (user) => {
+      if (user) {
+        setUser(user);
+      } else setUser(null);
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
-
-  const checkAlreadyOnboarded = () => {
-    const alreadyOnboarded = getStorageBoolean("alreadyOnboarded");
-
-    if (alreadyOnboarded == null) setShowOnboarding(true);
-    else setShowOnboarding(alreadyOnboarded!);
-  };
 
   return (
     <NavigationContainer>
       <RootStack.Navigator
-        initialRouteName={showOnboarding == true ? "Onboarding" : "Login"}
+        initialRouteName={user == null ? "OutsideNav" : "InsideNav"}
       >
         <RootStack.Screen
-          name="Onboarding"
+          name="OutsideNav"
           options={{ headerShown: false }}
-          component={OnboardingScreen}
+          component={OutsideNavigation}
         />
         <RootStack.Screen
-          name="ProfileA"
+          name="InsideNav"
           options={{ headerShown: false }}
-          component={ProfileAyar}
-        />
-        <RootStack.Screen
-          name="Profile"
-          options={{ headerShown: false }}
-          component={ProfileScreen}
-        />
-        <RootStack.Screen
-          name="Login"
-          options={{ headerShown: false }}
-          component={LoginScreen}
-        />
-        <RootStack.Screen
-          name="SignUp"
-          options={{ headerShown: false }}
-          component={SignUpScreen}
-        />
-        <RootStack.Screen
-          name="ForgotPassword"
-          options={{ headerShown: false }}
-          component={ForgotPasswordScreen}
-        />
-        <RootStack.Screen
-          name="Home"
-          options={{ headerShown: false }}
-          component={HomeScreen}
+          component={InsideNavigation}
         />
       </RootStack.Navigator>
     </NavigationContainer>

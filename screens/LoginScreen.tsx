@@ -3,18 +3,27 @@ import { View, Text, TextInput, ImageBackground } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { RootStackParamList } from "../navigation/AppNavigation";
 import CustomButton from "../components/CustomButton";
+import { FirebaseAuth } from "../firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-type LoginScreenProps = NativeStackScreenProps<RootStackParamList, "Login">;
+type LoginScreenProp = NativeStackScreenProps<RootStackParamList, "Login">;
 
-const LoginScreen = ({ navigation }: LoginScreenProps) => {
-  const [username, setUsername] = useState("");
+const LoginScreen = ({ navigation }: LoginScreenProp) => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const auth = FirebaseAuth;
 
-  const handleLogin = () => {
-    if (username === "kullanici" && password === "sifre.123") {
-      navigation.replace("Home");
-    } else {
-      alert("Hatalı kullanıcı adı veya şifre.");
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigation.navigate("InsideStack");
+    } catch (error: any) {
+      console.error(error);
+      alert("Log In Failed: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,8 +43,8 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
         <Text className="mb-2 color-white">Username</Text>
         <TextInput
           className="h-10 border-gray-500 border mb-4 pl-2"
-          onChangeText={(text) => setUsername(text)}
-          value={username}
+          onChangeText={(text) => setEmail(text)}
+          value={email}
         />
 
         <Text className="mb-2 color-white">Password</Text>
@@ -55,6 +64,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
         <CustomButton
           classNameProp="mb-4"
           title="Log in"
+          loading={loading}
           onPress={handleLogin}
         />
 

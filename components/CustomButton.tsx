@@ -1,21 +1,26 @@
 import React from "react";
-import { Text, Pressable } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator } from "react-native";
 
 type CustomButtonProps = {
   classNameProp?: string;
   onPress: () => void;
   title?: string;
+  loading?: boolean;
 };
 
 const CustomButton = (props: CustomButtonProps) => {
-  const { classNameProp, onPress, title } = props;
   return (
-    <Pressable
-      className={`items-center justify-center p-2 rounded-full shadow bg-white ${classNameProp}`}
-      onPress={onPress}
+    <TouchableOpacity
+      className={`items-center justify-center p-2 rounded-full shadow bg-white ${props.classNameProp}`}
+      onPress={props.onPress}
     >
-      <Text className="text-base font-bold color-black">{title}</Text>
-    </Pressable>
+      {props.loading ? (
+        <ActivityIndicator className="mt-2" size="small" color="#0000ff" />
+      ) : (
+        <Text className="text-base font-bold color-black">{props.title}</Text>
+      )}
+    </TouchableOpacity>
   );
 };
 

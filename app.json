@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.app.moview"
+      "package": "com.moview.test"
     },
     "web": {
       "favicon": "./assets/favicon.png"

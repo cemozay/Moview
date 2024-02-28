@@ -1,20 +1,29 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, ImageBackground } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
-import { RootStackParamList } from "../navigation/AppNavigation";
+import { RootStackParamList } from "navigation/AppNavigation";
 import CustomButton from "../components/CustomButton";
+import { FirebaseAuth } from "../firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
-type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, "SignUp">;
+type SignUpScreenProp = NativeStackScreenProps<RootStackParamList, "SignUp">;
 
-const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
-  const [username, setUsername] = useState("");
+const SignUpScreen = ({ navigation }: SignUpScreenProp) => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const auth = FirebaseAuth;
 
-  const handleLogin = () => {
-    if (username === "kullanici" && password === "sifre.123") {
-      navigation.replace("Home");
-    } else {
-      alert("Hatalı kullanıcı adı veya şifre.");
+  const handleSignUp = async () => {
+    setLoading(true);
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      navigation.navigate("InsideStack");
+    } catch (error: any) {
+      console.error(error);
+      alert("Sign up Failed: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,11 +40,11 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
       </View>
 
       <View className="flex-1 bg-black p-10">
-        <Text className="mb-2 color-white">Username</Text>
+        <Text className="mb-2 color-white">Email</Text>
         <TextInput
           className="h-10 border-gray-500 border mb-4 pl-2"
-          onChangeText={(text) => setUsername(text)}
-          value={username}
+          onChangeText={(text) => setEmail(text)}
+          value={email}
         />
 
         <Text className="mb-2 color-white">Password</Text>
@@ -46,16 +55,11 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
           secureTextEntry
         />
 
-        <Text
-          className="mb-4 color-blue-500"
-          onPress={() => navigation.navigate("ForgotPassword")}
-        >
-          Forgot password?
-        </Text>
         <CustomButton
           classNameProp="mb-4"
-          title="Log in"
-          onPress={handleLogin}
+          title="Sign up"
+          loading={loading}
+          onPress={handleSignUp}
         />
 
         <Text className="mb-4 color-white">------------ OR -----------</Text>
@@ -83,18 +87,6 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
         <Text className="mb-4 color-white">
           ---------------------------------------
         </Text>
-
-        <View>
-          <Text className="color-white">
-            Don't have an account?{" "}
-            <Text
-              className="color-blue-500"
-              onPress={() => navigation.navigate("SignUp")}
-            >
-              Sign up
-            </Text>
-          </Text>
-        </View>
       </View>
     </View>
   );

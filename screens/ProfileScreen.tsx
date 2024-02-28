@@ -9,12 +9,12 @@ import {
   StatusBar,
 } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
-import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
-import { RootStackParamList } from "../navigation/AppNavigation";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs/lib/typescript/src/types";
+import { TabParamList } from "navigation/InsideNavigation";
 
-type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, "Profile">;
+type ProfileScreenProp = BottomTabScreenProps<TabParamList, "Profile">;
 
-const ProfileScreen = ({ navigation }: ProfileScreenProps) => {
+const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
   const [isFollowing, setFollowing] = useState(false);
 
   const handleFollowButton = () => {

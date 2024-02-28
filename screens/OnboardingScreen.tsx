@@ -6,12 +6,12 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/types
 import { RootStackParamList } from "../navigation/AppNavigation";
 import { setStorageItem } from "../utils/Mmkv";
 
-type OnboardingScreenProps = NativeStackScreenProps<
+type OnboardingScreenProp = NativeStackScreenProps<
   RootStackParamList,
   "Onboarding"
 >;
 
-const OnboardingScreen = ({ navigation }: OnboardingScreenProps) => {
+const OnboardingScreen = ({ navigation }: OnboardingScreenProp) => {
   const handleDone = () => {
     setStorageItem("alreadyOnboarded", true);
     navigation.replace("Login");

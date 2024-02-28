@@ -9,10 +9,12 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.14",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "expo": "^50.0.6",
     "expo-status-bar": "~1.11.1",
+    "firebase": "^10.8.0",
     "lottie-react-native": "6.5.1",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
