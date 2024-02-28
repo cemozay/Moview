@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { RootStackParamList } from "./AppNavigation";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import LoginScreen from "../screens/LoginScreen";
 import SignUpScreen from "../screens/SignUpScreen";
@@ -8,7 +7,15 @@ import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import InsideStack from "./InsideNavigation";
 import { getStorageBoolean } from "../utils/Mmkv";
 
-const OutsideStack = createNativeStackNavigator<RootStackParamList>();
+export type OutsideStackParamList = {
+  Onboarding: undefined;
+  Login: undefined;
+  SignUp: undefined;
+  ForgotPassword: undefined;
+  InsideStack: undefined;
+};
+
+const OutsideStack = createNativeStackNavigator<OutsideStackParamList>();
 
 const AppNavigation = () => {
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);

@@ -8,15 +8,7 @@ import InsideNavigation from "./InsideNavigation";
 
 export type RootStackParamList = {
   OutsideNav: undefined;
-  Onboarding: undefined;
-  Login: undefined;
-  SignUp: undefined;
-  ForgotPassword: undefined;
-  InsideStack: undefined;
   InsideNav: undefined;
-  HomeStack: undefined;
-  ProfileStack: undefined;
-  ProfileAStack: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();

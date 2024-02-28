@@ -1,11 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { RootStackParamList } from "./AppNavigation";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ProfileAyar from "../screens/ProfileAyarlar";
 
-const InsideStack = createNativeStackNavigator<RootStackParamList>();
+export type InsideStackParamList = {
+  HomeStack: undefined;
+};
+
+const InsideStack = createNativeStackNavigator<InsideStackParamList>();
 
 export type TabParamList = {
   Home: undefined;

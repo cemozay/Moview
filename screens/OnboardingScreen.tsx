@@ -3,11 +3,11 @@ import React from "react";
 import Onboarding from "react-native-onboarding-swiper";
 import Lottie from "lottie-react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
-import { RootStackParamList } from "../navigation/AppNavigation";
+import { OutsideStackParamList } from "../navigation/OutsideNavigation";
 import { setStorageItem } from "../utils/Mmkv";
 
 type OnboardingScreenProp = NativeStackScreenProps<
-  RootStackParamList,
+  OutsideStackParamList,
   "Onboarding"
 >;
 

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, ImageBackground } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
-import { RootStackParamList } from "navigation/AppNavigation";
+import { OutsideStackParamList } from "navigation/OutsideNavigation";
 
 type ForgotPasswordScreenProp = NativeStackScreenProps<
-  RootStackParamList,
+  OutsideStackParamList,
   "ForgotPassword"
 >;
 
