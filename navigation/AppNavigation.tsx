@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { User, onAuthStateChanged } from "firebase/auth";
-import { FirebaseAuth } from "../firebaseConfig";
 import OutsideNavigation from "./OutsideNavigation";
 import InsideNavigation from "./InsideNavigation";
+import { useAuthentication } from "utils/useAuthentication";
 
 export type RootStackParamList = {
   OutsideNav: undefined;
@@ -14,19 +12,11 @@ export type RootStackParamList = {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigation = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const { user, loading } = useAuthentication();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(FirebaseAuth, (user) => {
-      if (user) {
-        setUser(user);
-      } else setUser(null);
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+  if (loading) {
+    return null; // Loading splash screen
+  }
 
   return (
     <NavigationContainer>
