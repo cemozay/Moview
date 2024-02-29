@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import ProfileAyar from "../screens/ProfileAyarlar";
+import ProfileAyar from "../screens/Profile parts/ProfileAyarlar";
 
 export type InsideStackParamList = {
   HomeStack: undefined;

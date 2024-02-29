@@ -2,17 +2,22 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Image,
-  ImageBackground,
+  StyleSheet,
   TouchableOpacity,
-  ScrollView,
+  ImageBackground,
+  Image,
   StatusBar,
 } from "react-native";
-import Icon from "@expo/vector-icons/FontAwesome";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs/lib/typescript/src/types";
 import { TabParamList } from "navigation/InsideNavigation";
 
 type ProfileScreenProp = BottomTabScreenProps<TabParamList, "Profile">;
+import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import ProfileMain from "./Profile parts/ProfileMain";
+import ProfileActivity from "./Profile parts/ProfileActivity";
+import ProfileList from "./Profile parts/ProfileList";
+import ProfileReviews from "./Profile parts/ProfileReviews";
+import ProfileDiary from "./Profile parts/ProfileDiary";
 
 const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
   const [isFollowing, setFollowing] = useState(false);
@@ -22,12 +27,34 @@ const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
     navigation.navigate("ProfileA");
   };
 
+  const FirstRoute = () => <ProfileMain />;
+
+  const SecondRoute = () => <ProfileList />;
+
+  const ThirdRoute = () => <ProfileReviews />;
+  const FourthRoute = () => <ProfileDiary />;
+
+  const FifthRoute = () => <ProfileActivity />;
+
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: "first", title: "Profile" },
+    { key: "second", title: "List" },
+    { key: "third", title: "Reviews" },
+    { key: "fourth", title: "Diary" },
+    { key: "fifth", title: "Activity" },
+  ]);
+
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+    third: ThirdRoute,
+    fourth: FourthRoute,
+    fifth: FifthRoute,
+  });
+
   return (
-    <ScrollView
-      className="flex bg-black"
-      bounces={false}
-      showsHorizontalScrollIndicator={false}
-    >
+    <View style={styles.container}>
       <StatusBar hidden />
 
       <ImageBackground
@@ -56,10 +83,6 @@ const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
                       5001 Takip Edilen
                     </Text>
                   </View>
-                  <View className="py-2 px-4 gap-4 flex-row">
-                    <Icon name="search" size={36} color="white" />
-                    <Icon name="search" size={36} color="white" />
-                  </View>
                 </View>
                 <View className="w-36 items-end px-3 py-4 ">
                   <TouchableOpacity
@@ -79,8 +102,35 @@ const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
           </View>
         </View>
       </ImageBackground>
-    </ScrollView>
+
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        renderTabBar={(props) => (
+          <TabBar
+            {...props}
+            indicatorStyle={{ backgroundColor: "white" }}
+            style={{ backgroundColor: "black" }}
+            activeColor={"white"}
+            inactiveColor={"white"}
+            labelStyle={{ fontSize: 12 }}
+          />
+        )}
+      />
+    </View>
   );
 };
 
 export default ProfileScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  additionalView: {
+    backgroundColor: "lightgrey",
+    padding: 10,
+    alignItems: "center",
+  },
+});
