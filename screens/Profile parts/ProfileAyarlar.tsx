@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs/lib/typescript/src/types";
 import { TabParamList } from "navigation/InsideNavigation";
+import ListComp from "../../components/ListComp";
 
 type ProfileScreenProps = BottomTabScreenProps<TabParamList, "ProfileA">;
 

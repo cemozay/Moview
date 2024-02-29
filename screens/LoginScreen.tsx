@@ -31,78 +31,79 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
 
   return (
     <View className="flex-1">
-      <View className="w-scren justify-end h-1/3">
+      <View className="w-scren justify-end h-3/6">
         <ImageBackground className="w-full h-full" source={backgroundImage} />
-
-        <View className="w-screen items-center justify-center bg-black rounded-t-full self-center absolute h-12">
-          <Text className="text-3xl color-white absolute">Moview</Text>
+        <View className="w-scren justify-end">
+          <View className="w-screen items-start justify-end bg-black rounded-t-full self-center absolute h-28">
+            <Text className="text-4xl pl-16 color-white absolute">Welcome</Text>
+          </View>
+        </View>
+        <View className="w-screen items-end h-16 bg-black">
+          <Text className="text-4xl pr-16 color-white ">to Moview</Text>
         </View>
       </View>
 
-      <View className="flex-1 bg-black p-10">
-        <Text className="mb-2 color-white">Username</Text>
+      <View className="flex-1 bg-black p-6">
         <TextInput
-          className="h-10 border-gray-500 border mb-4 pl-2"
+          className="text-white bg-stone-800 h-12 border-gray-500 rounded-full border mb-3 pl-2"
           onChangeText={(text) => setEmail(text)}
+          placeholder="Username"
+          placeholderTextColor="white"
           value={email}
         />
-
-        <Text className="mb-2 color-white">Password</Text>
         <TextInput
-          className="h-10 border-gray-500 border mb-4 pl-2"
+          className="text-white bg-stone-800 h-12 border-gray-500 rounded-full border mb-3 pl-2"
           onChangeText={(text) => setPassword(text)}
+          placeholder="Password"
+          placeholderTextColor="white"
           value={password}
           secureTextEntry
         />
 
         <Text
-          className="mb-4 color-blue-500"
+          className="text-right mb-4 color-white "
           onPress={() => navigation.navigate("ForgotPassword")}
         >
           Forgot password?
         </Text>
         <CustomButton
-          classNameProp="mb-4"
+          classNameProp="mb-4 h-12"
           title="Log in"
           loading={loading}
           onPress={handleLogin}
         />
 
-        <Text className="mb-4 color-white">------------ OR -----------</Text>
+        <Text className="text-center mb-4 color-white">Or sign in with </Text>
+        <View className="h-0.5 w-36 bg-white self-center" />
 
         <View className="flex flex-row justify-center">
           <CustomButton
-            classNameProp="w-1/6 mb-4 mx-1 bg-white-500"
+            classNameProp="w-1/5 my-4 mx-1 bg-white-500"
             title="G"
             onPress={() => {}}
           />
 
           <CustomButton
-            classNameProp="w-1/6 mb-4 mx-1 bg-white-500"
+            classNameProp="w-1/5 my-4 mx-1 bg-white-500"
             title="T"
             onPress={() => {}}
           />
 
           <CustomButton
-            classNameProp="w-1/6 mb-4 mx-1 bg-white-500"
+            classNameProp="w-1/5 my-4 mx-1 bg-white-500"
             title="F"
             onPress={() => {}}
           />
         </View>
 
-        <Text className="mb-4 color-white">
-          ---------------------------------------
-        </Text>
+        <View className="h-0.5 w-36 bg-white self-center" />
 
         <View>
-          <Text className="color-white">
-            Don't have an account?{" "}
-            <Text
-              className="color-blue-500"
-              onPress={() => navigation.navigate("SignUp")}
-            >
-              Sign up
-            </Text>
+          <Text
+            className="text-center color-white"
+            onPress={() => navigation.navigate("SignUp")}
+          >
+            I dont have an account{" "}
           </Text>
         </View>
       </View>
