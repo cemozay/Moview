@@ -17,6 +17,9 @@ export type OutsideStackParamList = {
 
 const OutsideStack = createNativeStackNavigator<OutsideStackParamList>();
 
+const screenOptions = {
+  headerShown: false,
+};
 const AppNavigation = () => {
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
 
@@ -33,33 +36,17 @@ const AppNavigation = () => {
 
   return (
     <OutsideStack.Navigator
+      screenOptions={screenOptions}
       initialRouteName={showOnboarding == true ? "Onboarding" : "Login"}
     >
-      <OutsideStack.Screen
-        name="Onboarding"
-        options={{ headerShown: false }}
-        component={OnboardingScreen}
-      />
-      <OutsideStack.Screen
-        name="Login"
-        options={{ headerShown: false }}
-        component={LoginScreen}
-      />
-      <OutsideStack.Screen
-        name="SignUp"
-        options={{ headerShown: false }}
-        component={SignUpScreen}
-      />
+      <OutsideStack.Screen name="Onboarding" component={OnboardingScreen} />
+      <OutsideStack.Screen name="Login" component={LoginScreen} />
+      <OutsideStack.Screen name="SignUp" component={SignUpScreen} />
       <OutsideStack.Screen
         name="ForgotPassword"
-        options={{ headerShown: false }}
         component={ForgotPasswordScreen}
       />
-      <OutsideStack.Screen
-        name="InsideStack"
-        options={{ headerShown: false }}
-        component={InsideStack}
-      />
+      <OutsideStack.Screen name="InsideStack" component={InsideStack} />
     </OutsideStack.Navigator>
   );
 };

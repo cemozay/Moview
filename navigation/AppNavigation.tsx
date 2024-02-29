@@ -11,6 +11,10 @@ export type RootStackParamList = {
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
+const screenOptions = {
+  headerShown: false,
+};
+
 const AppNavigation = () => {
   const { user, loading } = useAuthentication();
 
@@ -21,18 +25,11 @@ const AppNavigation = () => {
   return (
     <NavigationContainer>
       <RootStack.Navigator
+        screenOptions={screenOptions}
         initialRouteName={user == null ? "OutsideNav" : "InsideNav"}
       >
-        <RootStack.Screen
-          name="OutsideNav"
-          options={{ headerShown: false }}
-          component={OutsideNavigation}
-        />
-        <RootStack.Screen
-          name="InsideNav"
-          options={{ headerShown: false }}
-          component={InsideNavigation}
-        />
+        <RootStack.Screen name="OutsideNav" component={OutsideNavigation} />
+        <RootStack.Screen name="InsideNav" component={InsideNavigation} />
       </RootStack.Navigator>
     </NavigationContainer>
   );

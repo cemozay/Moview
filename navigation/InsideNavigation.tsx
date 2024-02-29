@@ -18,21 +18,24 @@ export type TabParamList = {
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
+const screenOptions = {
+  headerShown: false,
+};
+
 const InsideNavigation = () => {
   return (
-    <InsideStack.Navigator initialRouteName={"HomeStack"}>
-      <InsideStack.Screen
-        name="HomeStack"
-        options={{ headerShown: false }}
-        component={HomeTabs}
-      />
+    <InsideStack.Navigator
+      screenOptions={screenOptions}
+      initialRouteName={"HomeStack"}
+    >
+      <InsideStack.Screen name="HomeStack" component={HomeTabs} />
     </InsideStack.Navigator>
   );
 };
 
 const HomeTabs = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="ProfileA" component={ProfileAyar} />

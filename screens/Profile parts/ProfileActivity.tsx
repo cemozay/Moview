@@ -1,12 +1,15 @@
-import { Text, View } from "react-native";
-import React, { Component } from "react";
+import { ScrollView } from "react-native";
+import React from "react";
+import ActivityComponent from "../../components/ActivityComponent";
 
-export default class ProfileActivity extends Component {
-  render() {
-    return (
-      <View>
-        <Text>ProfileActivity</Text>
-      </View>
-    );
-  }
-}
+const ProfileActivity = () => {
+  return (
+    <ScrollView className="bg-black">
+      <ActivityComponent />
+      <ActivityComponent />
+      <ActivityComponent />
+    </ScrollView>
+  );
+};
+
+export default ProfileActivity;
