@@ -3,10 +3,12 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import MovieDetails from "../components/MovieDetails";
+import PersonScreen from "../screens/PersonScreen";
 
 export type InsideStackParamList = {
   HomeStack: undefined;
   MovieDetails: undefined;
+  PersonScreen: undefined;
 };
 
 const InsideStack = createNativeStackNavigator<InsideStackParamList>();
@@ -30,6 +32,7 @@ const InsideNavigation = () => {
     >
       <InsideStack.Screen name="HomeStack" component={HomeTabs} />
       <InsideStack.Screen name="MovieDetails" component={MovieDetails} />
+      <InsideStack.Screen name="PersonScreen" component={PersonScreen} />
     </InsideStack.Navigator>
   );
 };
