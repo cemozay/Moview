@@ -38,15 +38,15 @@ const MovieCreditsList = ({ movieid }) => {
 
   const renderCreditItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigateToPersonScreen(item.id)}>
-      <View style={{ margin: 10 }}>
+      <View className="m-4">
         <Image
           source={{
             uri: `https://image.tmdb.org/t/p/original${item.profile_path}`,
           }}
-          style={{ width: 100, height: 150, borderRadius: 8 }}
+          className="h-40 w-28 rounded-lg"
         />
-        <Text style={{ color: "white", marginTop: 8 }}>{item.name}</Text>
-        <Text style={{ color: "gray" }}>{item.character}</Text>
+        <Text className="color-white mt-2">{item.name}</Text>
+        <Text className="color-gray-500">{item.character}</Text>
       </View>
     </TouchableOpacity>
   );

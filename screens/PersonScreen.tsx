@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const PersonScreen = ({ route }) => {
   const navigation = useNavigation();
   const [personDetails, setPersonDetails] = useState(null);
+  const [movieCredits, setMovieCredits] = useState([]);
 
   useEffect(() => {
     const { personId } = route.params;
@@ -26,6 +34,13 @@ const PersonScreen = ({ route }) => {
         );
         const data = await response.json();
         setPersonDetails(data);
+
+        const movieCreditsResponse = await fetch(
+          `https://api.themoviedb.org/3/person/${personId}/movie_credits?language=en-US`,
+          options
+        );
+        const movieCreditsData = await movieCreditsResponse.json();
+        setMovieCredits(movieCreditsData.cast);
       } catch (error) {
         console.error(error);
       }
@@ -38,33 +53,60 @@ const PersonScreen = ({ route }) => {
     navigation.goBack();
   };
 
+  const handleMoviePress = (movieid) => {
+    navigation.navigate("MovieDetails", { movieid });
+    console.log(movieid);
+  };
+
+  const renderMovieItem = ({ item }) => (
+    <TouchableOpacity onPress={() => handleMoviePress(item.id)}>
+      <View className="mx-5 my-2">
+        <Image
+          source={{
+            uri: `https://image.tmdb.org/t/p/original${item.poster_path}`,
+          }}
+          className="h-40 w-28 rounded-lg"
+        />
+        <Text numberOfLines={1} className="color-white text-base">
+          {item.title}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <ScrollView className="bg-black">
       <TouchableOpacity onPress={handleGoBack}>
-        <View style={{ padding: 16, marginBottom: 16 }}>
-          <Text style={{ color: "black" }}>Geri Dön</Text>
+        <View>
+          <Text className="color-white">Geri Dön</Text>
         </View>
       </TouchableOpacity>
 
       {personDetails ? (
-        <>
+        <View className="justify-center items-center">
           <Image
             source={{
               uri: `https://image.tmdb.org/t/p/original${personDetails.profile_path}`,
             }}
-            style={{ width: 150, height: 225, borderRadius: 8 }}
+            className="h-60 w-40 rounded-lg "
           />
-          <Text style={{ color: "white", marginTop: 16, fontSize: 18 }}>
-            {personDetails.name}
-          </Text>
-          <Text style={{ color: "gray", marginTop: 8, fontSize: 16 }}>
+          <Text className="color-white text-2xl">{personDetails.name}</Text>
+          <Text className="color-white text-base">
             {personDetails.biography}
           </Text>
-        </>
+        </View>
       ) : (
-        <Text style={{ color: "white" }}>Kişi bilgileri yükleniyor...</Text>
+        <Text className="color-white">Kişi bilgileri yükleniyor...</Text>
       )}
-    </View>
+
+      <Text className="color-white text-2xl m-2">Film Kredileri</Text>
+      <FlatList
+        data={movieCredits}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderMovieItem}
+        horizontal
+      />
+    </ScrollView>
   );
 };
 
