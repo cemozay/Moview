@@ -31,7 +31,6 @@ const ActivityComponent = () => {
     <View className=" border-white border-b-2">
       <View className="">
         <Text className="color-white text-2xl">
-          {" "}
           Dünyanın En İyi Film Listesi:
         </Text>
       </View>

@@ -1,12 +1,15 @@
-import { Text, View } from "react-native";
+import { ScrollView } from "react-native";
 import React, { Component } from "react";
+import ReviewComponent from "components/ReviewComponent";
 
 export default class ProfileReviews extends Component {
   render() {
     return (
-      <View>
-        <Text>ProfileReviews</Text>
-      </View>
+      <ScrollView className="bg-black">
+        <ReviewComponent />
+        <ReviewComponent />
+        <ReviewComponent />
+      </ScrollView>
     );
   }
 }

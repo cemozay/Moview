@@ -8,13 +8,10 @@ import {
   Modal,
   TouchableWithoutFeedback,
 } from "react-native";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs/lib/typescript/src/types";
-import { TabParamList } from "navigation/InsideNavigation";
+
 import ListComp from "../../components/NewListComp";
 
-type ProfileScreenProps = BottomTabScreenProps<TabParamList, "ProfileA">;
-
-const ProfilAyarlar = ({}: ProfileScreenProps) => {
+const ProfilAyarlar = () => {
   const [viewsData, setViewsData] = useState([]);
 
   const handleCreateView = () => {

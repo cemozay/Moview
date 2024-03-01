@@ -18,6 +18,7 @@ import ProfileActivity from "./Profile parts/ProfileActivity";
 import ProfileList from "./Profile parts/ProfileList";
 import ProfileReviews from "./Profile parts/ProfileReviews";
 import ProfileDiary from "./Profile parts/ProfileDiary";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
   const [isFollowing, setFollowing] = useState(false);
@@ -54,9 +55,8 @@ const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
   });
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar hidden />
-
       <ImageBackground
         className="h-72 w-screen"
         source={require("./profile.jpg")}
@@ -118,7 +118,7 @@ const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
           />
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
