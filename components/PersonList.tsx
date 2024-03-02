@@ -52,7 +52,7 @@ const MovieCreditsList = ({ movieid }) => {
   );
 
   return (
-    <View>
+    <View className=" m-2">
       <Text className="color-white text-2xl">Top Billed Cast</Text>
 
       <FlatList

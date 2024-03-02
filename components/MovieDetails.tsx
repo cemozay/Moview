@@ -9,8 +9,6 @@ import {
   ScrollView,
 } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import ProfileReviews from "../screens/Profile parts/ProfileReviews";
 import MovieCreditsList from "./PersonList";
 
 const options = {
@@ -37,33 +35,6 @@ const MovieDetailScreen = ({ route, navigation }) => {
       })
       .catch((err) => console.error(err));
   }, [movieid]);
-
-  const FirstRoute = () => <ProfileReviews />;
-
-  const SecondRoute = () => (
-    <View>
-      {response && (
-        <View className=" w-scren h-56 border-y border-white justify-center">
-          <View>
-            <Text className="color-white text-2xl">Başrol Ouncuları</Text>
-          </View>
-          <View>
-            <Text className="color-white text-lg">{response.overview}</Text>
-          </View>
-        </View>
-      )}
-    </View>
-  );
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: "first", title: "Profile" },
-    { key: "second", title: "List" },
-  ]);
-
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-  });
 
   return (
     <ScrollView className="bg-black">
@@ -109,7 +80,7 @@ const MovieDetailScreen = ({ route, navigation }) => {
               </View>
             </View>
           </View>
-          <View className=" w-scren h-28 border-y border-white items-center flex-row justify-center">
+          <View className=" w-scren h-16 border-white items-center flex-row justify-center">
             <TouchableOpacity className="mx-4 h-16 w-16 bg-white justify-center items-center rounded-full">
               <Icon name="heart" size={30} color="black" />
             </TouchableOpacity>
@@ -125,24 +96,12 @@ const MovieDetailScreen = ({ route, navigation }) => {
           </View>
         </View>
       )}
-      <Button title="Geri Git" onPress={() => navigation.goBack()} />
       <MovieCreditsList movieid={movieid} />
-
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        renderTabBar={(props) => (
-          <TabBar
-            {...props}
-            indicatorStyle={{ backgroundColor: "white" }}
-            style={{ backgroundColor: "black" }}
-            activeColor={"white"}
-            inactiveColor={"white"}
-            labelStyle={{ fontSize: 12 }}
-          />
-        )}
-      />
+      <View className="border-b border-white items-center justify-between flex-row">
+        <Text className="text-white text-2xl m-2">Review</Text>
+        <Text className="text-white text-base m-2">1200 Review</Text>
+      </View>
+      <Button title="Geri Git" onPress={() => navigation.goBack()} />
     </ScrollView>
   );
 };

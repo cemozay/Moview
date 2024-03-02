@@ -6,13 +6,18 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  ImageBackground,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useWindowDimensions } from "react-native";
+import LinearGradient from "react-native-linear-gradient";
+import Icon from "@expo/vector-icons/FontAwesome";
 
 const PersonScreen = ({ route }) => {
   const navigation = useNavigation();
   const [personDetails, setPersonDetails] = useState(null);
   const [movieCredits, setMovieCredits] = useState([]);
+  const window = useWindowDimensions();
 
   useEffect(() => {
     const { personId } = route.params;
@@ -55,9 +60,16 @@ const PersonScreen = ({ route }) => {
 
   const handleMoviePress = (movieid) => {
     navigation.navigate("MovieDetails", { movieid });
-    console.log(movieid);
+  };
+  const [expanded, setExpanded] = useState(false);
+
+  const handleSeeMore = () => {
+    setExpanded(!expanded);
   };
 
+  const handleSeeLess = () => {
+    setExpanded(false);
+  };
   const renderMovieItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleMoviePress(item.id)}>
       <View className="mx-5 my-2">
@@ -67,7 +79,7 @@ const PersonScreen = ({ route }) => {
           }}
           className="h-40 w-28 rounded-lg"
         />
-        <Text numberOfLines={1} className="color-white text-base">
+        <Text numberOfLines={0} className="color-white text-base">
           {item.title}
         </Text>
       </View>
@@ -76,36 +88,93 @@ const PersonScreen = ({ route }) => {
 
   return (
     <ScrollView className="bg-black">
-      <TouchableOpacity onPress={handleGoBack}>
-        <View>
-          <Text className="color-white">Geri Dön</Text>
-        </View>
-      </TouchableOpacity>
-
       {personDetails ? (
-        <View className="justify-center items-center">
-          <Image
+        <View>
+          <ImageBackground
             source={{
               uri: `https://image.tmdb.org/t/p/original${personDetails.profile_path}`,
             }}
-            className="h-60 w-40 rounded-lg "
+            style={{
+              height: window.height * 0.75,
+              width: window.width,
+              alignItems: "flex-start",
+              justifyContent: "flex-end",
+              overflow: "hidden",
+            }}
+          >
+            <LinearGradient
+              colors={["transparent", "rgba(0,0,0,0.95)"]} // Renk sırasını değiştirdik
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 0,
+              }}
+            />
+            <View className="w-screen justify-between items-center  flex-row">
+              <View className="">
+                <Text className=" color-white text-3xl pl-4">
+                  {personDetails.name}
+                </Text>
+                <Text className="color-white text-1xl  pl-5">
+                  {personDetails.popularity} Takipçi
+                </Text>
+              </View>
+              <View className="pr-4">
+                <TouchableOpacity className=" h-16 w-16 bg-white justify-center items-center rounded-full">
+                  <Icon name="star" size={30} color="black" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ImageBackground>
+          <View className="justify-between items-center flex-row">
+            <View>
+              <Text className="color-white text-2xl m-2">Filmography</Text>
+            </View>
+            <View>
+              <TouchableOpacity>
+                <Text className="text-blue-500 m-2">See More </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <FlatList
+            data={movieCredits}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderMovieItem}
+            horizontal
           />
-          <Text className="color-white text-2xl">{personDetails.name}</Text>
-          <Text className="color-white text-base">
-            {personDetails.biography}
-          </Text>
+          <View>
+            <Text className="color-white text-2xl m-2">Biography</Text>
+            <Text
+              numberOfLines={expanded ? undefined : 4}
+              className="color-white text-base m-2"
+            >
+              {personDetails.biography}
+            </Text>
+            <View className="items-center">
+              {!expanded ? (
+                <TouchableOpacity onPress={handleSeeMore}>
+                  <Text className=" text-blue-500 text-xl">See more</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={handleSeeLess}>
+                  <Text className="text-blue-500 text-xl">See less</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
         </View>
       ) : (
         <Text className="color-white">Kişi bilgileri yükleniyor...</Text>
       )}
 
-      <Text className="color-white text-2xl m-2">Film Kredileri</Text>
-      <FlatList
-        data={movieCredits}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderMovieItem}
-        horizontal
-      />
+      <TouchableOpacity onPress={handleGoBack}>
+        <View>
+          <Text className="color-white">Geri Dön</Text>
+        </View>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
