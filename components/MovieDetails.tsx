@@ -81,7 +81,12 @@ const MovieDetailScreen = ({ route, navigation }) => {
             </View>
           </View>
           <View className=" w-scren h-16 border-white items-center flex-row justify-center">
-            <TouchableOpacity className="mx-4 h-16 w-16 bg-white justify-center items-center rounded-full">
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("AddReview", { movieid: response.id })
+              }
+              className="mx-4 h-16 w-16 bg-white justify-center items-center rounded-full"
+            >
               <Icon name="heart" size={30} color="black" />
             </TouchableOpacity>
             <TouchableOpacity className="mx-4 h-16 w-16 bg-white justify-center items-center rounded-full">

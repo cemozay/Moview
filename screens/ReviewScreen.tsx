@@ -29,7 +29,6 @@ export default function ReviewScreen() {
       );
       const movieData = await movieResponse.json();
 
-      // movieDataMap'i güncelle, movieid ile eşleştirilmiş bir şekilde
       setMovieDataMap((prevMap) => ({
         ...prevMap,
         [review.movieid]: movieData,
@@ -45,10 +44,8 @@ export default function ReviewScreen() {
       const reviewList = snapshot.docs.map((doc) => doc.data());
       setReviews(reviewList);
 
-      // Tüm incelemelerin movieid'lerini al
       const movieIds = reviewList.map((review) => review.movieid);
 
-      // Her bir movieid için fetchMovieData çağır
       movieIds.forEach((movieid) => {
         fetchMovieData({ movieid });
       });
@@ -66,19 +63,12 @@ export default function ReviewScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "black" }}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 10,
-        }}
-      >
+    <View className="flex-1 bg-black">
+      <View className="flex-row justify-between items-center py-3 px-3">
         <View>
-          <Text style={{ color: "white", fontSize: 30 }}>Moview</Text>
+          <Text className="color-white text-3xl">Moview</Text>
         </View>
-        <View style={{ flexDirection: "row", gap: 3 }}>
+        <View className="flex-row gap-3">
           <TouchableOpacity onPress={() => navigation.navigate("SearchScreen")}>
             <Icon name="search" size={30} color="white" />
           </TouchableOpacity>
@@ -91,21 +81,13 @@ export default function ReviewScreen() {
         {reviews.map((review, index) => (
           <TouchableOpacity
             key={index}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              backgroundColor: "red",
-              borderWidth: 1,
-              borderColor: "white",
-              padding: 10,
-              margin: 5,
-            }}
+            className="flex-row justify-between bg-red-500 border-2 border-white p-4 "
           >
             <View>
-              <Text style={{ color: "white" }}>{review.date}</Text>
-              <Text style={{ color: "white" }}>{review.movieid}</Text>
-              <Text style={{ color: "white" }}>{review.puan}</Text>
-              <Text style={{ color: "white" }}>{review.reviewd}</Text>
+              <Text className="text-white">{review.date}</Text>
+              <Text className="text-white">{review.movieid}</Text>
+              <Text className="text-white">{review.puan}</Text>
+              <Text className="text-white">{review.reviewd}</Text>
             </View>
             {movieDataMap[review.movieid] && (
               <Image
@@ -120,20 +102,10 @@ export default function ReviewScreen() {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <View
-        style={{ alignItems: "flex-end", paddingBottom: 4, paddingRight: 4 }}
-      >
+      <View className="items-end pb-4 pr-4">
         <TouchableOpacity
           onPress={() => navigation.navigate("Selectlist")}
-          style={{
-            marginLeft: 4,
-            height: 60,
-            width: 60,
-            backgroundColor: "white",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 30,
-          }}
+          className="ml-4 h-16 w-16 bg-white justify-center items-center rounded-full"
         >
           <Icon name="heart" size={30} color="black" />
         </TouchableOpacity>
