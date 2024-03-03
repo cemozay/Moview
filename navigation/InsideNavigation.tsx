@@ -3,8 +3,11 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import MovieDetails from "../components/MovieDetails";
+import AddReview from "../components/AddReview";
+import Selectlist from "../components/Selectlist";
 import PersonScreen from "../screens/PersonScreen";
 import SearchScreen from "../screens/SearchScreen";
+import Review from "../screens/ReviewScreen";
 import { Entypo } from "@expo/vector-icons";
 import { View } from "react-native";
 
@@ -13,6 +16,9 @@ export type InsideStackParamList = {
   MovieDetails: undefined;
   PersonScreen: undefined;
   SearchScreen: undefined;
+  ProfileA: undefined;
+  AddReview: undefined;
+  Selectlist: undefined;
 };
 
 const InsideStack = createNativeStackNavigator<InsideStackParamList>();
@@ -20,6 +26,7 @@ const InsideStack = createNativeStackNavigator<InsideStackParamList>();
 export type TabParamList = {
   Home: undefined;
   Profile: undefined;
+  Review: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -50,6 +57,9 @@ const InsideNavigation = () => {
       <InsideStack.Screen name="MovieDetails" component={MovieDetails} />
       <InsideStack.Screen name="PersonScreen" component={PersonScreen} />
       <InsideStack.Screen name="SearchScreen" component={SearchScreen} />
+      <InsideStack.Screen name="Review" component={Review} />
+      <InsideStack.Screen name="AddReview" component={AddReview} />
+      <InsideStack.Screen name="Selectlist" component={Selectlist} />
     </InsideStack.Navigator>
   );
 };
@@ -64,14 +74,26 @@ const HomeTabs = () => {
           tabBarStyle: {
             backgroundColor: "black",
           },
-          tabBarIcon: ({ focused }) => {
+          tabBarIcon: () => {
             return (
               <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <Entypo
-                  name="home"
-                  size={24}
-                  color={focused ? "#8888" : "#fff"}
-                />
+                <Entypo name="home" size={24} color={"#fff"} />
+              </View>
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Review"
+        component={Review}
+        options={{
+          tabBarStyle: {
+            backgroundColor: "black",
+          },
+          tabBarIcon: () => {
+            return (
+              <View style={{ alignItems: "center", justifyContent: "center" }}>
+                <Entypo name="home" size={24} color={"#fff"} />
               </View>
             );
           },
@@ -84,11 +106,11 @@ const HomeTabs = () => {
           tabBarStyle: {
             backgroundColor: "black",
           },
-          tabBarIcon: ({ focused }) => {
+          tabBarIcon: () => {
             return (
-              <View
-                style={{ alignItems: "center", justifyContent: "center" }}
-              ></View>
+              <View style={{ alignItems: "center", justifyContent: "center" }}>
+                <Entypo name="home" size={24} color={"#fff"} />
+              </View>
             );
           },
         }}

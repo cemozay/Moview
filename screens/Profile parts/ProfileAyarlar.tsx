@@ -1,202 +1,110 @@
-import React, { useState } from "react";
+/*
+import React, { useState, useEffect } from "react";
 import {
   View,
-  TouchableOpacity,
   Text,
-  FlatList,
-  ScrollView,
-  Modal,
-  TouchableWithoutFeedback,
+  TextInput,
+  ImageBackground,
+  Image,
+  Button,
 } from "react-native";
+import { getAuth, updateProfile } from "firebase/auth";
+import { getStorage, ref, putFile, getDownloadURL } from "firebase/storage";
+import ImagePicker from "react-native-image-picker";
 
-import ListComp from "../../components/NewListComp";
+const ProfileSettings = () => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [photoURL, setPhotoURL] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
-const ProfilAyarlar = () => {
-  const [viewsData, setViewsData] = useState([]);
+  const auth = getAuth();
+  const user = auth.currentUser;
 
-  const handleCreateView = () => {
-    const newViewData = {
-      isVisible: true,
-      selectedListIndex: 0,
-      dataSets: [
-        { id: "1", name: "Elma" },
-        { id: "2", name: "Armut" },
-        { id: "3", name: "Çilek" },
-      ],
-      isPickerVisible: false,
+  useEffect(() => {
+    if (user) {
+      setUsername(user.displayName || "");
+      setEmail(user.email || "");
+      setPhotoURL(user.photoURL || "");
+    }
+  }, [user]);
+
+  const updateProfileInfo = async () => {
+    try {
+      await updateProfile(auth.currentUser, {
+        displayName: username,
+        photoURL: photoURL,
+      });
+
+      console.log("Kullanıcı bilgileri güncellendi");
+    } catch (error) {
+      console.error(
+        "Kullanıcı bilgileri güncellenirken bir hata oluştu:",
+        error
+      );
+    }
+  };
+
+  const selectImage = () => {
+    const options = {
+      title: "Resim Seç",
+      storageOptions: {
+        skipBackup: true,
+        path: "images",
+      },
     };
 
-    setViewsData((prevViewsData) => [...prevViewsData, newViewData]);
-  };
-
-  const handleRemoveView = (index) => {
-    setViewsData((prevViewsData) => {
-      const updatedViewsData = [...prevViewsData];
-      updatedViewsData.splice(index, 1);
-      return updatedViewsData;
-    });
-  };
-
-  const handleTogglePicker = (index) => {
-    setViewsData((prevViewsData) => {
-      const updatedViewsData = [...prevViewsData];
-      updatedViewsData[index].isPickerVisible =
-        !updatedViewsData[index].isPickerVisible;
-      return updatedViewsData;
-    });
-  };
-
-  const handleChangeListContent = (viewIndex, newListIndex) => {
-    setViewsData((prevViewsData) => {
-      const updatedViewsData = [...prevViewsData];
-      updatedViewsData[viewIndex].selectedListIndex = newListIndex;
-      updatedViewsData[viewIndex].isPickerVisible = false;
-
-      switch (newListIndex) {
-        case 0:
-          updatedViewsData[viewIndex].dataSets = [
-            { id: "1", name: "Elma" },
-            { id: "2", name: "Armut" },
-            { id: "3", name: "Çilek" },
-          ];
-          break;
-        case 1:
-          updatedViewsData[viewIndex].dataSets = [
-            { id: "4", name: "Muz" },
-            { id: "5", name: "Üzüm" },
-            { id: "6", name: "Portakal" },
-          ];
-          break;
-        case 2:
-          updatedViewsData[viewIndex].dataSets = [
-            { id: "777", name: "Ananas" },
-            { id: "8", name: "Karpuz" },
-            { id: "9", name: "Kiraz" },
-          ];
-          break;
-
-        default:
-          updatedViewsData[viewIndex].dataSets = [
-            { id: "1", name: "Elma" },
-            { id: "2", name: "Armut" },
-            { id: "3", name: "Çilek" },
-          ];
-          break;
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.uri) {
+        setSelectedImage(response);
       }
-
-      return updatedViewsData;
     });
   };
 
-  const renderItem = ({ item }) => (
-    <View
-      style={{
-        margin: 5,
-        padding: 100,
-        backgroundColor: "gray",
-      }}
-    >
-      <Text style={{ color: "white" }}>{item.name}</Text>
-    </View>
-  );
+  const uploadImage = async () => {
+    if (selectedImage) {
+      const storageRef = ref(getStorage(), `profileImages/${user.uid}`);
+      await putFile(storageRef, selectedImage.uri);
+      const downloadURL = await getDownloadURL(storageRef);
+      setPhotoURL(downloadURL);
+    }
+  };
 
   return (
-    <ScrollView style={{ backgroundColor: "black" }}>
-      <ListComp data={viewsData}></ListComp>
-      {viewsData.map(
-        (viewData, index) =>
-          viewData.isVisible && (
-            <View key={index}>
-              <View style={{ flexDirection: "row", padding: 10 }}>
-                <TouchableWithoutFeedback
-                  onPress={() => handleTogglePicker(index)}
-                >
-                  <View
-                    style={{
-                      width: 150,
-                      height: 40,
-                      justifyContent: "center",
-                      backgroundColor: "red",
-                    }}
-                  >
-                    <Text style={{ color: "white", textAlign: "center" }}>
-                      Liste Adı: {`Liste ${viewData.selectedListIndex + 1}`}
-                    </Text>
-                  </View>
-                </TouchableWithoutFeedback>
-                <TouchableOpacity onPress={() => handleRemoveView(index)}>
-                  <View
-                    style={{
-                      width: 150,
-                      height: 40,
-                      justifyContent: "center",
-                      backgroundColor: "red",
-                    }}
-                  >
-                    <Text style={{ color: "white", textAlign: "center" }}>
-                      Kaldır
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <FlatList
-                data={viewsData[index].dataSets}
-                keyExtractor={(item) => item.id}
-                renderItem={renderItem}
-                horizontal
-              />
-              <Modal
-                transparent
-                visible={viewData.isPickerVisible}
-                animationType="slide"
-              >
-                <TouchableWithoutFeedback
-                  onPress={() => handleTogglePicker(index)}
-                >
-                  <View style={{ flex: 1, justifyContent: "flex-end" }}>
-                    <View
-                      style={{
-                        backgroundColor: "black",
-                        padding: 16,
-                        borderTopLeftRadius: 10,
-                        borderTopRightRadius: 10,
-                      }}
-                    >
-                      {viewData.dataSets.map((_, listIndex) => (
-                        <TouchableOpacity
-                          key={listIndex}
-                          onPress={() =>
-                            handleChangeListContent(index, listIndex)
-                          }
-                        >
-                          <Text
-                            style={{ padding: 10, color: "white" }}
-                          >{`Liste ${listIndex + 1}`}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  </View>
-                </TouchableWithoutFeedback>
-              </Modal>
-            </View>
-          )
-      )}
-      <TouchableOpacity onPress={handleCreateView}>
-        <View
-          style={{
-            width: 150,
-            height: 40,
-            justifyContent: "center",
-            backgroundColor: "red",
+    <View>
+      <Text>Ayarlar</Text>
+
+      <View>
+        <Image
+          source={{
+            uri:
+              selectedImage && selectedImage.uri ? selectedImage.uri : photoURL,
           }}
-        >
-          <Text style={{ color: "white", textAlign: "center" }}>
-            Oluştur ({viewsData.length} view)
-          </Text>
-        </View>
-      </TouchableOpacity>
-    </ScrollView>
+          style={{ width: 100, height: 100 }}
+        />
+
+        <Text className="color-red-500" onPress={selectImage}>
+          Resmi seç
+        </Text>
+      </View>
+
+      <TextInput
+        placeholder="Kullanıcı Adı"
+        value={username}
+        onChangeText={(text) => setUsername(text)}
+      />
+      <TextInput
+        placeholder="E-posta"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+        keyboardType="email-address"
+      />
+
+      <Button title="Bilgileri Güncelle" onPress={updateProfileInfo} />
+      <Button title="Resmi Yükle" onPress={uploadImage} />
+    </View>
   );
 };
 
-export default ProfilAyarlar;
+export default ProfileSettings;
+*/

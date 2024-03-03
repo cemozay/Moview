@@ -20,6 +20,7 @@
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-native": "0.73.2",
+    "react-native-image-picker": "^7.1.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-mmkv": "^2.11.0",
     "react-native-onboarding-swiper": "^1.2.0",
