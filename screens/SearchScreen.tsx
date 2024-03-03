@@ -51,7 +51,7 @@ const SearchScreen = () => {
     setSearchQuery(text);
 
     // Her harf girişinde arama yap
-    if (text.length > 2) {
+    if (text.length > 0) {
       search("movie");
       search("person");
     } else {
