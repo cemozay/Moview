@@ -1,27 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { getFirestore, collection, query, getDocs } from "firebase/firestore";
+import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
+import { InsideStackParamList } from "navigation/InsideNavigation";
+
+type ReviewScreenProp = NativeStackScreenProps<
+  InsideStackParamList,
+  "ReviewScreen"
+>;
+
+interface MovieData {
+  [key: string]: any;
+}
+
+interface Review {
+  date: string;
+  movieid: string;
+  puan: string;
+  reviewd: string;
+}
 
 const options = {
   method: "GET",
   headers: {
     accept: "application/json",
     Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmMzNlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
+      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmM3NlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
   },
 };
 
-export default function ReviewScreen() {
-  const navigation = useNavigation();
+export default function ReviewScreen({ navigation }: ReviewScreenProp) {
   const dataBase = getFirestore();
   const reviewRef = collection(dataBase, "reviews");
 
-  const [reviews, setReviews] = useState([]);
-  const [movieDataMap, setMovieDataMap] = useState({});
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [movieDataMap, setMovieDataMap] = useState<MovieData>({});
 
-  const fetchMovieData = async (review) => {
+  const fetchMovieData = async (review: Review) => {
     try {
       const movieResponse = await fetch(
         `https://api.themoviedb.org/3/movie/${review.movieid}?language=en-US`,
@@ -41,13 +57,13 @@ export default function ReviewScreen() {
   const fetchData = async () => {
     try {
       const snapshot = await getDocs(query(reviewRef));
-      const reviewList = snapshot.docs.map((doc) => doc.data());
+      const reviewList = snapshot.docs.map((doc) => doc.data() as Review);
       setReviews(reviewList);
 
       const movieIds = reviewList.map((review) => review.movieid);
 
       movieIds.forEach((movieid) => {
-        fetchMovieData({ movieid });
+        fetchMovieData({ movieid, date: "", puan: "", reviewd: "" });
       });
     } catch (e) {
       alert(e);
@@ -66,7 +82,7 @@ export default function ReviewScreen() {
     <View className="flex-1 bg-black">
       <View className="flex-row justify-between items-center py-3 px-3">
         <View>
-          <Text className="color-white text-3xl">Moview</Text>
+          <Text className="text-white text-3xl">Moview</Text>
         </View>
         <View className="flex-row gap-3">
           <TouchableOpacity onPress={() => navigation.navigate("SearchScreen")}>

@@ -8,17 +8,31 @@ import {
   FlatList,
   ImageBackground,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { useWindowDimensions } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "@expo/vector-icons/FontAwesome";
-export type aaa = {
-  personId: string;
-};
-const PersonScreen = ({ route }: aaa) => {
-  const navigation = useNavigation();
-  const [personDetails, setPersonDetails] = useState(null);
-  const [movieCredits, setMovieCredits] = useState([]);
+import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
+import { InsideStackParamList } from "navigation/InsideNavigation";
+
+type PersonScreenProp = NativeStackScreenProps<
+  InsideStackParamList,
+  "PersonScreen"
+>;
+
+interface PersonScreenProps {
+  route: {
+    params: {
+      personId: string;
+    };
+  };
+}
+
+const PersonScreen: React.FC<PersonScreenProps> = (
+  { route },
+  { navigation }: PersonScreenProp
+) => {
+  const [personDetails, setPersonDetails] = useState<any>(null);
+  const [movieCredits, setMovieCredits] = useState<any[]>([]);
   const window = useWindowDimensions();
 
   useEffect(() => {
@@ -60,7 +74,7 @@ const PersonScreen = ({ route }: aaa) => {
     navigation.goBack();
   };
 
-  const handleMoviePress = (movieid) => {
+  const handleMoviePress = (movieid: string) => {
     navigation.navigate("MovieDetails", { movieid });
   };
   const [expanded, setExpanded] = useState(false);

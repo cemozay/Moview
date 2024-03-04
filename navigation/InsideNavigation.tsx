@@ -8,6 +8,7 @@ import Selectlist from "../components/Selectlist";
 import PersonScreen from "../screens/PersonScreen";
 import SearchScreen from "../screens/SearchScreen";
 import ListScreen from "../screens/ListScreen";
+import ReviewScreen from "../screens/ReviewScreen";
 import Review from "../screens/ReviewScreen";
 import { Entypo } from "@expo/vector-icons";
 import { View } from "react-native";
@@ -20,6 +21,7 @@ export type InsideStackParamList = {
   ProfileA: undefined;
   AddReview: undefined;
   Selectlist: undefined;
+  ReviewScreen: undefined;
 };
 
 const InsideStack = createNativeStackNavigator<InsideStackParamList>();
@@ -62,6 +64,7 @@ const InsideNavigation = () => {
       <InsideStack.Screen name="Review" component={Review} />
       <InsideStack.Screen name="AddReview" component={AddReview} />
       <InsideStack.Screen name="Selectlist" component={Selectlist} />
+      <InsideStack.Screen name="ReviewScreen" component={ReviewScreen} />
     </InsideStack.Navigator>
   );
 };

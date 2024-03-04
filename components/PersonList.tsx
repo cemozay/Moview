@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
-const MovieCreditsList = ({ movieid }) => {
+type propsmovieid = {};
+const MovieCreditsList = (movieid: propsmovieid) => {
   const navigation = useNavigation();
   const [credits, setCredits] = useState([]);
 
@@ -32,12 +32,16 @@ const MovieCreditsList = ({ movieid }) => {
     fetchCredits();
   }, [movieid]);
 
-  const navigateToPersonScreen = (personId) => {
-    navigation.navigate("PersonScreen", { personId });
+  type porpsitems = {
+    id: string;
+    profile_path: string;
+    name: string;
+    character: string;
   };
-
-  const renderCreditItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigateToPersonScreen(item.id)}>
+  const renderCreditItem = (item: porpsitems) => (
+    <TouchableOpacity
+      onPress={() => navigation.navigate("PersonScreen", { item.id })}
+    >
       <View className="m-4">
         <Image
           source={{

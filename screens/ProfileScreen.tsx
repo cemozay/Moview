@@ -11,7 +11,6 @@ import {
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs/lib/typescript/src/types";
 import { TabParamList } from "navigation/InsideNavigation";
 
-type ProfileScreenProp = BottomTabScreenProps<TabParamList, "Profile">;
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import ProfileMain from "./Profile parts/ProfileMain";
 import ProfileActivity from "./Profile parts/ProfileActivity";
@@ -20,13 +19,8 @@ import ProfileReviews from "./Profile parts/ProfileReviews";
 import ProfileDiary from "./Profile parts/ProfileDiary";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
+const ProfileScreen = () => {
   const [isFollowing, setFollowing] = useState(false);
-
-  const handleFollowButton = () => {
-    setFollowing((prevState) => !prevState);
-    navigation.navigate("ProfileA");
-  };
 
   const FirstRoute = () => <ProfileMain />;
 
@@ -90,7 +84,6 @@ const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
                     style={[
                       { backgroundColor: isFollowing ? "gray" : "black" },
                     ]}
-                    onPress={handleFollowButton}
                   >
                     <Text className="color-white">
                       {isFollowing ? "Takip Ediliyor" : "Takip Et"}
