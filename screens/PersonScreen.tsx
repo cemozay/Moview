@@ -12,8 +12,10 @@ import { useNavigation } from "@react-navigation/native";
 import { useWindowDimensions } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "@expo/vector-icons/FontAwesome";
-
-const PersonScreen = ({ route }) => {
+export type aaa = {
+  personId: string;
+};
+const PersonScreen = ({ route }: aaa) => {
   const navigation = useNavigation();
   const [personDetails, setPersonDetails] = useState(null);
   const [movieCredits, setMovieCredits] = useState([]);

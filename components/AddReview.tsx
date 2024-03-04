@@ -2,13 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAuthentication } from "utils/useAuthentication";
-import {
-  getFirestore,
-  collection,
-  query,
-  getDoc,
-  addDoc,
-} from "firebase/firestore";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 const options = {
   method: "GET",
   headers: {
@@ -17,10 +11,11 @@ const options = {
       "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmMzNlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
   },
 };
-export default function AddReview({ route }) {
+
+export default function AddReview(route: object) {
   const navigation = useNavigation();
   const { movieid } = route.params;
-  const [response, setResponseData] = useState(null);
+  const [response, setResponseData] = useState(Object);
 
   useEffect(() => {
     fetch(
@@ -40,6 +35,7 @@ export default function AddReview({ route }) {
   const [puan, setPuan] = useState("");
   const [reviewd, setReview] = useState("");
   const { user } = useAuthentication();
+  const userid: string = user ? user.uid : "";
 
   const addData = () => {
     try {
@@ -48,7 +44,7 @@ export default function AddReview({ route }) {
         puan: puan,
         reviewd: reviewd,
         movieid: movieid,
-        user: user.uid, // Burada user nesnesinin içindeki uid'yi alıyoruz
+        user: userid,
       };
       addDoc(reviewRef, review);
       navigation.goBack();

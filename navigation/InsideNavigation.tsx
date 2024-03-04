@@ -7,6 +7,7 @@ import AddReview from "../components/AddReview";
 import Selectlist from "../components/Selectlist";
 import PersonScreen from "../screens/PersonScreen";
 import SearchScreen from "../screens/SearchScreen";
+import ListScreen from "../screens/ListScreen";
 import Review from "../screens/ReviewScreen";
 import { Entypo } from "@expo/vector-icons";
 import { View } from "react-native";
@@ -27,6 +28,7 @@ export type TabParamList = {
   Home: undefined;
   Profile: undefined;
   Review: undefined;
+  ListScreen: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -70,6 +72,22 @@ const HomeTabs = () => {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
+        options={{
+          tabBarStyle: {
+            backgroundColor: "black",
+          },
+          tabBarIcon: () => {
+            return (
+              <View style={{ alignItems: "center", justifyContent: "center" }}>
+                <Entypo name="home" size={24} color={"#fff"} />
+              </View>
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="ListScreen"
+        component={ListScreen}
         options={{
           tabBarStyle: {
             backgroundColor: "black",

@@ -20,7 +20,6 @@ import { useNavigation } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("window");
 
-//Şuandaki vizyonda olan filmleri çek
 const getNowPlayingMoviesList = async () => {
   try {
     let response = await fetch(nowPlayingMovies);
@@ -30,7 +29,6 @@ const getNowPlayingMoviesList = async () => {
     console.error("444", error);
   }
 };
-//Vizyona girecek olan filmleri çek
 const getUpcomingMoviesList = async () => {
   try {
     let response = await fetch(upcomingMovies);
@@ -51,13 +49,13 @@ const getPopularMoviesList = async () => {
   }
 };
 
-//atama yap
 const HomeScreen = () => {
   const navigation = useNavigation();
-
   const [popularMoviesList, setPopularMoviesList] = useState<any>(undefined);
   const [upcomingMoviesList, setUpcomingMoviesList] = useState<any>(undefined);
   const [personList, setPersonList] = useState<any>(undefined);
+  const movieid: string = "";
+
   const [nowPlayingMoviesList, setNowPlayingMoviesList] =
     useState<any>(undefined);
 
@@ -76,7 +74,7 @@ const HomeScreen = () => {
       let tempUpcoming = await getUpcomingMoviesList();
       setUpcomingMoviesList(tempUpcoming.results);
     })();
-  }, []); // []bunun sebebi  boş bir dizi aldığından, sadece bileşen monte edildiğinde bir kere çalışır. Bu, bileşenin ilk render edildiği anda asenkron işlemlerin yapılmasını sağlar.
+  }, []);
 
   if (
     nowPlayingMoviesList == undefined &&
@@ -164,7 +162,7 @@ const HomeScreen = () => {
       <CategoryHeader title={"Upcoming"} />
       <FlatList
         data={upcomingMoviesList}
-        keyExtractor={(item: any) => item.id}
+        keyExtractor={(item: object) => item.id}
         horizontal
         bounces={false}
         showsHorizontalScrollIndicator={false}

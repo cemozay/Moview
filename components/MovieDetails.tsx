@@ -10,6 +10,15 @@ import {
 } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
 import MovieCreditsList from "./PersonList";
+import { getDoc, doc } from "firebase/firestore";
+import { FirebaseDB } from "../firebaseConfig";
+import { useNavigation } from "@react-navigation/native";
+import { useAuthentication } from "utils/useAuthentication";
+
+const { user } = useAuthentication();
+const userid: string = user ? user.uid : "";
+const docRef = doc(FirebaseDB, "likedmovie", userid);
+const navigation = useNavigation();
 
 const options = {
   method: "GET",
@@ -20,11 +29,31 @@ const options = {
   },
 };
 
-const MovieDetailScreen = ({ route, navigation }) => {
+const MovieDetailScreen = ({ route }) => {
   const [response, setResponseData] = useState(null);
-  const { movieid } = route.params;
+  const [renk, setRenk] = useState("white");
 
+  const { movieid } = route.params;
+  const fetchData = async () => {
+    try {
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const fieldNames = Object.keys(docSnap.data());
+
+        if (fieldNames.includes("movieid")) {
+          setRenk("green");
+        }
+      } else {
+        console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   useEffect(() => {
+    fetchData();
+
     fetch(
       `https://api.themoviedb.org/3/movie/${movieid}?language=en-US`,
       options
@@ -32,6 +61,16 @@ const MovieDetailScreen = ({ route, navigation }) => {
       .then((response) => response.json())
       .then((response) => {
         setResponseData(response);
+
+        // movieid içeriyorsa yeşil, içermiyorsa kırmızı renk ata
+        if (
+          response &&
+          response.genres.some((genre) => genre.name === "movieid")
+        ) {
+          setRenk("green");
+        } else {
+          setRenk("red");
+        }
       })
       .catch((err) => console.error(err));
   }, [movieid]);
@@ -95,7 +134,17 @@ const MovieDetailScreen = ({ route, navigation }) => {
             <TouchableOpacity className="mx-4 h-16 w-16 bg-white justify-center items-center rounded-full">
               <Icon name="save" size={30} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity className="mx-4 h-16 w-16 bg-white justify-center items-center rounded-full">
+            <TouchableOpacity
+              style={{
+                marginLeft: 4,
+                height: 60,
+                width: 60,
+                backgroundColor: renk,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 30,
+              }}
+            >
               <Icon name="star" size={30} color="black" />
             </TouchableOpacity>
           </View>

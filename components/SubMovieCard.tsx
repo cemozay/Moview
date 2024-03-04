@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-const genres: any = {
+const genres: object = {
   12: "Adventure",
   14: "Fantasy",
   16: "Animation",
@@ -22,8 +22,19 @@ const genres: any = {
   10752: "War",
   10770: "TV Movie",
 };
-
-const SubMovieCard = (props: any) => {
+type typeprops = {
+  cardFunction: () => void;
+  isFirst: string;
+  isLast: string;
+  shoudlMarginatedAtEnd: string;
+  shouldMarginatedAround: string;
+  imagePath: string;
+  cardWidth: any;
+  release_date: string;
+  genre: object;
+  title: string;
+};
+const SubMovieCard = (props: typeprops) => {
   return (
     <TouchableOpacity onPress={() => props.cardFunction()}>
       <View
@@ -50,7 +61,7 @@ const SubMovieCard = (props: any) => {
         <Text className="color-white">{props.release_date}</Text>
         <View style={styles.genreContainer}>
           {props.genre &&
-            props.genre.map((item: any) => {
+            props.genre.map((item: object) => {
               return (
                 <View key={item}>
                   <Text style={styles.genreText}>{genres[item]}</Text>

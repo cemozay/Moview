@@ -9,13 +9,18 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
+type typeitem = {
+  id: string;
+  poster_path: string;
+  title: string;
+};
 const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [movieResults, setMovieResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const navigation = useNavigation();
   const textInputRef = useRef(null);
+  type textInputRef
 
   useEffect(() => {
     if (textInputRef.current) {
@@ -25,7 +30,7 @@ const SearchScreen = () => {
 
   const apiKey = "23e3cc0416f703df9256c5e82ba0e5fb";
 
-  const search = async (mediaType) => {
+  const search = async (mediaType: string) => {
     try {
       const response = await fetch(
         `https://api.themoviedb.org/3/search/${mediaType}?api_key=${apiKey}&query=${searchQuery}`
@@ -44,7 +49,7 @@ const SearchScreen = () => {
     }
   };
 
-  const handleSearchChange = (text) => {
+  const handleSearchChange = (text: string) => {
     setSearchQuery(text);
 
     if (text.length > 0) {
@@ -70,7 +75,7 @@ const SearchScreen = () => {
           <View>
             <FlatList
               data={movieResults}
-              keyExtractor={(item) => item.id.toString()}
+              keyExtractor={(item: typeitem) => item.id.toString()}
               showsHorizontalScrollIndicator={false}
               renderItem={({ item }) => (
                 <TouchableOpacity

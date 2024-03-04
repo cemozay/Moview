@@ -29,7 +29,7 @@ export default function ProfileReviews() {
   const [reviews, setReviews] = useState([]);
   const [movieDataMap, setMovieDataMap] = useState({});
 
-  const fetchMovieData = async (review) => {
+  const fetchMovieData = async (review: object) => {
     try {
       const movieResponse = await fetch(
         `https://api.themoviedb.org/3/movie/${review.movieid}?language=en-US`,

@@ -17,13 +17,13 @@ const SearchScreen = () => {
   const [showResults, setShowResults] = useState(false);
   const navigation = useNavigation();
 
-  const navigateToPersonScreen = (personId) => {
+  const navigateToPersonScreen = (personId: string) => {
     navigation.navigate("PersonScreen", { personId });
   };
 
   const apiKey = "23e3cc0416f703df9256c5e82ba0e5fb";
 
-  const search = async (mediaType) => {
+  const search = async (mediaType: string) => {
     try {
       const response = await fetch(
         `https://api.themoviedb.org/3/search/${mediaType}?api_key=${apiKey}&query=${searchQuery}`
@@ -47,7 +47,7 @@ const SearchScreen = () => {
     }
   };
 
-  const handleSearchChange = (text) => {
+  const handleSearchChange = (text: string) => {
     setSearchQuery(text);
 
     // Her harf girişinde arama yap

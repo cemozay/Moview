@@ -1,34 +1,30 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import Icon from "@expo/vector-icons/FontAwesome";
 
-const ReviewScreen = () => {
+export default function ListScreen() {
+  const navigation = useNavigation();
+
   return (
-    <View style={styles.container}>
-      <View style={styles.box}>
-        <Text style={styles.text}>Merhaba, React Native!</Text>
-      </View>
+    <View className="flex-1 bg-black">
+      <ScrollView>
+        <View className="flex-row justify-between items-center py-3 px-3">
+          <View>
+            <Text className="color-white text-3xl">Moview</Text>
+          </View>
+          <View className="flex-row gap-3">
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SearchScreen")}
+            >
+              <Icon name="search" size={30} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Icon name="heart" size={30} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "green", // Arka plan rengi siyah
-  },
-  box: {
-    backgroundColor: "white", // Kutu rengi beyaz
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "black", // Metin rengi siyah
-  },
-});
-
-export default ReviewScreen;
+}
