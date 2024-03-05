@@ -26,7 +26,7 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
     }
   };
 
-  const backgroundImage = require("./profile.jpg");
+  const backgroundImage = require("../profile.jpg");
 
   return (
     <View className="flex-1">

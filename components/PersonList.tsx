@@ -5,12 +5,18 @@ import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
 
 // Prop ismi düzeltilecek
 type propsmovieid = {
-   // Buraya typelar eklenecek
+  // Buraya typelar eklenecek
 };
 
-type MovieCreditsListProp = NativeStackScreenProps<InsideStackParamList, "MovieCreditsList">;
+type MovieCreditsListProp = NativeStackScreenProps<
+  InsideStackParamList,
+  "MovieCreditsList"
+>;
 
-const MovieCreditsList = ({navigation}: MovieCreditsListProp, movieid: propsmovieid,  ) => {
+const MovieCreditsList = (
+  { navigation }: MovieCreditsListProp,
+  movieid: propsmovieid
+) => {
   const [credits, setCredits] = useState([]);
 
   // Burası tekrar etmeyecek
@@ -51,7 +57,7 @@ const MovieCreditsList = ({navigation}: MovieCreditsListProp, movieid: propsmovi
 
   const renderCreditItem = (item: porpsitems) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate("PersonScreen", { item.id })}
+      onPress={() => {} /* navigation.navigate("PersonScreen", { item.id }) */}
     >
       <View className="m-4">
         <Image

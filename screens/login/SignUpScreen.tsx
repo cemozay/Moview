@@ -26,7 +26,7 @@ const SignUpScreen = ({ navigation }: SignUpScreenProp) => {
     }
   };
 
-  const backgroundImage = require("./profile.jpg");
+  const backgroundImage = require("../profile.jpg");
 
   return (
     <View className="flex-1">

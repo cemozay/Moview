@@ -14,7 +14,7 @@ const ForgotPasswordScreen = ({}: ForgotPasswordScreenProp) => {
 
   const handleForgot = () => {};
 
-  const backgroundImage = require("./profile.jpg");
+  const backgroundImage = require("../profile.jpg");
 
   return (
     <View className="flex-1">
