@@ -13,7 +13,7 @@ const ActivityComponent = () => {
   ];
 
   // renderItem giren çıkan type belirtilmeli
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: { id: string; title: string } }) => (
     <View
       style={{
         margin: 6,

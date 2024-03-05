@@ -97,7 +97,7 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
               style={{ color: "white" }}
               placeholder="İnceleme ekleyin..."
               placeholderTextColor="white"
-              value={reviewd}
+              value={review}
               onChangeText={(text) => setReview(text)}
             />
           </View>

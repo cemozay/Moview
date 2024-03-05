@@ -85,14 +85,7 @@ const ComingSoon = ({ navigation }: ComingSoonProp) => {
   }, []);
 
   // Bu if bloğu doğru mu?
-  if (
-    nowPlayingMoviesList == undefined &&
-    nowPlayingMoviesList == null &&
-    popularMoviesList == undefined &&
-    popularMoviesList == null &&
-    upcomingMoviesList == undefined &&
-    upcomingMoviesList == null
-  ) {
+  if (!nowPlayingMoviesList && !popularMoviesList && !upcomingMoviesList) {
     return (
       <ScrollView
         className="flex bg-black"

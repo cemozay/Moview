@@ -33,7 +33,7 @@ type typeprops = {
   imagePath: string;
   cardWidth: any; // bu niye any?
   release_date: string;
-  genre: object;
+  genre: [];
   title: string;
 };
 
