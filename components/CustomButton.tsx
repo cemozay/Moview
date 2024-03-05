@@ -5,7 +5,7 @@ import { ActivityIndicator } from "react-native";
 type CustomButtonProps = {
   classNameProp?: string;
   onPress: () => void;
-  title?: string;
+  title: string;
   loading?: boolean;
 };
 

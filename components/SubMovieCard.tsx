@@ -22,6 +22,8 @@ const genres: object = {
   10752: "War",
   10770: "TV Movie",
 };
+
+// Type adı düzeltilecek
 type typeprops = {
   cardFunction: () => void;
   isFirst: string;
@@ -29,11 +31,12 @@ type typeprops = {
   shoudlMarginatedAtEnd: string;
   shouldMarginatedAround: string;
   imagePath: string;
-  cardWidth: any;
+  cardWidth: any; // bu niye any?
   release_date: string;
   genre: object;
   title: string;
 };
+
 const SubMovieCard = (props: typeprops) => {
   return (
     <TouchableOpacity onPress={() => props.cardFunction()}>
@@ -62,6 +65,7 @@ const SubMovieCard = (props: typeprops) => {
         <View style={styles.genreContainer}>
           {props.genre &&
             props.genre.map((item: object) => {
+              // object yerine type yazılmalı
               return (
                 <View key={item}>
                   <Text style={styles.genreText}>{genres[item]}</Text>
@@ -74,6 +78,7 @@ const SubMovieCard = (props: typeprops) => {
   );
 };
 
+// Mümkünse class sisteminde yazılacak
 const styles = StyleSheet.create({
   container: {
     display: "flex",

@@ -6,7 +6,7 @@ export function getColor(i: number, numItems: number) {
 
 export const getRandColorVal = () => Math.floor(Math.random() * 255);
 
-export const mapIndexToData = (d: any, index: number, arr: any[]) => {
+export const mapIndexToData = (index: number, arr: any[]) => {
   const backgroundColor = getColor(index, arr.length);
   return {
     text: `${index}`,

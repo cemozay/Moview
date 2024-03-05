@@ -1,11 +1,19 @@
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { InsideStackParamList } from "navigation/InsideNavigation";
 import React, { useState, useEffect } from "react";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-type propsmovieid = {};
-const MovieCreditsList = (movieid: propsmovieid) => {
-  const navigation = useNavigation();
+
+// Prop ismi düzeltilecek
+type propsmovieid = {
+   // Buraya typelar eklenecek
+};
+
+type MovieCreditsListProp = NativeStackScreenProps<InsideStackParamList, "MovieCreditsList">;
+
+const MovieCreditsList = ({navigation}: MovieCreditsListProp, movieid: propsmovieid,  ) => {
   const [credits, setCredits] = useState([]);
 
+  // Burası tekrar etmeyecek
   useEffect(() => {
     const fetchCredits = async () => {
       const options = {
@@ -31,13 +39,16 @@ const MovieCreditsList = (movieid: propsmovieid) => {
 
     fetchCredits();
   }, [movieid]);
+  // Burası tekrar etmeyecek
 
+  // Props adı düzeltilecek
   type porpsitems = {
     id: string;
     profile_path: string;
     name: string;
     character: string;
   };
+
   const renderCreditItem = (item: porpsitems) => (
     <TouchableOpacity
       onPress={() => navigation.navigate("PersonScreen", { item.id })}

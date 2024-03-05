@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import Icon from "@expo/vector-icons/FontAwesome";
-import {
-  getFirestore,
-  collection,
-  where,
-  query,
-  getDocs,
-} from "firebase/firestore";
-import { FirebaseAuth } from "../../firebaseConfig";
+import { collection, where, query, getDocs } from "firebase/firestore";
+import { FirebaseAuth, FirebaseDB } from "../../firebaseConfig";
 
 const options = {
   method: "GET",
@@ -20,14 +13,14 @@ const options = {
   },
 };
 
-export default function ProfileReviews() {
-  const navigation = useNavigation();
-  const dataBase = getFirestore();
-  const auth = FirebaseAuth;
-  const reviewRef = collection(dataBase, "reviews");
-  const userid = auth.currentUser.uid; // Auth objesinden uid alınmalı
+const database = FirebaseDB;
+const user = FirebaseAuth.currentUser;
+
+const ProfileReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [movieDataMap, setMovieDataMap] = useState({});
+
+  const reviewRef = collection(database, "reviews");
 
   const fetchMovieData = async (review: object) => {
     try {
@@ -46,7 +39,7 @@ export default function ProfileReviews() {
     }
   };
 
-  const q = query(reviewRef, where("user", "==", userid));
+  const q = query(reviewRef, where("user", "==", user!.uid));
 
   const fetchData = async () => {
     try {
@@ -113,4 +106,6 @@ export default function ProfileReviews() {
       </ScrollView>
     </View>
   );
-}
+};
+
+export default ProfileReviews;

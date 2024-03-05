@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import OnboardingScreen from "../screens/OnboardingScreen";
-import LoginScreen from "../screens/LoginScreen";
-import SignUpScreen from "../screens/SignUpScreen";
-import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
+import LoginScreen from "../screens/login/LoginScreen";
+import SignUpScreen from "../screens/login/SignUpScreen";
+import ForgotPasswordScreen from "../screens/login/ForgotPasswordScreen";
 import InsideStack from "./InsideNavigation";
 import { getStorageBoolean } from "../utils/Mmkv";
 

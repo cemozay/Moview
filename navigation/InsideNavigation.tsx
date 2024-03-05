@@ -15,46 +15,28 @@ import { View } from "react-native";
 
 export type InsideStackParamList = {
   HomeStack: undefined;
-  MovieDetails: undefined;
+  MovieDetails: { movieId: string };
   PersonScreen: undefined;
   SearchScreen: undefined;
-  ProfileA: undefined;
-  AddReview: undefined;
+  Review: undefined;
+  AddReview: { movieId: string };
+  ComingSoon: undefined;
   Selectlist: undefined;
+  MovieCreditsList: undefined;
   ReviewScreen: undefined;
+  LikedMovies: undefined;
 };
 
 const InsideStack = createNativeStackNavigator<InsideStackParamList>();
 
-export type TabParamList = {
-  Home: undefined;
-  Profile: undefined;
-  Review: undefined;
-  ListScreen: undefined;
-};
-
-const Tab = createBottomTabNavigator<TabParamList>();
-
-const screenOptions = {
+const stackScreenOptions = {
   headerShown: false,
 };
-const screenOptions2 = {
-  tabBarShowLabel: false,
-  headerShown: false,
-  tabBarStyle: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    left: 0,
-    elevation: 0,
-    height: 60,
-    background: "#000",
-  },
-};
+
 const InsideNavigation = () => {
   return (
     <InsideStack.Navigator
-      screenOptions={screenOptions}
+      screenOptions={stackScreenOptions}
       initialRouteName={"HomeStack"}
     >
       <InsideStack.Screen name="HomeStack" component={HomeTabs} />
@@ -69,9 +51,32 @@ const InsideNavigation = () => {
   );
 };
 
+export type TabParamList = {
+  Home: undefined;
+  ListScreen: undefined;
+  Profile: undefined;
+  Review: undefined;
+};
+
+const Tab = createBottomTabNavigator<TabParamList>();
+
+const tabScreenOptions = {
+  tabBarShowLabel: false,
+  headerShown: false,
+  tabBarStyle: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    left: 0,
+    elevation: 0,
+    height: 60,
+    background: "#000",
+  },
+};
+
 const HomeTabs = () => {
   return (
-    <Tab.Navigator screenOptions={screenOptions2}>
+    <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen
         name="Home"
         component={HomeScreen}

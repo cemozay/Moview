@@ -8,7 +8,7 @@ import {
 import React from "react";
 import Icon from "@expo/vector-icons/FontAwesome";
 
-export default function ReviewComponent() {
+const ReviewComponent = () => {
   return (
     <TouchableOpacity className="border-b-2 border-white">
       <View className="bg-black w-screen">
@@ -57,4 +57,6 @@ export default function ReviewComponent() {
       </View>
     </TouchableOpacity>
   );
-}
+};
+
+export default ReviewComponent;

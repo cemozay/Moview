@@ -12,14 +12,16 @@ import {
   nowPlayingMovies,
   popularMovies,
   baseImagePath,
-} from "./apicalls";
+} from "../utils/apicalls";
 import CategoryHeader from "./CategoryHeader";
 import SubMovieCard from "./SubMovieCard";
 import MovieCard from "./MovieCard";
-import { useNavigation } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { InsideStackParamList } from "navigation/InsideNavigation";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
+// Aşağıdaki fonksiyonların alıp verdiği değerlerin tipi belirtilmeli
 const getNowPlayingMoviesList = async () => {
   try {
     let response = await fetch(nowPlayingMovies);
@@ -29,6 +31,7 @@ const getNowPlayingMoviesList = async () => {
     console.error("444", error);
   }
 };
+
 const getUpcomingMoviesList = async () => {
   try {
     let response = await fetch(upcomingMovies);
@@ -49,16 +52,21 @@ const getPopularMoviesList = async () => {
   }
 };
 
-const HomeScreen = () => {
-  const navigation = useNavigation();
-  const [popularMoviesList, setPopularMoviesList] = useState<any>(undefined);
-  const [upcomingMoviesList, setUpcomingMoviesList] = useState<any>(undefined);
-  const [personList, setPersonList] = useState<any>(undefined);
-  const movieid: string = "";
+// Buraya kadar
 
+type ComingSoonProp = NativeStackScreenProps<
+  InsideStackParamList,
+  "ComingSoon"
+>;
+
+const ComingSoon = ({ navigation }: ComingSoonProp) => {
+  const [popularMoviesList, setPopularMoviesList] = useState<any>(undefined); // any yerine bir tip belirtilmeli
+  const [upcomingMoviesList, setUpcomingMoviesList] = useState<any>(undefined); // any yerine bir tip belirtilmeli
+  const [personList, setPersonList] = useState<any>(undefined); // any yerine bir tip belirtilmeli
   const [nowPlayingMoviesList, setNowPlayingMoviesList] =
-    useState<any>(undefined);
+    useState<any>(undefined); // any yerine bir tip belirtilmeli
 
+  // Aşağıdaki kod bloğu yeni fonksiyon yazılarak düzenlenmeli
   useEffect(() => {
     (async () => {
       let tempNowPlaying = await getNowPlayingMoviesList();
@@ -76,6 +84,7 @@ const HomeScreen = () => {
     })();
   }, []);
 
+  // Bu if bloğu doğru mu?
   if (
     nowPlayingMoviesList == undefined &&
     nowPlayingMoviesList == null &&
@@ -97,6 +106,7 @@ const HomeScreen = () => {
       </ScrollView>
     );
   }
+  // Bu if bloğu doğru mu?
 
   return (
     <ScrollView className="flex bg-black" bounces={false}>
@@ -187,4 +197,4 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+export default ComingSoon;

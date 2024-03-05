@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, Text, TextInput, ImageBackground } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { OutsideStackParamList } from "navigation/OutsideNavigation";
-import CustomButton from "../components/CustomButton";
-import { FirebaseAuth } from "../firebaseConfig";
+import CustomButton from "../../components/CustomButton";
+import { FirebaseAuth } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 type SignUpScreenProp = NativeStackScreenProps<OutsideStackParamList, "SignUp">;
@@ -12,12 +12,11 @@ const SignUpScreen = ({ navigation }: SignUpScreenProp) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const auth = FirebaseAuth;
 
   const handleSignUp = async () => {
     setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(FirebaseAuth, email, password);
       navigation.navigate("InsideStack");
     } catch (error: any) {
       console.error(error);

@@ -23,6 +23,7 @@ const genres: object = {
   10770: "TV Movie",
 };
 
+// Props type düzeltilmeli
 const MovieCard = (props: any) => {
   return (
     <TouchableOpacity onPress={() => props.cardFunction()}>
@@ -73,6 +74,7 @@ const MovieCard = (props: any) => {
   );
 };
 
+// Burayı olabiliyorsa class yapısı ile düzenlemek gerekebilir
 const styles = StyleSheet.create({
   container: {
     display: "flex",

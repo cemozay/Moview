@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
 import { getDoc, doc } from "firebase/firestore";
 import { FirebaseAuth, FirebaseDB } from "../../firebaseConfig";
-import { useNavigation } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { InsideStackParamList } from "navigation/InsideNavigation";
 
-const auth = FirebaseAuth;
-const userid = auth.currentUser.uid;
-const docRef = doc(FirebaseDB, "likedmovie", userid);
+const user = FirebaseAuth.currentUser;
+const docRef = doc(FirebaseDB, "likedmovie", user!.uid);
 
-const LikedMovies = () => {
+export type LikedMoviesProp = NativeStackScreenProps<
+  InsideStackParamList,
+  "LikedMovies"
+>;
+
+const LikedMovies = ({ navigation }: LikedMoviesProp) => {
   const [movieDataList, setMovieDataList] = useState([]);
-  const navigation = useNavigation();
 
+  // Useeffectler düzeltilecek
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -55,7 +60,9 @@ const LikedMovies = () => {
 
     fetchData();
   }, []);
+  // Useeffectler düzeltilecek
 
+  // itemlara type verilecek
   const renderItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
@@ -74,7 +81,7 @@ const LikedMovies = () => {
 
   return (
     <View className="bg-black w-screen h-12">
-      <Text className="text-white">{userid}</Text>
+      <Text className="text-white">{user!.uid}</Text>
       <FlatList
         data={movieDataList}
         renderItem={renderItem}

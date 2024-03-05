@@ -10,15 +10,18 @@ import {
 } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
 import MovieCreditsList from "./PersonList";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { InsideStackParamList } from "navigation/InsideNavigation";
 import { getDoc, doc } from "firebase/firestore";
-import { FirebaseDB } from "../firebaseConfig";
-import { useNavigation } from "@react-navigation/native";
-import { useAuthentication } from "utils/useAuthentication";
+import { FirebaseAuth, FirebaseDB } from "../firebaseConfig";
 
-const { user } = useAuthentication();
-const userid: string = user ? user.uid : "";
-const docRef = doc(FirebaseDB, "likedmovie", userid);
-const navigation = useNavigation();
+type MovieDetailsProp = NativeStackScreenProps<
+  InsideStackParamList,
+  "MovieDetails"
+>;
+
+const user = FirebaseAuth.currentUser;
+const docRef = doc(FirebaseDB, "likedmovie", user!.uid);
 
 const options = {
   method: "GET",
@@ -29,11 +32,13 @@ const options = {
   },
 };
 
-const MovieDetailScreen = ({ route }) => {
-  const [response, setResponseData] = useState(null);
-  const [renk, setRenk] = useState("white");
+const MovieDetailScreen = ({ route, navigation }: MovieDetailsProp) => {
+  const [response, setResponseData] = useState(null); // Buna type atanacak
+  const [renk, setRenk] = useState("white"); // Buna type atanacak
 
-  const { movieid } = route.params;
+  const { movieId } = route.params;
+
+  // Fetch fonksiyon tekrarı
   const fetchData = async () => {
     try {
       const docSnap = await getDoc(docRef);
@@ -41,7 +46,7 @@ const MovieDetailScreen = ({ route }) => {
       if (docSnap.exists()) {
         const fieldNames = Object.keys(docSnap.data());
 
-        if (fieldNames.includes("movieid")) {
+        if (fieldNames.includes("movieId")) {
           setRenk("green");
         }
       } else {
@@ -51,21 +56,22 @@ const MovieDetailScreen = ({ route }) => {
       console.error("Error fetching data:", error);
     }
   };
+
   useEffect(() => {
     fetchData();
 
     fetch(
-      `https://api.themoviedb.org/3/movie/${movieid}?language=en-US`,
+      `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
       options
     )
       .then((response) => response.json())
       .then((response) => {
         setResponseData(response);
 
-        // movieid içeriyorsa yeşil, içermiyorsa kırmızı renk ata
+        // movieId içeriyorsa yeşil, içermiyorsa kırmızı renk ata
         if (
           response &&
-          response.genres.some((genre) => genre.name === "movieid")
+          response.genres.some((genre) => genre.name === "movieId")
         ) {
           setRenk("green");
         } else {
@@ -73,7 +79,9 @@ const MovieDetailScreen = ({ route }) => {
         }
       })
       .catch((err) => console.error(err));
-  }, [movieid]);
+  }, [movieId]);
+
+  // Fetch fonksiyon tekrarı
 
   return (
     <ScrollView className="bg-black">
@@ -122,7 +130,7 @@ const MovieDetailScreen = ({ route }) => {
           <View className=" w-scren h-16 border-white items-center flex-row justify-center">
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("AddReview", { movieid: response.id })
+                navigation.navigate("AddReview", { movieId: response.id })
               }
               className="mx-4 h-16 w-16 bg-white justify-center items-center rounded-full"
             >
@@ -150,7 +158,7 @@ const MovieDetailScreen = ({ route }) => {
           </View>
         </View>
       )}
-      <MovieCreditsList movieid={movieid} />
+      <MovieCreditsList movieId={movieId} />
       <View className="border-b border-white items-center justify-between flex-row">
         <Text className="text-white text-2xl m-2">Review</Text>
         <Text className="text-white text-base m-2">1200 Review</Text>

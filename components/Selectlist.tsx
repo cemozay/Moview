@@ -8,27 +8,34 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { InsideStackParamList } from "navigation/InsideNavigation";
+
+// Type adı şekli düzeltilecek
 type typeitem = {
   id: string;
   poster_path: string;
   title: string;
 };
-const SearchScreen = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [movieResults, setMovieResults] = useState([]);
-  const [showResults, setShowResults] = useState(false);
-  const navigation = useNavigation();
+
+type SearchScreenProp = NativeStackScreenProps<
+  InsideStackParamList,
+  "SearchScreen"
+>;
+
+const SearchScreen = ({ navigation }: SearchScreenProp) => {
+  const [searchQuery, setSearchQuery] = useState(""); // State type belirtilecek
+  const [movieResults, setMovieResults] = useState([]); // State type belirtilecek
+  const [showResults, setShowResults] = useState(false); // State type belirtilecek
   const textInputRef = useRef(null);
-  type textInputRef
 
   useEffect(() => {
     if (textInputRef.current) {
-      textInputRef.current.focus();
+      textInputRef.current.focus(); // Bu hatayı çözümleyeceğiz
     }
   }, []);
 
-  const apiKey = "23e3cc0416f703df9256c5e82ba0e5fb";
+  const apiKey = "23e3cc0416f703df9256c5e82ba0e5fb"; // .env dosyasına alınacak
 
   const search = async (mediaType: string) => {
     try {

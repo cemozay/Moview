@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, ImageBackground } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
-import { OutsideStackParamList } from "../navigation/OutsideNavigation";
-import CustomButton from "../components/CustomButton";
-import { FirebaseAuth } from "../firebaseConfig";
+import { OutsideStackParamList } from "../../navigation/OutsideNavigation";
+import CustomButton from "../../components/CustomButton";
+import { FirebaseAuth } from "../../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 type LoginScreenProp = NativeStackScreenProps<OutsideStackParamList, "Login">;
@@ -12,12 +12,11 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const auth = FirebaseAuth;
 
   const handleLogin = async () => {
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(FirebaseAuth, email, password);
       navigation.navigate("InsideStack");
     } catch (error: any) {
       console.error(error);

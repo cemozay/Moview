@@ -8,15 +8,13 @@ import {
   Image,
   StatusBar,
 } from "react-native";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs/lib/typescript/src/types";
-import { TabParamList } from "navigation/InsideNavigation";
 
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import ProfileMain from "./Profile parts/ProfileMain";
-import ProfileActivity from "./Profile parts/ProfileActivity";
-import ProfileList from "./Profile parts/ProfileList";
-import ProfileReviews from "./Profile parts/ProfileReviews";
-import ProfileDiary from "./Profile parts/ProfileDiary";
+import ProfileMain from "./profile/ProfileMain";
+import ProfileActivity from "./profile/ProfileActivity";
+import ProfileList from "./profile/ProfileList";
+import ProfileReviews from "./profile/ProfileReviews";
+import ProfileDiary from "./profile/ProfileDiary";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const ProfileScreen = () => {

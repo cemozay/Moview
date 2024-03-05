@@ -12,6 +12,7 @@ const ActivityComponent = () => {
     { id: "5", title: "Öğe 5" },
   ];
 
+  // renderItem giren çıkan type belirtilmeli
   const renderItem = ({ item }) => (
     <View
       style={{
@@ -27,6 +28,7 @@ const ActivityComponent = () => {
       <Text>{item.title}</Text>
     </View>
   );
+
   return (
     <View className=" border-white border-b-2">
       <View className="">

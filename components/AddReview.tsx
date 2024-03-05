@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { useAuthentication } from "utils/useAuthentication";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { InsideStackParamList } from "navigation/InsideNavigation";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { collection, addDoc } from "firebase/firestore";
+import { FirebaseAuth, FirebaseDB } from "firebaseConfig";
+
+const database = FirebaseDB;
+const user = FirebaseAuth.currentUser;
+
 const options = {
   method: "GET",
   headers: {
@@ -12,14 +17,19 @@ const options = {
   },
 };
 
-export default function AddReview(route: object) {
-  const navigation = useNavigation();
-  const { movieid } = route.params;
-  const [response, setResponseData] = useState(Object);
+type AddReviewProp = NativeStackScreenProps<InsideStackParamList, "AddReview">;
+
+const AddReview = ({ route, navigation }: AddReviewProp) => {
+  const [response, setResponseData] = useState(); // Buna değer atanacak
+  const [date, setDate] = useState(""); // Buna değer atanacak
+  const [puan, setPuan] = useState(""); // Buna değer atanacak
+  const [review, setReview] = useState(""); // Buna değer atanacak
+
+  const { movieId } = route.params;
 
   useEffect(() => {
     fetch(
-      `https://api.themoviedb.org/3/movie/${movieid}?language=en-US`,
+      `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
       options
     )
       .then((response) => response.json())
@@ -27,26 +37,20 @@ export default function AddReview(route: object) {
         setResponseData(response);
       })
       .catch((err) => console.error(err));
-  }, [movieid]);
+  }, [movieId]);
 
-  const dataBase = getFirestore();
-  const reviewRef = collection(dataBase, "reviews");
-  const [date, setDate] = useState("");
-  const [puan, setPuan] = useState("");
-  const [reviewd, setReview] = useState("");
-  const { user } = useAuthentication();
-  const userid: string = user ? user.uid : "";
+  const reviewRef = collection(database, "reviews");
 
   const addData = () => {
     try {
-      let review = {
+      let reviewData = {
         date: date,
         puan: puan,
-        reviewd: reviewd,
-        movieid: movieid,
-        user: userid,
+        review: review,
+        movieId: movieId,
+        user: user!.uid,
       };
-      addDoc(reviewRef, review);
+      addDoc(reviewRef, reviewData);
       navigation.goBack();
     } catch (e) {
       alert(e);
@@ -111,4 +115,6 @@ export default function AddReview(route: object) {
       )}
     </View>
   );
-}
+};
+
+export default AddReview;
