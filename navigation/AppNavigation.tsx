@@ -5,8 +5,7 @@ import InsideNavigation from "./InsideNavigation";
 import { useAuthentication } from "utils/useAuthentication";
 
 export type RootStackParamList = {
-  OutsideNav: undefined;
-  InsideNav: undefined;
+  Navigation: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -26,10 +25,12 @@ const AppNavigation = () => {
     <NavigationContainer>
       <RootStack.Navigator
         screenOptions={screenOptions}
-        initialRouteName={user == null ? "OutsideNav" : "InsideNav"}
+        initialRouteName="Navigation"
       >
-        <RootStack.Screen name="OutsideNav" component={OutsideNavigation} />
-        <RootStack.Screen name="InsideNav" component={InsideNavigation} />
+        <RootStack.Screen
+          name="Navigation"
+          component={user ? InsideNavigation : OutsideNavigation}
+        />
       </RootStack.Navigator>
     </NavigationContainer>
   );

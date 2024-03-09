@@ -1,5 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Entypo } from "@expo/vector-icons";
+import { View } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import MovieDetails from "../components/MovieDetails";
@@ -10,11 +12,10 @@ import SearchScreen from "../screens/SearchScreen";
 import ListScreen from "../screens/ListScreen";
 import ReviewScreen from "../screens/ReviewScreen";
 import Review from "../screens/ReviewScreen";
-import { Entypo } from "@expo/vector-icons";
-import { View } from "react-native";
+import useUserStore from "../utils/userStore";
 
 export type InsideStackParamList = {
-  HomeStack: undefined;
+  HomeStack: { screen: string; params: any };
   MovieDetails: { movieId: string };
   PersonScreen: undefined;
   SearchScreen: undefined;
@@ -34,21 +35,27 @@ const stackScreenOptions = {
 };
 
 const InsideNavigation = () => {
-  return (
-    <InsideStack.Navigator
-      screenOptions={stackScreenOptions}
-      initialRouteName={"HomeStack"}
-    >
-      <InsideStack.Screen name="HomeStack" component={HomeTabs} />
-      <InsideStack.Screen name="MovieDetails" component={MovieDetails} />
-      <InsideStack.Screen name="PersonScreen" component={PersonScreen} />
-      <InsideStack.Screen name="SearchScreen" component={SearchScreen} />
-      <InsideStack.Screen name="Review" component={Review} />
-      <InsideStack.Screen name="AddReview" component={AddReview} />
-      <InsideStack.Screen name="Selectlist" component={Selectlist} />
-      <InsideStack.Screen name="ReviewScreen" component={ReviewScreen} />
-    </InsideStack.Navigator>
-  );
+  const user = useUserStore((state) => state.user);
+
+  if (!user) {
+    return null; // Login ekranına atılacak
+  } else {
+    return (
+      <InsideStack.Navigator
+        screenOptions={stackScreenOptions}
+        initialRouteName={"HomeStack"}
+      >
+        <InsideStack.Screen name="HomeStack" component={HomeTabs} />
+        <InsideStack.Screen name="MovieDetails" component={MovieDetails} />
+        <InsideStack.Screen name="PersonScreen" component={PersonScreen} />
+        <InsideStack.Screen name="SearchScreen" component={SearchScreen} />
+        <InsideStack.Screen name="Review" component={Review} />
+        <InsideStack.Screen name="AddReview" component={AddReview} />
+        <InsideStack.Screen name="Selectlist" component={Selectlist} />
+        <InsideStack.Screen name="ReviewScreen" component={ReviewScreen} />
+      </InsideStack.Navigator>
+    );
+  }
 };
 
 export type TabParamList = {

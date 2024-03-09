@@ -54,15 +54,12 @@ const getPopularMoviesList = async () => {
 
 // Buraya kadar
 
-type ComingSoonProp = NativeStackScreenProps<
-  InsideStackParamList,
-  "ComingSoon"
->;
-
-const ComingSoon = ({ navigation }: ComingSoonProp) => {
+const ComingSoon = ({
+  navigation,
+}: NativeStackScreenProps<InsideStackParamList, "HomeStack">) => {
   const [popularMoviesList, setPopularMoviesList] = useState<any>(undefined); // any yerine bir tip belirtilmeli
   const [upcomingMoviesList, setUpcomingMoviesList] = useState<any>(undefined); // any yerine bir tip belirtilmeli
-  const [personList, setPersonList] = useState<any>(undefined); // any yerine bir tip belirtilmeli
+  // const [personList, setPersonList] = useState<any>(undefined); // any yerine bir tip belirtilmeli
   const [nowPlayingMoviesList, setNowPlayingMoviesList] =
     useState<any>(undefined); // any yerine bir tip belirtilmeli
 
@@ -107,7 +104,7 @@ const ComingSoon = ({ navigation }: ComingSoonProp) => {
       <CategoryHeader title={"Now Playing"} />
       <FlatList
         data={nowPlayingMoviesList}
-        keyExtractor={(item: any) => item.id}
+        keyExtractor={(item) => item.id}
         bounces={false}
         snapToInterval={width * 0.7 + 36}
         horizontal
@@ -128,7 +125,7 @@ const ComingSoon = ({ navigation }: ComingSoonProp) => {
             <MovieCard
               shoudlMarginatedAtEnd={true}
               cardFunction={() => {
-                navigation.navigate("MovieDetails", { movieid: item.id });
+                navigation.navigate("MovieDetails", { movieId: item.id });
               }}
               cardWidth={width * 0.7}
               isFirst={index == 0 ? true : false}
@@ -152,7 +149,7 @@ const ComingSoon = ({ navigation }: ComingSoonProp) => {
           <SubMovieCard
             shoudlMarginatedAtEnd={true}
             cardFunction={() => {
-              navigation.navigate("MovieDetails", { movieid: item.id });
+              navigation.navigate("MovieDetails", { movieId: item.id });
             }}
             cardWidth={width / 3}
             isFirst={index == 0 ? true : false}
@@ -165,7 +162,7 @@ const ComingSoon = ({ navigation }: ComingSoonProp) => {
       <CategoryHeader title={"Upcoming"} />
       <FlatList
         data={upcomingMoviesList}
-        keyExtractor={(item: object) => item.id}
+        keyExtractor={(item) => item.id}
         horizontal
         bounces={false}
         showsHorizontalScrollIndicator={false}
@@ -174,7 +171,7 @@ const ComingSoon = ({ navigation }: ComingSoonProp) => {
           <SubMovieCard
             shoudlMarginatedAtEnd={true}
             cardFunction={() => {
-              navigation.navigate("MovieDetails", { movieid: item.id });
+              navigation.navigate("MovieDetails", { movieId: item.id });
             }}
             cardWidth={width / 3}
             isFirst={index == 0 ? true : false}

@@ -3,10 +3,8 @@ import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, addDoc } from "firebase/firestore";
-import { FirebaseAuth, FirebaseDB } from "firebaseConfig";
-
-const database = FirebaseDB;
-const user = FirebaseAuth.currentUser;
+import { FirebaseDB } from "firebaseConfig";
+import useUserStore from "../utils/userStore";
 
 const options = {
   method: "GET",
@@ -20,6 +18,7 @@ const options = {
 type AddReviewProp = NativeStackScreenProps<InsideStackParamList, "AddReview">;
 
 const AddReview = ({ route, navigation }: AddReviewProp) => {
+  const user = useUserStore((state) => state.user);
   const [response, setResponseData] = useState(); // Buna değer atanacak
   const [date, setDate] = useState(""); // Buna değer atanacak
   const [puan, setPuan] = useState(""); // Buna değer atanacak
@@ -39,7 +38,7 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
       .catch((err) => console.error(err));
   }, [movieId]);
 
-  const reviewRef = collection(database, "reviews");
+  const reviewRef = collection(FirebaseDB, "reviews");
 
   const addData = () => {
     try {

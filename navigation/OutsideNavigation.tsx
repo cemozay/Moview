@@ -4,7 +4,7 @@ import OnboardingScreen from "../screens/OnboardingScreen";
 import LoginScreen from "../screens/login/LoginScreen";
 import SignUpScreen from "../screens/login/SignUpScreen";
 import ForgotPasswordScreen from "../screens/login/ForgotPasswordScreen";
-import InsideStack from "./InsideNavigation";
+import InsideNavigation from "./InsideNavigation";
 import { getStorageBoolean } from "../utils/Mmkv";
 
 export type OutsideStackParamList = {
@@ -12,7 +12,7 @@ export type OutsideStackParamList = {
   Login: undefined;
   SignUp: undefined;
   ForgotPassword: undefined;
-  InsideStack: undefined;
+  InsideNavigation: { screen: string; params: any };
 };
 
 const OutsideStack = createNativeStackNavigator<OutsideStackParamList>();
@@ -20,7 +20,8 @@ const OutsideStack = createNativeStackNavigator<OutsideStackParamList>();
 const screenOptions = {
   headerShown: false,
 };
-const AppNavigation = () => {
+
+const OutsideNavigation = () => {
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
 
   useEffect(() => {
@@ -46,9 +47,12 @@ const AppNavigation = () => {
         name="ForgotPassword"
         component={ForgotPasswordScreen}
       />
-      <OutsideStack.Screen name="InsideStack" component={InsideStack} />
+      <OutsideStack.Screen
+        name="InsideNavigation"
+        component={InsideNavigation}
+      />
     </OutsideStack.Navigator>
   );
 };
 
-export default AppNavigation;
+export default OutsideNavigation;

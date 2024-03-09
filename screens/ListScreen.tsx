@@ -1,11 +1,20 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import Icon from "@expo/vector-icons/FontAwesome";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import {
+  InsideStackParamList,
+  TabParamList,
+} from "navigation/InsideNavigation";
+import { CompositeScreenProps } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-export default function ListScreen() {
-  const navigation = useNavigation();
+type ListScreenProp = CompositeScreenProps<
+  BottomTabScreenProps<TabParamList, "ListScreen">,
+  NativeStackScreenProps<InsideStackParamList>
+>;
 
+const ListScreen = ({ navigation }: ListScreenProp) => {
   return (
     <View className="flex-1 bg-black">
       <ScrollView>
@@ -27,4 +36,6 @@ export default function ListScreen() {
       </ScrollView>
     </View>
   );
-}
+};
+
+export default ListScreen;

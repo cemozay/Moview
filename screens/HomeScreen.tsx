@@ -1,12 +1,13 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import ComingSoon from "../components/ComingSoon";
 import Icon from "@expo/vector-icons/FontAwesome";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { InsideStackParamList } from "navigation/InsideNavigation";
 
-export default function HomeScreen() {
-  const navigation = useNavigation();
+type HomeScreenProp = NativeStackScreenProps<InsideStackParamList, "HomeStack">;
 
+const HomeScreen = ({ navigation, route }: HomeScreenProp) => {
   return (
     <View className="flex-1 bg-black">
       <ScrollView>
@@ -25,8 +26,10 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         </View>
-        <ComingSoon />
+        <ComingSoon navigation={navigation} route={route} />
       </ScrollView>
     </View>
   );
-}
+};
+
+export default HomeScreen;

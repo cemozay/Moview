@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
 import { getDoc, doc } from "firebase/firestore";
-import { FirebaseAuth, FirebaseDB } from "../../firebaseConfig";
+import { FirebaseDB } from "../../firebaseConfig";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
-
-const user = FirebaseAuth.currentUser;
-const docRef = doc(FirebaseDB, "likedmovie", user!.uid);
+import useUserStore from "utils/userStore";
 
 export type LikedMoviesProp = NativeStackScreenProps<
   InsideStackParamList,
@@ -14,6 +12,8 @@ export type LikedMoviesProp = NativeStackScreenProps<
 >;
 
 const LikedMovies = ({ navigation }: LikedMoviesProp) => {
+  const user = useUserStore((state) => state.user);
+  const docRef = doc(FirebaseDB, "likedmovie", user!.uid);
   const [movieDataList, setMovieDataList] = useState([]);
 
   // Useeffectler düzeltilecek
@@ -63,10 +63,12 @@ const LikedMovies = ({ navigation }: LikedMoviesProp) => {
   // Useeffectler düzeltilecek
 
   // itemlara type verilecek
-  const renderItem = ({ item }) => (
+  const renderItem = (
+    { item }: { item: any } // burası düzeltilecek
+  ) => (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("MovieDetails", { movieid: item.id });
+        navigation.navigate("MovieDetails", { movieId: item.id });
       }}
     >
       <Image

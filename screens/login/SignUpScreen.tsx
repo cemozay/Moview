@@ -17,7 +17,12 @@ const SignUpScreen = ({ navigation }: SignUpScreenProp) => {
     setLoading(true);
     try {
       await createUserWithEmailAndPassword(FirebaseAuth, email, password);
-      navigation.navigate("InsideStack");
+      navigation.navigate("InsideNavigation", {
+        screen: "HomeStack",
+        params: {
+          screen: "Home",
+        },
+      });
     } catch (error: any) {
       console.error(error);
       alert("Sign up Failed: " + error.message);

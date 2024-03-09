@@ -13,15 +13,13 @@ import MovieCreditsList from "./PersonList";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { getDoc, doc } from "firebase/firestore";
-import { FirebaseAuth, FirebaseDB } from "../firebaseConfig";
+import { FirebaseDB } from "../firebaseConfig";
+import useUserStore from "../utils/userStore";
 
 type MovieDetailsProp = NativeStackScreenProps<
   InsideStackParamList,
   "MovieDetails"
 >;
-
-const user = FirebaseAuth.currentUser;
-const docRef = doc(FirebaseDB, "likedmovie", user!.uid);
 
 const options = {
   method: "GET",
@@ -33,7 +31,9 @@ const options = {
 };
 
 const MovieDetailScreen = ({ route, navigation }: MovieDetailsProp) => {
-  const [response, setResponseData] = useState(null); // Buna type atanacak
+  const user = useUserStore((state) => state.user);
+  const docRef = doc(FirebaseDB, "likedmovie", user!.uid);
+  const [response, setResponseData] = useState<any>(null); // Buna type atanacak
   const [renk, setRenk] = useState("white"); // Buna type atanacak
 
   const { movieId } = route.params;
@@ -71,7 +71,7 @@ const MovieDetailScreen = ({ route, navigation }: MovieDetailsProp) => {
         // movieId içeriyorsa yeşil, içermiyorsa kırmızı renk ata
         if (
           response &&
-          response.genres.some((genre) => genre.name === "movieId")
+          response.genres.some((genre: any) => genre.name === "movieId")
         ) {
           setRenk("green");
         } else {
@@ -108,7 +108,7 @@ const MovieDetailScreen = ({ route, navigation }: MovieDetailsProp) => {
                   {response.release_date}
                 </Text>
                 <View className="flex pt-1 flex-row flex-wrap">
-                  {response.genres.map((genre) => (
+                  {response.genres.map((genre: any) => (
                     <Text key={genre.id} className="color-white  mr-2">
                       {genre.name}
                     </Text>

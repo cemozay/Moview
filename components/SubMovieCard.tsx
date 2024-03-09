@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-const genres: object = {
+const genres = {
   12: "Adventure",
   14: "Fantasy",
   16: "Animation",
@@ -26,15 +26,15 @@ const genres: object = {
 // Type adı düzeltilecek
 type typeprops = {
   cardFunction: () => void;
-  isFirst: string;
-  isLast: string;
-  shoudlMarginatedAtEnd: string;
-  shouldMarginatedAround: string;
-  imagePath: string;
-  cardWidth: any; // bu niye any?
-  release_date: string;
-  genre: [];
-  title: string;
+  isFirst?: boolean;
+  isLast?: boolean;
+  shoudlMarginatedAtEnd?: boolean;
+  shouldMarginatedAround?: boolean;
+  imagePath?: string;
+  cardWidth?: any; // bu niye any?
+  release_date?: string;
+  genre?: [];
+  title?: string;
 };
 
 const SubMovieCard = (props: typeprops) => {
@@ -64,8 +64,7 @@ const SubMovieCard = (props: typeprops) => {
         <Text className="color-white">{props.release_date}</Text>
         <View style={styles.genreContainer}>
           {props.genre &&
-            props.genre.map((item: object) => {
-              // object yerine type yazılmalı
+            props.genre.map((item) => {
               return (
                 <View key={item}>
                   <Text style={styles.genreText}>{genres[item]}</Text>

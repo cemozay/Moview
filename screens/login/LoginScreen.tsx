@@ -17,7 +17,12 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(FirebaseAuth, email, password);
-      navigation.navigate("InsideStack");
+      navigation.navigate("InsideNavigation", {
+        screen: "HomeStack",
+        params: {
+          screen: "Home",
+        },
+      });
     } catch (error: any) {
       console.error(error);
       alert("Log In Failed: " + error.message);

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
-import { getFirestore, collection, query, getDocs } from "firebase/firestore";
+import { collection, query, getDocs } from "firebase/firestore";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { InsideStackParamList } from "navigation/InsideNavigation";
+import { FirebaseDB } from "firebaseConfig";
 
 type ReviewScreenProp = NativeStackScreenProps<
   InsideStackParamList,
@@ -31,8 +32,7 @@ const options = {
 };
 
 export default function ReviewScreen({ navigation }: ReviewScreenProp) {
-  const dataBase = getFirestore();
-  const reviewRef = collection(dataBase, "reviews");
+  const reviewRef = collection(FirebaseDB, "reviews");
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [movieDataMap, setMovieDataMap] = useState<MovieData>({});

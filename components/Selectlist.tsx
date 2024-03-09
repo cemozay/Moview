@@ -27,11 +27,11 @@ const SearchScreen = ({ navigation }: SearchScreenProp) => {
   const [searchQuery, setSearchQuery] = useState(""); // State type belirtilecek
   const [movieResults, setMovieResults] = useState([]); // State type belirtilecek
   const [showResults, setShowResults] = useState(false); // State type belirtilecek
-  const textInputRef = useRef(null);
+  const textInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     if (textInputRef.current) {
-      textInputRef.current.focus(); // Bu hatayı çözümleyeceğiz
+      textInputRef.current.focus();
     }
   }, []);
 
@@ -87,7 +87,7 @@ const SearchScreen = ({ navigation }: SearchScreenProp) => {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("AddReview", { movieid: item.id })
+                    navigation.navigate("AddReview", { movieId: item.id })
                   }
                   className="flex-row items-center m-2"
                 >

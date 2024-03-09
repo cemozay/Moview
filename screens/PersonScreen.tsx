@@ -75,7 +75,7 @@ const PersonScreen: React.FC<PersonScreenProps> = (
   };
 
   const handleMoviePress = (movieid: string) => {
-    navigation.navigate("MovieDetails", { movieid });
+    navigation.navigate("MovieDetails", { movieId: movieid });
   };
   const [expanded, setExpanded] = useState(false);
 
@@ -86,7 +86,9 @@ const PersonScreen: React.FC<PersonScreenProps> = (
   const handleSeeLess = () => {
     setExpanded(false);
   };
-  const renderMovieItem = ({ item }) => (
+  const renderMovieItem = (
+    { item }: { item: any } // burası düzeltilecek
+  ) => (
     <TouchableOpacity onPress={() => handleMoviePress(item.id)}>
       <View className="mx-5 my-2">
         <Image

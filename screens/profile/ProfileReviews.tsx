@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { collection, where, query, getDocs } from "firebase/firestore";
-import { FirebaseAuth, FirebaseDB } from "../../firebaseConfig";
+import { FirebaseDB } from "../../firebaseConfig";
+import useUserStore from "../../utils/userStore";
 
 const options = {
   method: "GET",
@@ -13,14 +14,12 @@ const options = {
   },
 };
 
-const database = FirebaseDB;
-const user = FirebaseAuth.currentUser;
-
 const ProfileReviews = () => {
+  const user = useUserStore((state) => state.user);
   const [reviews, setReviews] = useState([]);
   const [movieDataMap, setMovieDataMap] = useState({});
 
-  const reviewRef = collection(database, "reviews");
+  const reviewRef = collection(FirebaseDB, "reviews");
 
   const fetchMovieData = async (review: object) => {
     try {
