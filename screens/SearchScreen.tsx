@@ -1,130 +1,135 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
-import Icon from "@expo/vector-icons/FontAwesome";
-import { collection, query, getDocs } from "firebase/firestore";
-import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
-import { InsideStackParamList } from "navigation/InsideNavigation";
-import { FirebaseDB } from "firebaseConfig";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-type SearchScreenProp = NativeStackScreenProps<
-  InsideStackParamList,
-  "SearchScreen"
->;
-interface MovieData {
-  [key: string]: any;
-}
+const SearchScreen = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [movieResults, setMovieResults] = useState([]);
+  const [personResults, setPersonResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const navigation = useNavigation();
 
-interface Review {
-  date: string;
-  movieid: string;
-  puan: string;
-  reviewd: string;
-}
+  const navigateToPersonScreen = (personId: string) => {
+    navigation.navigate("PersonScreen", { personId: personId });
+  };
 
-const options = {
-  method: "GET",
-  headers: {
-    accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmM3NlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
-  },
-};
+  const apiKey = "23e3cc0416f703df9256c5e82ba0e5fb";
 
-export default function ReviewScreen({ navigation }: SearchScreenProp) {
-  const reviewRef = collection(FirebaseDB, "reviews");
-
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [movieDataMap, setMovieDataMap] = useState<MovieData>({});
-
-  const fetchMovieData = async (review: Review) => {
+  const search = async (movieId: string) => {
     try {
-      const movieResponse = await fetch(
-        `https://api.themoviedb.org/3/movie/${review.movieid}?language=en-US`,
-        options
+      const response = await fetch(
+        `https://api.themoviedb.org/3/search/${movieId}?api_key=${apiKey}&query=${searchQuery}`
       );
-      const movieData = await movieResponse.json();
 
-      setMovieDataMap((prevMap) => ({
-        ...prevMap,
-        [review.movieid]: movieData,
-      }));
-    } catch (err) {
-      console.error(err);
+      if (!response.ok) {
+        throw new Error("Arama sırasında bir hata oluştu.");
+      }
+
+      const data = await response.json();
+
+      if (movieId === "movie") {
+        setMovieResults(data.results);
+      } else if (movieId === "person") {
+        setPersonResults(data.results);
+      }
+
+      setShowResults(true);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const fetchData = async () => {
-    try {
-      const snapshot = await getDocs(query(reviewRef));
-      const reviewList = snapshot.docs.map((doc) => doc.data() as Review);
-      setReviews(reviewList);
+  const handleSearchChange = (text: string) => {
+    setSearchQuery(text);
 
-      const movieIds = reviewList.map((review) => review.movieid);
-
-      movieIds.forEach((movieid) => {
-        fetchMovieData({ movieid, date: "", puan: "", reviewd: "" });
-      });
-    } catch (e) {
-      alert(e);
+    // Her harf girişinde arama yap
+    if (text.length > 0) {
+      search("movie");
+      search("person");
+    } else {
+      setShowResults(false);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleRefresh = () => {
-    fetchData();
+  type itemProp = {
+    id: string;
+    poster_path: string;
+    title: string;
+    name: string;
+    profile_path: string;
   };
 
   return (
-    <View className="flex-1 bg-black">
-      <View className="flex-row justify-between items-center py-3 px-3">
-        <View>
-          <Text className="text-white text-3xl">Moview</Text>
-        </View>
-        <View className="flex-row gap-3">
-          <TouchableOpacity onPress={() => navigation.navigate("SearchScreen")}>
-            <Icon name="search" size={30} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleRefresh}>
-            <Icon name="refresh" size={30} color="white" />
-          </TouchableOpacity>
-        </View>
+    <ScrollView className="bg-black">
+      <View className="bg-black">
+        <Text className="color-white text-2xl">Moview'de Ara</Text>
+        <TextInput
+          className="text-white bg-stone-800 h-12 border-gray-500 rounded-full border mb-3 pl-2"
+          onChangeText={handleSearchChange}
+          placeholder="Aramak istediğiniz şey"
+          placeholderTextColor="white"
+          value={searchQuery}
+        />
+
+        {showResults && (
+          <View>
+            <Text className="color-white m-1 text-2xl">Film Sonuçları</Text>
+            <FlatList
+              data={movieResults}
+              keyExtractor={(item: itemProp) => item.id.toString()}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("MovieDetails", { movieId: item.id })
+                  }
+                  className="m-2"
+                >
+                  <Image
+                    className="w-28 h-40 bg-red-500 m-1"
+                    source={{
+                      uri: `https://image.tmdb.org/t/p/w200${item.poster_path}`,
+                    }}
+                  />
+                  <Text className="color-white m-1">{item.title}</Text>
+                </TouchableOpacity>
+              )}
+            />
+
+            <Text className="color-white m-1 text-2xl">Kişi Sonuçları</Text>
+            <FlatList
+              data={personResults}
+              keyExtractor={(item: itemProp) => item.id.toString()}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => navigateToPersonScreen(item.id)}
+                  className="m-2"
+                >
+                  <Image
+                    className="w-28 h-40 bg-red-500 m-1"
+                    source={{
+                      uri: `https://image.tmdb.org/t/p/w200${item.profile_path}`,
+                    }}
+                  />
+                  <Text className="color-white m-1">{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        )}
       </View>
-      <ScrollView>
-        {reviews.map((review, index) => (
-          <TouchableOpacity
-            key={index}
-            className="flex-row justify-between bg-red-500 border-2 border-white p-4 "
-          >
-            <View>
-              <Text className="text-white">{review.date}</Text>
-              <Text className="text-white">{review.movieid}</Text>
-              <Text className="text-white">{review.puan}</Text>
-              <Text className="text-white">{review.reviewd}</Text>
-            </View>
-            {movieDataMap[review.movieid] && (
-              <Image
-                style={{ width: 150, height: 200 }}
-                source={{
-                  uri: `https://image.tmdb.org/t/p/original${
-                    movieDataMap[review.movieid].poster_path
-                  }`,
-                }}
-              />
-            )}
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <View className="items-end pb-4 pr-4">
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Selectlist")}
-          className="ml-4 h-16 w-16 bg-white justify-center items-center rounded-full"
-        >
-          <Icon name="heart" size={30} color="black" />
-        </TouchableOpacity>
-      </View>
-    </View>
+    </ScrollView>
   );
-}
+};
+
+export default SearchScreen;

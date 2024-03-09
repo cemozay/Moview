@@ -8,11 +8,13 @@ import {
   FlatList,
   ImageBackground,
 } from "react-native";
+
 import { useWindowDimensions } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { InsideStackParamList } from "navigation/InsideNavigation";
+import { useNavigation } from "@react-navigation/native";
 
 type PersonScreenProp = NativeStackScreenProps<
   InsideStackParamList,
@@ -27,13 +29,11 @@ interface PersonScreenProps {
   };
 }
 
-const PersonScreen: React.FC<PersonScreenProps> = (
-  { route },
-  { navigation }: PersonScreenProp
-) => {
+const PersonScreen = ({ route }: PersonScreenProp) => {
   const [personDetails, setPersonDetails] = useState<any>(null);
   const [movieCredits, setMovieCredits] = useState<any[]>([]);
   const window = useWindowDimensions();
+  const navigation = useNavigation();
 
   useEffect(() => {
     const { personId } = route.params;
@@ -74,8 +74,8 @@ const PersonScreen: React.FC<PersonScreenProps> = (
     navigation.goBack();
   };
 
-  const handleMoviePress = (movieid: string) => {
-    navigation.navigate("MovieDetails", { movieId: movieid });
+  const handleMoviePress = (movieId: string) => {
+    navigation.navigate("MovieDetails", { movieId });
   };
   const [expanded, setExpanded] = useState(false);
 
@@ -86,9 +86,16 @@ const PersonScreen: React.FC<PersonScreenProps> = (
   const handleSeeLess = () => {
     setExpanded(false);
   };
-  const renderMovieItem = (
-    { item }: { item: any } // burası düzeltilecek
-  ) => (
+
+  const renderMovieItem = ({
+    item,
+  }: {
+    item: {
+      id: string;
+      title: string;
+      poster_path: string;
+    };
+  }) => (
     <TouchableOpacity onPress={() => handleMoviePress(item.id)}>
       <View className="mx-5 my-2">
         <Image

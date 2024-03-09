@@ -49,7 +49,7 @@ const LikedMovies = ({ navigation }: LikedMoviesProp) => {
           });
 
           const resolvedMovieDataList = await Promise.all(movieDataPromises);
-          setMovieDataList(resolvedMovieDataList.filter(Boolean));
+          setMovieDataList(resolvedMovieDataList.filter(Boolean) as never[]); // ??
         } else {
           console.log("No such document!");
         }
@@ -62,9 +62,9 @@ const LikedMovies = ({ navigation }: LikedMoviesProp) => {
   }, []);
   // Useeffectler düzeltilecek
 
-  // itemlara type verilecek
+  type itemProp = { id: string; poster_path: string; title: string };
   const renderItem = (
-    { item }: { item: any } // burası düzeltilecek
+    { item }: { item: itemProp } // burası düzeltilecek
   ) => (
     <TouchableOpacity
       onPress={() => {

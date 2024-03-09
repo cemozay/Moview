@@ -5,6 +5,13 @@ import { collection, where, query, getDocs } from "firebase/firestore";
 import { FirebaseDB } from "../../firebaseConfig";
 import useUserStore from "../../utils/userStore";
 
+interface Review {
+  date: string;
+  movieid: string;
+  puan: string;
+  reviewd: string;
+}
+
 const options = {
   method: "GET",
   headers: {
@@ -16,12 +23,12 @@ const options = {
 
 const ProfileReviews = () => {
   const user = useUserStore((state) => state.user);
-  const [reviews, setReviews] = useState([]);
-  const [movieDataMap, setMovieDataMap] = useState({});
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [movieDataMap, setMovieDataMap] = useState<{ [key: string]: any }>({});
 
   const reviewRef = collection(FirebaseDB, "reviews");
 
-  const fetchMovieData = async (review: object) => {
+  const fetchMovieData = async (review: Review) => {
     try {
       const movieResponse = await fetch(
         `https://api.themoviedb.org/3/movie/${review.movieid}?language=en-US`,
@@ -43,13 +50,18 @@ const ProfileReviews = () => {
   const fetchData = async () => {
     try {
       const snapshot = await getDocs(q);
-      const reviewList = snapshot.docs.map((doc) => doc.data());
+      const reviewList = snapshot.docs.map((doc) => doc.data() as Review);
       setReviews(reviewList);
 
       const movieIds = reviewList.map((review) => review.movieid);
 
       movieIds.forEach((movieid) => {
-        fetchMovieData({ movieid });
+        fetchMovieData({
+          movieid,
+          date: "",
+          puan: "",
+          reviewd: "",
+        });
       });
     } catch (e) {
       alert(e);

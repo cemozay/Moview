@@ -2,24 +2,21 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import React, { useState, useEffect } from "react";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
-
-// Prop ismi düzeltilecek
-type propsmovieid = {
-  // Buraya typelar eklenecek
-};
+import { useNavigation } from "@react-navigation/native";
 
 type MovieCreditsListProp = NativeStackScreenProps<
   InsideStackParamList,
   "MovieCreditsList"
 >;
 
-const MovieCreditsList = (
-  { navigation }: MovieCreditsListProp,
-  movieid: propsmovieid
-) => {
-  const [credits, setCredits] = useState([]);
+type MovieIdProps = {
+  movieId: string;
+};
 
-  // Burası tekrar etmeyecek
+const MovieCreditsList = ({ movieId }: MovieCreditsListProp & MovieIdProps) => {
+  const [credits, setCredits] = useState<Array<creditsProps>>([]);
+  const navigation = useNavigation();
+
   useEffect(() => {
     const fetchCredits = async () => {
       const options = {
@@ -33,7 +30,7 @@ const MovieCreditsList = (
 
       try {
         const response = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieid}/credits?language=en-US`,
+          `https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US`,
           options
         );
         const data = await response.json();
@@ -44,20 +41,18 @@ const MovieCreditsList = (
     };
 
     fetchCredits();
-  }, [movieid]);
-  // Burası tekrar etmeyecek
+  }, [movieId]);
 
-  // Props adı düzeltilecek
-  type porpsitems = {
+  type creditsProps = {
     id: string;
     profile_path: string;
     name: string;
     character: string;
   };
 
-  const renderCreditItem = (item: porpsitems) => (
+  const renderCreditItem = ({ item }: { item: creditsProps }) => (
     <TouchableOpacity
-      onPress={() => {} /* navigation.navigate("PersonScreen", { item.id }) */}
+      onPress={() => navigation.navigate("PersonScreen", { personId: item.id })}
     >
       <View className="m-4">
         <Image
@@ -78,7 +73,7 @@ const MovieCreditsList = (
 
       <FlatList
         data={credits}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id}
         renderItem={renderCreditItem}
         horizontal
       />

@@ -101,7 +101,6 @@ const ComingSoon = ({
   return (
     <ScrollView className="flex bg-black" bounces={false}>
       <StatusBar hidden />
-      <CategoryHeader title={"Now Playing"} />
       <FlatList
         data={nowPlayingMoviesList}
         keyExtractor={(item) => item.id}

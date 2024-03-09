@@ -4,6 +4,7 @@ import { Entypo } from "@expo/vector-icons";
 import { View } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import MovieCreditsList from "../components/PersonList";
 import MovieDetails from "../components/MovieDetails";
 import AddReview from "../components/AddReview";
 import Selectlist from "../components/Selectlist";
@@ -11,20 +12,22 @@ import PersonScreen from "../screens/PersonScreen";
 import SearchScreen from "../screens/SearchScreen";
 import ListScreen from "../screens/ListScreen";
 import ReviewScreen from "../screens/ReviewScreen";
-import Review from "../screens/ReviewScreen";
+import Review from "../screens/ReviewsScreen";
+import ReviewsScreen from "../screens/ReviewsScreen";
 import useUserStore from "../utils/userStore";
 
 export type InsideStackParamList = {
   HomeStack: { screen: string; params: any };
   MovieDetails: { movieId: string };
-  PersonScreen: undefined;
+  PersonScreen: { personId: string };
   SearchScreen: undefined;
-  Review: undefined;
+  Review: { movieid: string };
+  ReviewScreen: { reviewId: string };
   AddReview: { movieId: string };
   ComingSoon: undefined;
   Selectlist: undefined;
-  MovieCreditsList: undefined;
-  ReviewScreen: undefined;
+  MovieCreditsList: { movieId: string };
+  ReviewsScreen: undefined;
   LikedMovies: undefined;
 };
 
@@ -52,7 +55,12 @@ const InsideNavigation = () => {
         <InsideStack.Screen name="Review" component={Review} />
         <InsideStack.Screen name="AddReview" component={AddReview} />
         <InsideStack.Screen name="Selectlist" component={Selectlist} />
+        <InsideStack.Screen name="ReviewsScreen" component={ReviewsScreen} />
         <InsideStack.Screen name="ReviewScreen" component={ReviewScreen} />
+        <InsideStack.Screen
+          name="MovieCreditsList"
+          component={MovieCreditsList}
+        />
       </InsideStack.Navigator>
     );
   }
@@ -62,7 +70,7 @@ export type TabParamList = {
   Home: undefined;
   ListScreen: undefined;
   Profile: undefined;
-  Review: undefined;
+  Review: { movieid: string };
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();

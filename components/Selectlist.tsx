@@ -23,7 +23,7 @@ type SearchScreenProp = NativeStackScreenProps<
   "SearchScreen"
 >;
 
-const SearchScreen = ({ navigation }: SearchScreenProp) => {
+const Selectlist = ({ navigation }: SearchScreenProp) => {
   const [searchQuery, setSearchQuery] = useState(""); // State type belirtilecek
   const [movieResults, setMovieResults] = useState([]); // State type belirtilecek
   const [showResults, setShowResults] = useState(false); // State type belirtilecek
@@ -108,4 +108,4 @@ const SearchScreen = ({ navigation }: SearchScreenProp) => {
   );
 };
 
-export default SearchScreen;
+export default Selectlist;
