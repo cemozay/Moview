@@ -1,9 +1,10 @@
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, Button } from "react-native";
 import React, { useEffect, useState } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { FirebaseDB } from "firebaseConfig";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, deleteDoc } from "firebase/firestore";
+import { useAuthentication } from "utils/useAuthentication";
 
 type ReviewScreenProp = NativeStackScreenProps<
   InsideStackParamList,
@@ -16,13 +17,17 @@ type ReviewsIdProps = {
       reviewId: string;
     };
   };
+  navigation: any; // navigation prop ekleyin
 };
 
-const ReviewScreen = ({ route }: ReviewScreenProp & ReviewsIdProps) => {
+const ReviewScreen = ({
+  route,
+  navigation,
+}: ReviewScreenProp & ReviewsIdProps) => {
   const { reviewId } = route.params;
   const reviewRef = collection(FirebaseDB, "reviews");
   const [reviewData, setReviewData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuthentication();
 
   useEffect(() => {
     const fetchReview = async () => {
@@ -38,13 +43,22 @@ const ReviewScreen = ({ route }: ReviewScreenProp & ReviewsIdProps) => {
         }
       } catch (error) {
         console.error("Error fetching review:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchReview();
   }, [reviewId]);
+
+  const handleDeleteReview = async () => {
+    try {
+      await deleteDoc(doc(reviewRef, reviewId));
+      console.log("Review deleted successfully.");
+      // İnceleme silindiğinde geri dön
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error deleting review:", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -62,7 +76,7 @@ const ReviewScreen = ({ route }: ReviewScreenProp & ReviewsIdProps) => {
     );
   }
 
-  const { date, movieId, puan, review, user } = reviewData;
+  const { date, movieId, puan, review, userıd } = reviewData;
 
   return (
     <View>
@@ -70,7 +84,11 @@ const ReviewScreen = ({ route }: ReviewScreenProp & ReviewsIdProps) => {
       <Text>Movie ID: {movieId}</Text>
       <Text>Puan: {puan}</Text>
       <Text>Review: {review}</Text>
-      <Text>User: {user}</Text>
+      <Text>User: {userıd}</Text>
+
+      {user && user.uid === userıd && (
+        <Button title="Delete Review" onPress={handleDeleteReview} />
+      )}
     </View>
   );
 };

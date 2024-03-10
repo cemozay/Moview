@@ -101,41 +101,43 @@ const ComingSoon = ({
   return (
     <ScrollView className="flex bg-black" bounces={false}>
       <StatusBar hidden />
-      <FlatList
-        data={nowPlayingMoviesList}
-        keyExtractor={(item) => item.id}
-        bounces={false}
-        snapToInterval={width * 0.7 + 36}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        decelerationRate={0}
-        contentContainerStyle={{ gap: 36 }}
-        renderItem={({ item, index }) => {
-          if (!item.original_title) {
+      <View>
+        <FlatList
+          data={nowPlayingMoviesList}
+          keyExtractor={(item) => item.id}
+          bounces={false}
+          snapToInterval={width * 0.7 + 36}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          decelerationRate={0}
+          contentContainerStyle={{ gap: 36 }}
+          renderItem={({ item, index }) => {
+            if (!item.original_title) {
+              return (
+                <View
+                  style={{
+                    width: (width - (width * 0.7 + 34 * 2)) / 2,
+                  }}
+                ></View>
+              );
+            }
             return (
-              <View
-                style={{
-                  width: (width - (width * 0.7 + 34 * 2)) / 2,
+              <MovieCard
+                shoudlMarginatedAtEnd={true}
+                cardFunction={() => {
+                  navigation.navigate("MovieDetails", { movieId: item.id });
                 }}
-              ></View>
+                cardWidth={width * 0.7}
+                isFirst={index == 0 ? true : false}
+                isLast={index == upcomingMoviesList?.length - 1 ? true : false}
+                title={item.original_title}
+                imagePath={baseImagePath("w780", item.poster_path)}
+                genre={item.genre_ids.slice(1, 4)}
+              />
             );
-          }
-          return (
-            <MovieCard
-              shoudlMarginatedAtEnd={true}
-              cardFunction={() => {
-                navigation.navigate("MovieDetails", { movieId: item.id });
-              }}
-              cardWidth={width * 0.7}
-              isFirst={index == 0 ? true : false}
-              isLast={index == upcomingMoviesList?.length - 1 ? true : false}
-              title={item.original_title}
-              imagePath={baseImagePath("w780", item.poster_path)}
-              genre={item.genre_ids.slice(1, 4)}
-            />
-          );
-        }}
-      />
+          }}
+        />
+      </View>
       <CategoryHeader title={"Popüler"} />
       <FlatList
         data={popularMoviesList}

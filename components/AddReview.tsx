@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  Button,
+} from "react-native";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, addDoc } from "firebase/firestore";
 import { FirebaseDB } from "firebaseConfig";
 import useUserStore from "../utils/userStore";
+import CalendarPicker from "react-native-calendar-picker";
+import { AirbnbRating } from "react-native-ratings";
 
 const options = {
   method: "GET",
@@ -18,12 +28,14 @@ const options = {
 type AddReviewProp = NativeStackScreenProps<InsideStackParamList, "AddReview">;
 
 const AddReview = ({ route, navigation }: AddReviewProp) => {
-  const user = useUserStore((state) => state.user);
-  const [response, setResponseData] = useState(); // Buna değer atanacak
-  const [date, setDate] = useState(""); // Buna değer atanacak
-  const [puan, setPuan] = useState(""); // Buna değer atanacak
-  const [review, setReview] = useState(""); // Buna değer atanacak
-
+  const userıd = useUserStore((state) => state.user);
+  const [response, setResponseData] = useState<any>(null);
+  const [puan, setPuan] = useState<number>(0); // Puan tipini değiştirdik
+  const [review, setReview] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const today = new Date();
+  const reviewRef = collection(FirebaseDB, "reviews");
   const { movieId } = route.params;
 
   useEffect(() => {
@@ -38,22 +50,24 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
       .catch((err) => console.error(err));
   }, [movieId]);
 
-  const reviewRef = collection(FirebaseDB, "reviews");
-
-  const addData = () => {
+  const addData = async () => {
     try {
       let reviewData = {
-        date: date,
+        date: selectedDate ? selectedDate.toISOString().split("T")[0] : "",
         puan: puan,
         review: review,
         movieId: movieId,
-        user: user!.uid,
+        userıd: userıd!.uid,
       };
-      addDoc(reviewRef, reviewData);
+      await addDoc(reviewRef, reviewData);
+      setModalVisible(false);
       navigation.goBack();
     } catch (e) {
       alert(e);
     }
+  };
+  const onDateChange = (date: Date) => {
+    setSelectedDate(date);
   };
 
   return (
@@ -67,19 +81,30 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
               <Text style={{ color: "white", fontSize: 20 }}>
                 {response.title}
               </Text>
-              <TextInput
-                style={{ color: "white", marginBottom: 10 }}
-                placeholder="Tarih ekleyin..."
-                placeholderTextColor="white"
-                value={date}
-                onChangeText={(text) => setDate(text)}
-              />
-              <TextInput
-                style={{ color: "white", marginBottom: 10 }}
-                placeholder="Puan ekleyin..."
-                placeholderTextColor="white"
-                value={puan}
-                onChangeText={(text) => setPuan(text)}
+              <TouchableOpacity
+                onPress={() => setModalVisible(true)}
+                style={{
+                  color: "white",
+                  marginBottom: 10,
+                  padding: 10,
+                  backgroundColor: "blue",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "white" }}>
+                  {selectedDate
+                    ? "Seçilen Tarih:" +
+                      selectedDate.toISOString().split("T")[0]
+                    : "Henüz Tarih Seçilmedi"}
+                </Text>
+              </TouchableOpacity>
+              <AirbnbRating
+                showRating
+                count={10}
+                reviews={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
+                defaultRating={0}
+                size={20}
+                onFinishRating={(rating) => setPuan(rating)}
               />
             </View>
             <Image
@@ -90,7 +115,11 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
             />
           </View>
           <View
-            style={{ borderWidth: 2, borderColor: "white", marginBottom: 10 }}
+            style={{
+              borderWidth: 2,
+              borderColor: "white",
+              marginBottom: 10,
+            }}
           >
             <TextInput
               style={{ color: "white" }}
@@ -100,6 +129,80 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
               onChangeText={(text) => setReview(text)}
             />
           </View>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0,0,0,0.8)",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "white",
+                  padding: 20,
+                  borderRadius: 10,
+                  width: "90%",
+                }}
+              >
+                <CalendarPicker
+                  startFromMonday={true}
+                  allowRangeSelection={false}
+                  minDate={
+                    response.release_date
+                      ? new Date(response.release_date)
+                      : today
+                  }
+                  maxDate={today}
+                  weekdays={["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"]}
+                  months={[
+                    "Ocak",
+                    "Şubat",
+                    "Mart",
+                    "Nisan",
+                    "Mayıs",
+                    "Haziran",
+                    "Temmuz",
+                    "Ağustos",
+                    "Eylül",
+                    "Ekim",
+                    "Kasım",
+                    "Aralık",
+                  ]}
+                  todayBackgroundColor="#e6ffe6"
+                  selectedDayColor="#66ff33"
+                  selectedDayTextColor="#000000"
+                  scaleFactor={400}
+                  textStyle={{
+                    fontFamily: "Cochin",
+                    color: "black",
+                  }}
+                  nextTitleStyle={{
+                    fontFamily: "Cochin",
+                    paddingRight: 60,
+                  }}
+                  previousTitleStyle={{
+                    fontFamily: "Cochin",
+                    paddingLeft: 60,
+                  }}
+                  onDateChange={onDateChange}
+                />
+
+                <View>
+                  <Button
+                    title="Kapat"
+                    onPress={() => setModalVisible(false)}
+                  />
+                </View>
+              </View>
+            </View>
+          </Modal>
           <TouchableOpacity
             style={{
               backgroundColor: "blue",

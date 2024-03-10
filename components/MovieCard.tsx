@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-const genres: object = {
+const genres: Array = {
   12: "Adventure",
   14: "Fantasy",
   16: "Animation",
