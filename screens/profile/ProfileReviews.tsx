@@ -3,40 +3,34 @@ import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { collection, where, query, getDocs } from "firebase/firestore";
 import { FirebaseDB } from "../../firebaseConfig";
-import useUserStore from "../../utils/userStore";
-import { useNavigation } from "@react-navigation/native";
+import useUserStore from "../../utils/hooks/useUserStore";
+import { useMovieData } from "utils/hooks/useMovieData";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { InsideStackParamList } from "navigation/InsideNavigation";
 
-interface Review {
+type ProfileReviewsProp = NativeStackScreenProps<
+  InsideStackParamList,
+  "ProfileReviews"
+>;
+
+type Review = {
   date: string;
   movieId: string;
   puan: string;
   review: string;
-}
-
-const options = {
-  method: "GET",
-  headers: {
-    accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmMzNlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
-  },
 };
 
-const ProfileReviews = () => {
+const ProfileReviews = ({ navigation }: ProfileReviewsProp) => {
   const user = useUserStore((state) => state.user);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [movieDataMap, setMovieDataMap] = useState<{ [key: string]: any }>({});
-  const navigation = useNavigation();
 
   const reviewRef = collection(FirebaseDB, "reviews");
 
-  const fetchMovieData = async (review: Review) => {
+  const fetchMovieData = (review: Review) => {
     try {
-      const movieResponse = await fetch(
-        `https://api.themoviedb.org/3/movie/${review.movieId}?language=en-US`,
-        options
-      );
-      const movieData = await movieResponse.json();
+      const apiResponse = useMovieData(review.movieId);
+      const movieData = apiResponse.data;
 
       setMovieDataMap((prevMap) => ({
         ...prevMap,
@@ -92,7 +86,7 @@ const ProfileReviews = () => {
         {reviews.map((review, index) => (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate("ReviewScreen", { reviewId: review.id })
+              navigation.navigate("ReviewScreen", { reviewId: review.movieId })
             }
             key={index}
             style={{

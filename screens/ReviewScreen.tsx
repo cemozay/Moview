@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/types
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { FirebaseDB } from "firebaseConfig";
 import { collection, doc, getDoc, deleteDoc } from "firebase/firestore";
-import { useAuthentication } from "utils/useAuthentication";
+import { useAuthentication } from "utils/hooks/useAuthentication";
 
 type ReviewScreenProp = NativeStackScreenProps<
   InsideStackParamList,

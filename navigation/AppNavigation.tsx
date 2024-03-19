@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import OutsideNavigation from "./OutsideNavigation";
 import InsideNavigation from "./InsideNavigation";
-import { useAuthentication } from "utils/useAuthentication";
+import { useAuthentication } from "utils/hooks/useAuthentication";
 
 export type RootStackParamList = {
   Navigation: undefined;

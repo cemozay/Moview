@@ -4,7 +4,8 @@ import { getDoc, doc } from "firebase/firestore";
 import { FirebaseDB } from "../../firebaseConfig";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
-import useUserStore from "utils/userStore";
+import useUserStore from "utils/hooks/useUserStore";
+import { useMovieData } from "utils/hooks/useMovieData";
 
 export type LikedMoviesProp = NativeStackScreenProps<
   InsideStackParamList,
@@ -16,40 +17,19 @@ const LikedMovies = ({ navigation }: LikedMoviesProp) => {
   const docRef = doc(FirebaseDB, "likedmovie", user!.uid);
   const [movieDataList, setMovieDataList] = useState([]);
 
-  // Useeffectler düzeltilecek
   useEffect(() => {
-    const fetchData = async () => {
+    async () => {
       try {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const fieldNames = Object.keys(docSnap.data());
-          const movieDataPromises = fieldNames.map(async (fieldName) => {
-            const options = {
-              method: "GET",
-              headers: {
-                accept: "application/json",
-                Authorization:
-                  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmMzNlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
-              },
-            };
-
-            try {
-              const movieResponse = await fetch(
-                `https://api.themoviedb.org/3/movie/${fieldName}?language=en-US`,
-                options
-              );
-
-              const movieData = await movieResponse.json();
-              return movieData;
-            } catch (error) {
-              console.error("Error fetching movie data:", error);
-              return null;
-            }
+          const movieDataList = fieldNames.map((movieId) => {
+            const apiResponse = useMovieData(movieId);
+            const movieData = apiResponse.data;
+            return movieData;
           });
-
-          const resolvedMovieDataList = await Promise.all(movieDataPromises);
-          setMovieDataList(resolvedMovieDataList.filter(Boolean) as never[]); // ??
+          setMovieDataList(movieDataList.filter(Boolean) as never[]); // as never olayı nedir?
         } else {
           console.log("No such document!");
         }
@@ -57,10 +37,7 @@ const LikedMovies = ({ navigation }: LikedMoviesProp) => {
         console.error("Error fetching data:", error);
       }
     };
-
-    fetchData();
   }, []);
-  // Useeffectler düzeltilecek
 
   type itemProp = { id: string; poster_path: string; title: string };
   const renderItem = (

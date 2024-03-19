@@ -14,7 +14,8 @@ import ListScreen from "../screens/ListScreen";
 import ReviewScreen from "../screens/ReviewScreen";
 import Review from "../screens/ReviewsScreen";
 import ReviewsScreen from "../screens/ReviewsScreen";
-import useUserStore from "../utils/userStore";
+import ProfileReviews from "../screens/profile/ProfileReviews";
+import useUserStore from "../utils/hooks/useUserStore";
 
 export type InsideStackParamList = {
   HomeStack: { screen: string; params: any };
@@ -29,6 +30,7 @@ export type InsideStackParamList = {
   MovieCreditsList: { movieId: string };
   ReviewsScreen: undefined;
   LikedMovies: undefined;
+  ProfileReviews: undefined;
 };
 
 const InsideStack = createNativeStackNavigator<InsideStackParamList>();
@@ -57,6 +59,7 @@ const InsideNavigation = () => {
         <InsideStack.Screen name="Selectlist" component={Selectlist} />
         <InsideStack.Screen name="ReviewsScreen" component={ReviewsScreen} />
         <InsideStack.Screen name="ReviewScreen" component={ReviewScreen} />
+        <InsideStack.Screen name="ProfileReviews" component={ProfileReviews} />
         <InsideStack.Screen
           name="MovieCreditsList"
           component={MovieCreditsList}

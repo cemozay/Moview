@@ -14,31 +14,24 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { getDoc, doc } from "firebase/firestore";
 import { FirebaseDB } from "../firebaseConfig";
-import useUserStore from "../utils/userStore";
+import useUserStore from "../utils/hooks/useUserStore";
+import { useMovieData } from "utils/hooks/useMovieData";
 
 type MovieDetailsProp = NativeStackScreenProps<
   InsideStackParamList,
   "MovieDetails"
 >;
 
-const options = {
-  method: "GET",
-  headers: {
-    accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmMzNlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
-  },
-};
-
 const MovieDetailScreen = ({ route, navigation }: MovieDetailsProp) => {
   const user = useUserStore((state) => state.user);
   const docRef = doc(FirebaseDB, "likedmovie", user!.uid);
-  const [response, setResponseData] = useState<any>(null); // Buna type atanacak
   const [renk, setRenk] = useState("white"); // Buna type atanacak
 
   const { movieId } = route.params;
 
-  // Fetch fonksiyon tekrarı
+  const apiResponse = useMovieData(movieId);
+  const movieData = apiResponse.data;
+
   const fetchData = async () => {
     try {
       const docSnap = await getDoc(docRef);
@@ -57,58 +50,45 @@ const MovieDetailScreen = ({ route, navigation }: MovieDetailsProp) => {
     }
   };
 
+  // movieId içeriyorsa yeşil, içermiyorsa kırmızı renk ata
   useEffect(() => {
     fetchData();
-
-    fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
-      options
-    )
-      .then((response) => response.json())
-      .then((response) => {
-        setResponseData(response);
-
-        // movieId içeriyorsa yeşil, içermiyorsa kırmızı renk ata
-        if (
-          response &&
-          response.genres.some((genre: any) => genre.name === "movieId")
-        ) {
-          setRenk("green");
-        } else {
-          setRenk("red");
-        }
-      })
-      .catch((err) => console.error(err));
+    if (
+      movieData &&
+      movieData.genres.some((genre: any) => genre.name === "movieId")
+    ) {
+      setRenk("green");
+    } else {
+      setRenk("red");
+    }
   }, [movieId]);
-
-  // Fetch fonksiyon tekrarı
 
   return (
     <ScrollView className="bg-black">
-      {response && (
+      {movieData && (
         <View>
           <View className="justify-center items-center	">
             <ImageBackground
               className="w-screen h-64"
               resizeMode="contain"
               source={{
-                uri: `https://image.tmdb.org/t/p/original${response.backdrop_path}`,
+                uri: `https://image.tmdb.org/t/p/original${movieData.backdrop_path}`,
               }}
             />
             <View className="absolute items-center">
               <Image
                 className="w-48 h-72"
                 source={{
-                  uri: `https://image.tmdb.org/t/p/original${response.poster_path}`,
+                  uri: `https://image.tmdb.org/t/p/original${movieData.poster_path}`,
                 }}
               />
               <View className="pt-1 justify-center items-center">
-                <Text className="color-white text-2xl">{response.title}</Text>
+                <Text className="color-white text-2xl">{movieData.title}</Text>
                 <Text className="pt-1 color-white text-1xl">
-                  {response.release_date}
+                  {movieData.release_date.toString()}
                 </Text>
                 <View className="flex pt-1 flex-row flex-wrap">
-                  {response.genres.map((genre: any) => (
+                  {movieData.genres.map((genre: any) => (
                     <Text key={genre.id} className="color-white  mr-2">
                       {genre.name}
                     </Text>
@@ -130,7 +110,9 @@ const MovieDetailScreen = ({ route, navigation }: MovieDetailsProp) => {
           <View className=" w-scren h-16 border-white items-center flex-row justify-center">
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("AddReview", { movieId: response.id })
+                navigation.navigate("AddReview", {
+                  movieId: movieData.id.toString(),
+                })
               }
               className="mx-4 h-16 w-16 bg-white justify-center items-center rounded-full"
             >

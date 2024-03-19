@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -12,43 +12,33 @@ import { InsideStackParamList } from "navigation/InsideNavigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, addDoc } from "firebase/firestore";
 import { FirebaseDB } from "firebaseConfig";
-import useUserStore from "../utils/userStore";
+import useUserStore from "../utils/hooks/useUserStore";
 import CalendarPicker from "react-native-calendar-picker";
 import { AirbnbRating } from "react-native-ratings";
-
-const options = {
-  method: "GET",
-  headers: {
-    accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmMzNlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
-  },
-};
+import { useMovieData } from "utils/hooks/useMovieData";
 
 type AddReviewProp = NativeStackScreenProps<InsideStackParamList, "AddReview">;
 
 const AddReview = ({ route, navigation }: AddReviewProp) => {
   const userıd = useUserStore((state) => state.user);
-  const [response, setResponseData] = useState<any>(null);
-  const [puan, setPuan] = useState<number>(0); // Puan tipini değiştirdik
-  const [review, setReview] = useState<string>("");
+  const [puan, setPuan] = useState(0);
+  const [review, setReview] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+
   const today = new Date();
   const reviewRef = collection(FirebaseDB, "reviews");
   const { movieId } = route.params;
 
-  useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
-      options
-    )
-      .then((response) => response.json())
-      .then((response) => {
-        setResponseData(response);
-      })
-      .catch((err) => console.error(err));
-  }, [movieId]);
+  const apiResponse = useMovieData(movieId);
+
+  if (apiResponse.isError) {
+    return console.log("Error!");
+  } else if (apiResponse.isLoading || !apiResponse.data) {
+    return console.log("Loading...");
+  }
+
+  const movieData = apiResponse.data;
 
   const addData = async () => {
     try {
@@ -72,19 +62,18 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: "black", padding: 20 }}>
-      {response && (
+      {movieData && (
         <View>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <View style={{ justifyContent: "flex-start" }}>
               <Text style={{ color: "white", fontSize: 20 }}>
-                {response.title}
+                {movieData.title}
               </Text>
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
                 style={{
-                  color: "white",
                   marginBottom: 10,
                   padding: 10,
                   backgroundColor: "blue",
@@ -110,7 +99,7 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
             <Image
               style={{ width: 150, height: 200 }}
               source={{
-                uri: `https://image.tmdb.org/t/p/original${response.poster_path}`,
+                uri: `https://image.tmdb.org/t/p/original${movieData.poster_path}`,
               }}
             />
           </View>
@@ -155,8 +144,8 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
                   startFromMonday={true}
                   allowRangeSelection={false}
                   minDate={
-                    response.release_date
-                      ? new Date(response.release_date)
+                    movieData.release_date
+                      ? new Date(movieData.release_date)
                       : today
                   }
                   maxDate={today}

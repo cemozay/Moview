@@ -21,7 +21,6 @@ import { InsideStackParamList } from "navigation/InsideNavigation";
 
 const { width } = Dimensions.get("window");
 
-// Aşağıdaki fonksiyonların alıp verdiği değerlerin tipi belirtilmeli
 const getNowPlayingMoviesList = async () => {
   try {
     let response = await fetch(nowPlayingMovies);

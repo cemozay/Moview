@@ -5,32 +5,24 @@ import { collection, query, getDocs } from "firebase/firestore";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { FirebaseDB } from "firebaseConfig";
+import { useMovieData } from "utils/hooks/useMovieData";
 
 type ReviewsScreenProp = NativeStackScreenProps<
   InsideStackParamList,
   "ReviewsScreen"
 >;
 
-interface MovieData {
+type MovieData = {
   [key: string]: any;
-}
+};
 
-interface Review {
+type Review = {
   date: string;
   movieId: string;
   puan: string;
   review: string;
   id: string;
   user: string;
-}
-
-const options = {
-  method: "GET",
-  headers: {
-    accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmM3NlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
-  },
 };
 
 export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
@@ -39,21 +31,13 @@ export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [movieDataMap, setMovieDataMap] = useState<MovieData>({});
 
-  const fetchMovieData = async (review: Review) => {
-    try {
-      const movieResponse = await fetch(
-        `https://api.themoviedb.org/3/movie/${review.movieId}?language=en-US`,
-        options
-      );
-      const movieData = await movieResponse.json();
-
-      setMovieDataMap((prevMap) => ({
-        ...prevMap,
-        [review.movieId]: movieData,
-      }));
-    } catch (err) {
-      console.error(err);
-    }
+  const fetchMovieData = (review: Review) => {
+    const apiResponse = useMovieData(review.movieId);
+    const movieData = apiResponse.data;
+    setMovieDataMap((prevMap) => ({
+      ...prevMap,
+      [review.movieId]: movieData,
+    }));
   };
 
   const fetchData = async () => {

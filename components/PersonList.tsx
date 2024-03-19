@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import React, { useState, useEffect } from "react";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
 type MovieCreditsListProp = NativeStackScreenProps<
   InsideStackParamList,
@@ -13,9 +12,15 @@ type MovieIdProps = {
   movieId: string;
 };
 
+type creditsProps = {
+  id: string;
+  profile_path: string;
+  name: string;
+  character: string;
+};
+
 const MovieCreditsList = ({ movieId }: MovieCreditsListProp & MovieIdProps) => {
   const [credits, setCredits] = useState<Array<creditsProps>>([]);
-  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchCredits = async () => {
@@ -42,13 +47,6 @@ const MovieCreditsList = ({ movieId }: MovieCreditsListProp & MovieIdProps) => {
 
     fetchCredits();
   }, [movieId]);
-
-  type creditsProps = {
-    id: string;
-    profile_path: string;
-    name: string;
-    character: string;
-  };
 
   const renderCreditItem = ({ item }: { item: creditsProps }) => (
     <TouchableOpacity

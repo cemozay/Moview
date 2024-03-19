@@ -12,21 +12,18 @@ import {
 import { useWindowDimensions } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "@expo/vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { InsideStackParamList } from "navigation/InsideNavigation";
 
-interface PersonScreenProps {
-  route: {
-    params: {
-      personId: string;
-    };
-  };
-}
+type PersonScreenProps = NativeStackScreenProps<
+  InsideStackParamList,
+  "PersonScreen"
+>;
 
-const PersonScreen = ({ route }: PersonScreenProps) => {
+const PersonScreen = ({ route, navigation }: PersonScreenProps) => {
   const [personDetails, setPersonDetails] = useState<any>(null);
   const [movieCredits, setMovieCredits] = useState<any[]>([]);
   const window = useWindowDimensions();
-  const navigation = useNavigation();
 
   useEffect(() => {
     const { personId } = route.params;
