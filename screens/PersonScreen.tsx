@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -14,79 +14,108 @@ import LinearGradient from "react-native-linear-gradient";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
+import { useFetch } from "utils/hooks/useFetch";
+
+const window = useWindowDimensions();
 
 type PersonScreenProps = NativeStackScreenProps<
   InsideStackParamList,
   "PersonScreen"
 >;
 
+type PersonDetails = {
+  adult: boolean;
+  also_known_as: string[];
+  biography: string;
+  birthday: Date;
+  deathday: null;
+  gender: number;
+  homepage: null;
+  id: number;
+  imdb_id: string;
+  known_for_department: string;
+  name: string;
+  place_of_birth: string;
+  popularity: number;
+  profile_path: string;
+};
+
+type MovieCreditsList = {
+  cast: Person[];
+  crew: Person[];
+  id: number;
+};
+
+type Person = {
+  adult: boolean;
+  backdrop_path: null | string;
+  genre_ids: number[];
+  id: number;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: null | string;
+  release_date: Date;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+  character?: string;
+  credit_id: string;
+  order?: number;
+  department?: string;
+  job?: string;
+};
+
 const PersonScreen = ({ route, navigation }: PersonScreenProps) => {
-  const [personDetails, setPersonDetails] = useState<any>(null);
-  const [movieCredits, setMovieCredits] = useState<any[]>([]);
-  const window = useWindowDimensions();
-
-  useEffect(() => {
-    const { personId } = route.params;
-
-    const fetchPersonDetails = async () => {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmMzNlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
-        },
-      };
-
-      try {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/person/${personId}?language=en-US`,
-          options
-        );
-        const data = await response.json();
-        setPersonDetails(data);
-
-        const movieCreditsResponse = await fetch(
-          `https://api.themoviedb.org/3/person/${personId}/movie_credits?language=en-US`,
-          options
-        );
-        const movieCreditsData = await movieCreditsResponse.json();
-        setMovieCredits(movieCreditsData.cast);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchPersonDetails();
-  }, [route.params]);
-
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
-
-  const handleMoviePress = (movieId: string) => {
-    navigation.navigate("MovieDetails", { movieId });
-  };
   const [expanded, setExpanded] = useState(false);
 
-  const handleSeeMore = () => {
-    setExpanded(!expanded);
-  };
+  const { personId } = route.params;
 
-  const handleSeeLess = () => {
-    setExpanded(false);
-  };
+  const {
+    data: personDetails,
+    isError: personError,
+  }: { data: PersonDetails; isError: boolean } = useFetch(
+    ["person", personId],
+    `${process.env.EXPO_PUBLIC_TMDB_API_URL}/person/${personId}?language=en-US`,
+    {
+      headers: {
+        accept: "application/json",
+        Authorization: "Bearer " + process.env.EXPO_PUBLIC_TMDB_AUTH_KEY,
+      },
+    }
+  );
 
-  const renderMovieItem = ({
-    item,
-  }: {
-    item: {
-      id: string;
-      title: string;
-      poster_path: string;
-    };
-  }) => (
-    <TouchableOpacity onPress={() => handleMoviePress(item.id)}>
+  const {
+    data: movieCredits,
+    isError: movieCreditsError,
+  }: { data: MovieCreditsList; isError: boolean } = useFetch(
+    ["person", personId, "movie_credits"],
+    `${process.env.EXPO_PUBLIC_TMDB_API_URL}/person/${personId}/movie_credits?language=en-US`,
+    {
+      headers: {
+        accept: "application/json",
+        Authorization: "Bearer " + process.env.EXPO_PUBLIC_TMDB_AUTH_KEY,
+      },
+    }
+  );
+
+  const allCredits = [...movieCredits.cast, ...movieCredits.crew];
+
+  if (personError || movieCreditsError) {
+    console.error("Error fetching person details or movie credits");
+    return null;
+  }
+
+  const renderMovieItem = ({ item }: { item: Person }) => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("MovieDetails", {
+          movieId: item.id.toString(),
+        })
+      }
+    >
       <View className="mx-5 my-2">
         <Image
           source={{
@@ -155,7 +184,7 @@ const PersonScreen = ({ route, navigation }: PersonScreenProps) => {
             </View>
           </View>
           <FlatList
-            data={movieCredits}
+            data={allCredits}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderMovieItem}
             horizontal
@@ -170,11 +199,11 @@ const PersonScreen = ({ route, navigation }: PersonScreenProps) => {
             </Text>
             <View className="items-center">
               {!expanded ? (
-                <TouchableOpacity onPress={handleSeeMore}>
+                <TouchableOpacity onPress={() => setExpanded(!expanded)}>
                   <Text className=" text-blue-500 text-xl">See more</Text>
                 </TouchableOpacity>
               ) : (
-                <TouchableOpacity onPress={handleSeeLess}>
+                <TouchableOpacity onPress={() => setExpanded(false)}>
                   <Text className="text-blue-500 text-xl">See less</Text>
                 </TouchableOpacity>
               )}
@@ -185,7 +214,7 @@ const PersonScreen = ({ route, navigation }: PersonScreenProps) => {
         <Text className="color-white">Kişi bilgileri yükleniyor...</Text>
       )}
 
-      <TouchableOpacity onPress={handleGoBack}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
         <View>
           <Text className="color-white">Geri Dön</Text>
         </View>

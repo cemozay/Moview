@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import ComingSoon from "../components/ComingSoon";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
+import ComingSoon from "components/ComingSoon";
 
 type HomeScreenProp = NativeStackScreenProps<InsideStackParamList, "HomeStack">;
 
@@ -26,6 +26,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProp) => {
             </TouchableOpacity>
           </View>
         </View>
+
         <ComingSoon navigation={navigation} route={route} />
       </ScrollView>
     </View>

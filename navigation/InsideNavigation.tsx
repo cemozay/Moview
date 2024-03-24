@@ -20,7 +20,7 @@ import useUserStore from "../utils/hooks/useUserStore";
 export type InsideStackParamList = {
   HomeStack: { screen: string; params: any };
   MovieDetails: { movieId: string };
-  PersonScreen: { personId: string };
+  PersonScreen: { personId: number };
   SearchScreen: undefined;
   Review: { movieid: string };
   ReviewScreen: { reviewId: string };

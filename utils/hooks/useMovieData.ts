@@ -51,22 +51,17 @@ type SpokenLanguage = {
   name: string;
 };
 
-export function useMovieData(
-  id: string,
-  url?: string
-): {
+export function useMovieData(id: string): {
   data: MovieData;
   error: any;
   isLoading: boolean;
   isError: boolean;
 } {
-  //api_key = process.env.REACT_APP_TMDB_API_KEY; environment variable olacak
-  const apiKey =
-    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmMzNlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0";
+  const apiKey = process.env.EXPO_PUBLIC_TMDB_AUTH_KEY;
 
   const { data, error, isLoading, isError } = useFetch(
     ["movies", id],
-    `https://api.themoviedb.org/3/movie/${id}?language=en-US`,
+    `${process.env.EXPO_PUBLIC_TMDB_API_URL}/movie/${id}?language=en-US`,
     {
       headers: {
         accept: "application/json",

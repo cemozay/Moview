@@ -1,54 +1,51 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
+import { useFetch } from "utils/hooks/useFetch";
 
-type MovieCreditsListProp = NativeStackScreenProps<
-  InsideStackParamList,
-  "MovieCreditsList"
->;
-
-type MovieIdProps = {
-  movieId: string;
+type CreditList = {
+  id: number;
+  cast: People[];
+  crew: People[];
 };
 
-type creditsProps = {
-  id: string;
-  profile_path: string;
+type People = {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
   name: string;
-  character: string;
+  original_name: string;
+  popularity: number;
+  profile_path: null | string;
+  cast_id?: number;
+  character?: string;
+  credit_id: string;
+  order?: number;
+  department?: string;
+  job?: string;
 };
 
-const MovieCreditsList = ({ movieId }: MovieCreditsListProp & MovieIdProps) => {
-  const [credits, setCredits] = useState<Array<creditsProps>>([]);
+const MovieCreditsList = ({
+  navigation,
+  movieId,
+}: NativeStackScreenProps<InsideStackParamList, "MovieDetails"> & {
+  movieId: string;
+}) => {
+  const { data: credits }: { data: CreditList } = useFetch(
+    ["movies", movieId, "credits"],
+    `${process.env.EXPO_PUBLIC_TMDB_API_URL}/movie/${movieId}?credits?language=en-US`,
+    {
+      headers: {
+        accept: "application/json",
+        Authorization: "Bearer " + process.env.EXPO_PUBLIC_TMDB_AUTH_KEY,
+      },
+    }
+  );
+  const allCredits = [...credits.cast, ...credits.crew];
 
-  useEffect(() => {
-    const fetchCredits = async () => {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmMzNlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
-        },
-      };
-
-      try {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US`,
-          options
-        );
-        const data = await response.json();
-        setCredits(data.cast);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchCredits();
-  }, [movieId]);
-
-  const renderCreditItem = ({ item }: { item: creditsProps }) => (
+  const renderCreditItem = ({ item }: { item: People }) => (
     <TouchableOpacity
       onPress={() => navigation.navigate("PersonScreen", { personId: item.id })}
     >
@@ -70,8 +67,8 @@ const MovieCreditsList = ({ movieId }: MovieCreditsListProp & MovieIdProps) => {
       <Text className="color-white text-2xl">Top Billed Cast</Text>
 
       <FlatList
-        data={credits}
-        keyExtractor={(item) => item.id}
+        data={allCredits}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={renderCreditItem}
         horizontal
       />

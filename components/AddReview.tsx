@@ -33,9 +33,11 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
   const apiResponse = useMovieData(movieId);
 
   if (apiResponse.isError) {
-    return console.log("Error!");
+    console.log("Error!");
+    return null;
   } else if (apiResponse.isLoading || !apiResponse.data) {
-    return console.log("Loading...");
+    console.log("Loading...");
+    return null;
   }
 
   const movieData = apiResponse.data;

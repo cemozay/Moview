@@ -10,13 +10,7 @@ import {
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
-
-// Type adı şekli düzeltilecek
-type typeitem = {
-  id: string;
-  poster_path: string;
-  title: string;
-};
+import { SearchResult, useSearch } from "utils/hooks/useSearch";
 
 type SearchScreenProp = NativeStackScreenProps<
   InsideStackParamList,
@@ -24,43 +18,26 @@ type SearchScreenProp = NativeStackScreenProps<
 >;
 
 const Selectlist = ({ navigation }: SearchScreenProp) => {
-  const [searchQuery, setSearchQuery] = useState(""); // State type belirtilecek
-  const [movieResults, setMovieResults] = useState([]); // State type belirtilecek
-  const [showResults, setShowResults] = useState(false); // State type belirtilecek
-  const textInputRef = useRef<TextInput>(null);
+  const [results, setResults] = useState<SearchResult[] | null>(null);
+  const [showResults, setShowResults] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [mediaType, setMediaType] = useState("multi"); // default search value
 
-  useEffect(() => {
-    if (textInputRef.current) {
-      textInputRef.current.focus();
-    }
-  }, []);
-
-  const apiKey = "23e3cc0416f703df9256c5e82ba0e5fb"; // .env dosyasına alınacak
-
-  const search = async (mediaType: string) => {
-    try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/search/${mediaType}?api_key=${apiKey}&query=${searchQuery}`
-      );
-      if (!response.ok) {
-        throw new Error("Arama sırasında bir hata oluştu.");
-      }
-      const data = await response.json();
-
-      if (mediaType === "movie") {
-        setMovieResults(data.results);
-      }
-      setShowResults(true);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleSearchChange = (text: string) => {
-    setSearchQuery(text);
-
+  const handleSearch = (text: string) => {
     if (text.length > 0) {
-      search("movie");
+      setSearchQuery(text);
+      const { data, error, isLoading, isError } = useSearch(mediaType, text);
+
+      if (isLoading) {
+        return console.error("Loading...");
+      }
+      if (isError) {
+        console.error(error);
+        return;
+      }
+
+      setResults(data.results);
+      setShowResults(true);
     } else {
       setShowResults(false);
     }
@@ -71,23 +48,24 @@ const Selectlist = ({ navigation }: SearchScreenProp) => {
       <View className="bg-black">
         <Text className="color-white text-2xl">Moview'de Ara</Text>
         <TextInput
-          ref={textInputRef}
           className="text-white bg-stone-800 h-12 border-gray-500 rounded-full border mb-3 pl-2"
-          onChangeText={handleSearchChange}
-          placeholder="Aramak istediğiniz şey"
+          placeholder="Search"
           placeholderTextColor="white"
+          onChangeText={handleSearch}
           value={searchQuery}
         />
         {showResults && (
           <View>
             <FlatList
-              data={movieResults}
-              keyExtractor={(item: typeitem) => item.id.toString()}
+              data={results}
+              keyExtractor={(item) => item.id.toString()}
               showsHorizontalScrollIndicator={false}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("AddReview", { movieId: item.id })
+                    navigation.navigate("AddReview", {
+                      movieId: item.id.toString(),
+                    })
                   }
                   className="flex-row items-center m-2"
                 >

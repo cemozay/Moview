@@ -1,43 +1,29 @@
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { useGenreList } from "utils/hooks/useGenreList";
 
-const genres = {
-  12: "Adventure",
-  14: "Fantasy",
-  16: "Animation",
-  18: "Drama",
-  27: "Horror",
-  28: "Action",
-  35: "Comedy",
-  36: "History",
-  37: "Western",
-  53: "Thriller",
-  80: "Crime",
-  99: "Documentry",
-  10402: "Music",
-  878: "Science Fiction",
-  9648: "Mystry",
-  10749: "Romance",
-  10751: "Family",
-  10752: "War",
-  10770: "TV Movie",
-};
-
-// Type adı düzeltilecek
-type typeprops = {
+type SubMovieCardProps = {
   cardFunction: () => void;
   isFirst?: boolean;
   isLast?: boolean;
   shoudlMarginatedAtEnd?: boolean;
   shouldMarginatedAround?: boolean;
   imagePath?: string;
-  cardWidth?: any; // bu niye any?
-  release_date?: string;
-  genre?: [];
+  cardWidth?: any;
+  release_date?: Date;
+  genre?: number[];
   title?: string;
 };
 
-const SubMovieCard = (props: typeprops) => {
+const genreList = useGenreList("movie");
+const genres = genreList.data ? genreList.data.genres : [];
+const genreMap: { [key: number]: string } = {};
+
+genres.forEach((genre) => {
+  genreMap[genre.id] = genre.name;
+});
+
+const SubMovieCard = (props: SubMovieCardProps) => {
   return (
     <TouchableOpacity onPress={() => props.cardFunction()}>
       <View
@@ -61,13 +47,13 @@ const SubMovieCard = (props: typeprops) => {
         <Text numberOfLines={1} style={styles.textTitle}>
           {props.title}
         </Text>
-        <Text className="color-white">{props.release_date}</Text>
+        <Text className="color-white">{props.release_date?.toString()}</Text>
         <View style={styles.genreContainer}>
           {props.genre &&
             props.genre.map((item) => {
               return (
                 <View key={item}>
-                  <Text style={styles.genreText}>{genres[item]}</Text>
+                  <Text style={styles.genreText}>{genreMap[item]}</Text>
                 </View>
               );
             })}

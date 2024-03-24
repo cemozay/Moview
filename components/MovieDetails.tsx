@@ -22,7 +22,7 @@ type MovieDetailsProp = NativeStackScreenProps<
   "MovieDetails"
 >;
 
-const MovieDetailScreen = ({ route, navigation }: MovieDetailsProp) => {
+const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
   const user = useUserStore((state) => state.user);
   const docRef = doc(FirebaseDB, "likedmovie", user!.uid);
   const [renk, setRenk] = useState("white"); // Buna type atanacak
@@ -140,7 +140,11 @@ const MovieDetailScreen = ({ route, navigation }: MovieDetailsProp) => {
           </View>
         </View>
       )}
-      <MovieCreditsList movieId={movieId} />
+      <MovieCreditsList
+        navigation={navigation}
+        route={route}
+        movieId={movieId}
+      />
       <View className="border-b border-white items-center justify-between flex-row">
         <Text className="text-white text-2xl m-2">Review</Text>
         <Text className="text-white text-base m-2">1200 Review</Text>

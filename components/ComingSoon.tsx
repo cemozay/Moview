@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   ScrollView,
@@ -7,80 +7,41 @@ import {
   FlatList,
   ActivityIndicator,
 } from "react-native";
-import {
-  upcomingMovies,
-  nowPlayingMovies,
-  popularMovies,
-  baseImagePath,
-} from "../utils/apicalls";
+import { baseImagePath } from "../utils/functions";
 import CategoryHeader from "./CategoryHeader";
 import SubMovieCard from "./SubMovieCard";
 import MovieCard from "./MovieCard";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
+import { useMovieLists } from "utils/hooks/useMovieLists";
 
 const { width } = Dimensions.get("window");
-
-const getNowPlayingMoviesList = async () => {
-  try {
-    let response = await fetch(nowPlayingMovies);
-    let json = await response.json();
-    return json;
-  } catch (error) {
-    console.error("444", error);
-  }
-};
-
-const getUpcomingMoviesList = async () => {
-  try {
-    let response = await fetch(upcomingMovies);
-    let json = await response.json();
-    return json;
-  } catch (error) {
-    console.error("444", error);
-  }
-};
-
-const getPopularMoviesList = async () => {
-  try {
-    let response = await fetch(popularMovies);
-    let json = await response.json();
-    return json;
-  } catch (error) {
-    console.error(" 444", error);
-  }
-};
-
-// Buraya kadar
 
 const ComingSoon = ({
   navigation,
 }: NativeStackScreenProps<InsideStackParamList, "HomeStack">) => {
-  const [popularMoviesList, setPopularMoviesList] = useState<any>(undefined); // any yerine bir tip belirtilmeli
-  const [upcomingMoviesList, setUpcomingMoviesList] = useState<any>(undefined); // any yerine bir tip belirtilmeli
-  // const [personList, setPersonList] = useState<any>(undefined); // any yerine bir tip belirtilmeli
-  const [nowPlayingMoviesList, setNowPlayingMoviesList] =
-    useState<any>(undefined); // any yerine bir tip belirtilmeli
+  const nowPlayingMoviesData = useMovieLists("now_playing");
+  const popularMoviesData = useMovieLists("upcoming");
+  const upcomingMoviesData = useMovieLists("popular");
 
-  // Aşağıdaki kod bloğu yeni fonksiyon yazılarak düzenlenmeli
-  useEffect(() => {
-    (async () => {
-      let tempNowPlaying = await getNowPlayingMoviesList();
-      setNowPlayingMoviesList([
-        { id: "kukla1" },
-        ...tempNowPlaying.results,
-        { id: "kukla2" },
-      ]);
+  if (
+    nowPlayingMoviesData.isError ||
+    popularMoviesData.isError ||
+    upcomingMoviesData.isError
+  ) {
+    console.log("Error!");
+  } else if (
+    nowPlayingMoviesData.isLoading ||
+    popularMoviesData.isLoading ||
+    upcomingMoviesData.isLoading
+  ) {
+    console.log("Loading...");
+  }
 
-      let tempPopular = await getPopularMoviesList();
-      setPopularMoviesList(tempPopular.results);
+  const nowPlayingMoviesList = useMovieLists("now_playing").data?.results;
+  const popularMoviesList = useMovieLists("upcoming").data?.results;
+  const upcomingMoviesList = useMovieLists("popular").data?.results;
 
-      let tempUpcoming = await getUpcomingMoviesList();
-      setUpcomingMoviesList(tempUpcoming.results);
-    })();
-  }, []);
-
-  // Bu if bloğu doğru mu?
   if (!nowPlayingMoviesList && !popularMoviesList && !upcomingMoviesList) {
     return (
       <ScrollView
@@ -95,7 +56,6 @@ const ComingSoon = ({
       </ScrollView>
     );
   }
-  // Bu if bloğu doğru mu?
 
   return (
     <ScrollView className="flex bg-black" bounces={false}>
@@ -103,7 +63,7 @@ const ComingSoon = ({
       <View>
         <FlatList
           data={nowPlayingMoviesList}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           bounces={false}
           snapToInterval={width * 0.7 + 36}
           horizontal
@@ -124,7 +84,9 @@ const ComingSoon = ({
               <MovieCard
                 shoudlMarginatedAtEnd={true}
                 cardFunction={() => {
-                  navigation.navigate("MovieDetails", { movieId: item.id });
+                  navigation.navigate("MovieDetails", {
+                    movieId: item.id.toString(),
+                  });
                 }}
                 cardWidth={width * 0.7}
                 isFirst={index == 0 ? true : false}
@@ -149,7 +111,9 @@ const ComingSoon = ({
           <SubMovieCard
             shoudlMarginatedAtEnd={true}
             cardFunction={() => {
-              navigation.navigate("MovieDetails", { movieId: item.id });
+              navigation.navigate("MovieDetails", {
+                movieId: item.id.toString(),
+              });
             }}
             cardWidth={width / 3}
             isFirst={index == 0 ? true : false}
@@ -162,7 +126,7 @@ const ComingSoon = ({
       <CategoryHeader title={"Upcoming"} />
       <FlatList
         data={upcomingMoviesList}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         horizontal
         bounces={false}
         showsHorizontalScrollIndicator={false}
@@ -171,7 +135,9 @@ const ComingSoon = ({
           <SubMovieCard
             shoudlMarginatedAtEnd={true}
             cardFunction={() => {
-              navigation.navigate("MovieDetails", { movieId: item.id });
+              navigation.navigate("MovieDetails", {
+                movieId: item.id.toString(),
+              });
             }}
             cardWidth={width / 3}
             isFirst={index == 0 ? true : false}

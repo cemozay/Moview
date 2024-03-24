@@ -8,62 +8,39 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { InsideStackParamList } from "navigation/InsideNavigation";
+import { SearchResult, useSearch } from "utils/hooks/useSearch";
 
-const SearchScreen = () => {
+type SearchScreenProp = NativeStackScreenProps<
+  InsideStackParamList,
+  "SearchScreen"
+>;
+
+const SearchScreen = ({ navigation }: SearchScreenProp) => {
+  const [results, setResults] = useState<SearchResult[] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [movieResults, setMovieResults] = useState([]);
-  const [personResults, setPersonResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
-  const navigation = useNavigation();
+  const [mediaType, setMediaType] = useState("multi"); // default: multi = "movie" | "tv" | "person"
 
-  const navigateToPersonScreen = (personId: string) => {
-    navigation.navigate("PersonScreen", { personId: personId });
-  };
-
-  const apiKey = "23e3cc0416f703df9256c5e82ba0e5fb";
-
-  const search = async (movieId: string) => {
-    try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/search/${movieId}?api_key=${apiKey}&query=${searchQuery}`
-      );
-
-      if (!response.ok) {
-        throw new Error("Arama sırasında bir hata oluştu.");
-      }
-
-      const data = await response.json();
-
-      if (movieId === "movie") {
-        setMovieResults(data.results);
-      } else if (movieId === "person") {
-        setPersonResults(data.results);
-      }
-
-      setShowResults(true);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleSearchChange = (text: string) => {
-    setSearchQuery(text);
-
-    // Her harf girişinde arama yap
+  const handleSearch = (text: string) => {
     if (text.length > 0) {
-      search("movie");
-      search("person");
+      setSearchQuery(text);
+      const { data, error, isLoading, isError } = useSearch(mediaType, text);
+
+      if (isLoading) {
+        return console.error("Loading...");
+      }
+      if (isError) {
+        console.error(error);
+        return;
+      }
+
+      setResults(data.results);
+      setShowResults(true);
     } else {
       setShowResults(false);
     }
-  };
-  type itemProp = {
-    id: string;
-    poster_path: string;
-    title: string;
-    name: string;
-    profile_path: string;
   };
 
   return (
@@ -72,9 +49,9 @@ const SearchScreen = () => {
         <Text className="color-white text-2xl">Moview'de Ara</Text>
         <TextInput
           className="text-white bg-stone-800 h-12 border-gray-500 rounded-full border mb-3 pl-2"
-          onChangeText={handleSearchChange}
           placeholder="Aramak istediğiniz şey"
           placeholderTextColor="white"
+          onChangeText={handleSearch}
           value={searchQuery}
         />
 
@@ -82,14 +59,16 @@ const SearchScreen = () => {
           <View>
             <Text className="color-white m-1 text-2xl">Film Sonuçları</Text>
             <FlatList
-              data={movieResults}
-              keyExtractor={(item: itemProp) => item.id.toString()}
+              data={results?.filter((item) => item.media_type == "movie")}
+              keyExtractor={(item) => item.id.toString()}
               horizontal
               showsHorizontalScrollIndicator={false}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("MovieDetails", { movieId: item.id })
+                    navigation.navigate("MovieDetails", {
+                      movieId: item.id.toString(),
+                    })
                   }
                   className="m-2"
                 >
@@ -106,13 +85,17 @@ const SearchScreen = () => {
 
             <Text className="color-white m-1 text-2xl">Kişi Sonuçları</Text>
             <FlatList
-              data={personResults}
-              keyExtractor={(item: itemProp) => item.id.toString()}
+              data={results?.filter((item) => item.media_type == "person")}
+              keyExtractor={(item) => item.id.toString()}
               horizontal
               showsHorizontalScrollIndicator={false}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  onPress={() => navigateToPersonScreen(item.id)}
+                  onPress={() =>
+                    navigation.navigate("PersonScreen", {
+                      personId: item.id,
+                    })
+                  }
                   className="m-2"
                 >
                   <Image
