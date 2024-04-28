@@ -76,7 +76,7 @@ const ReviewScreen = ({
     );
   }
 
-  const { date, movieId, puan, review, userıd } = reviewData;
+  const { date, movieId, puan, review, userId } = reviewData;
 
   return (
     <View>
@@ -84,9 +84,9 @@ const ReviewScreen = ({
       <Text>Movie ID: {movieId}</Text>
       <Text>Puan: {puan}</Text>
       <Text>Review: {review}</Text>
-      <Text>User: {userıd}</Text>
+      <Text>User: {userId}</Text>
 
-      {user && user.uid === userıd && (
+      {user && user.uid === userId && (
         <Button title="Delete Review" onPress={handleDeleteReview} />
       )}
     </View>

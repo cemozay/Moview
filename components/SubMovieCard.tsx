@@ -15,15 +15,15 @@ type SubMovieCardProps = {
   title?: string;
 };
 
-const genreList = useGenreList("movie");
-const genres = genreList.data ? genreList.data.genres : [];
-const genreMap: { [key: number]: string } = {};
-
-genres.forEach((genre) => {
-  genreMap[genre.id] = genre.name;
-});
-
 const SubMovieCard = (props: SubMovieCardProps) => {
+  const genreList = useGenreList("movie");
+  const genres = genreList.data ? genreList.data.genres : [];
+  const genreMap: { [key: number]: string } = {};
+
+  genres.forEach((genre) => {
+    genreMap[genre.id] = genre.name;
+  });
+
   return (
     <TouchableOpacity onPress={() => props.cardFunction()}>
       <View

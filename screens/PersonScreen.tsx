@@ -16,8 +16,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { useFetch } from "utils/hooks/useFetch";
 
-const window = useWindowDimensions();
-
 type PersonScreenProps = NativeStackScreenProps<
   InsideStackParamList,
   "PersonScreen"
@@ -69,6 +67,7 @@ type Person = {
 };
 
 const PersonScreen = ({ route, navigation }: PersonScreenProps) => {
+  const window = useWindowDimensions();
   const [expanded, setExpanded] = useState(false);
 
   const { personId } = route.params;

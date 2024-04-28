@@ -20,7 +20,7 @@ import { useMovieData } from "utils/hooks/useMovieData";
 type AddReviewProp = NativeStackScreenProps<InsideStackParamList, "AddReview">;
 
 const AddReview = ({ route, navigation }: AddReviewProp) => {
-  const userıd = useUserStore((state) => state.user);
+  const userId = useUserStore((state) => state.user);
   const [puan, setPuan] = useState(0);
   const [review, setReview] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -49,7 +49,7 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
         puan: puan,
         review: review,
         movieId: movieId,
-        userıd: userıd!.uid,
+        userId: userId!.uid,
       };
       await addDoc(reviewRef, reviewData);
       setModalVisible(false);
