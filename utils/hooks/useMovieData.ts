@@ -69,6 +69,7 @@ export function useMovieData(id: string): {
       },
     }
   );
+console.log(data);
 
   return { data, error, isLoading, isError };
 }
