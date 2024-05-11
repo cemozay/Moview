@@ -17,9 +17,7 @@ import ProfileReviews from "./profile/ProfileReviews";
 import ProfileDiary from "./profile/ProfileDiary";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const ProfileScreen = () => {
-  const [isFollowing, setFollowing] = useState(false);
-
+const ProfileScreen = ({ navigation }) => {
   const FirstRoute = () => <ProfileMain />;
 
   const SecondRoute = () => <ProfileList />;
@@ -79,13 +77,10 @@ const ProfileScreen = () => {
                 <View className="w-36 items-end px-3 py-4 ">
                   <TouchableOpacity
                     className=" bg-black w-28 h-12 justify-center items-center border-1 border-white rounded-xl"
-                    style={[
-                      { backgroundColor: isFollowing ? "gray" : "black" },
-                    ]}
+                    style={[{ backgroundColor: "black" }]}
+                    onPress={() => navigation.navigate("ProfileAyarlar")}
                   >
-                    <Text className="color-white">
-                      {isFollowing ? "Takip Ediliyor" : "Takip Et"}
-                    </Text>
+                    <Text className="color-white">{"Takip Et"}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -113,8 +108,6 @@ const ProfileScreen = () => {
   );
 };
 
-export default ProfileScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -125,3 +118,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default ProfileScreen;
