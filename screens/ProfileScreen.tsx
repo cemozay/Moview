@@ -16,6 +16,7 @@ import ProfileList from "./profile/ProfileList";
 import ProfileReviews from "./profile/ProfileReviews";
 import ProfileDiary from "./profile/ProfileDiary";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Feather from "@expo/vector-icons/Feather";
 
 const ProfileScreen = ({ navigation }) => {
   const FirstRoute = () => <ProfileMain />;
@@ -51,6 +52,13 @@ const ProfileScreen = ({ navigation }) => {
         className="h-72 w-screen"
         source={require("./profile.jpg")}
       >
+        <View className="absolute z-10 w-screen items-end pr-2 pt-4">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ProfileAyarlar")}
+          >
+            <Feather name="settings" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
         <View className="justify-end flex-reverse items-start flex-1">
           <View className=" flex-row">
             <TouchableOpacity>
@@ -78,7 +86,6 @@ const ProfileScreen = ({ navigation }) => {
                   <TouchableOpacity
                     className=" bg-black w-28 h-12 justify-center items-center border-1 border-white rounded-xl"
                     style={[{ backgroundColor: "black" }]}
-                    onPress={() => navigation.navigate("ProfileAyarlar")}
                   >
                     <Text className="color-white">{"Takip Et"}</Text>
                   </TouchableOpacity>
