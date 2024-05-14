@@ -8,7 +8,8 @@ import {
   Image,
   StatusBar,
 } from "react-native";
-
+import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
+import { InsideStackParamList } from "navigation/InsideNavigation";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import ProfileMain from "./profile/ProfileMain";
 import ProfileActivity from "./profile/ProfileActivity";
@@ -18,7 +19,11 @@ import ProfileDiary from "./profile/ProfileDiary";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Feather from "@expo/vector-icons/Feather";
 
-const ProfileScreen = ({ navigation }) => {
+type ProfileScreenProp = NativeStackScreenProps<
+  InsideStackParamList,
+  "ProfileScreen"
+>;
+const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
   const FirstRoute = () => <ProfileMain />;
 
   const SecondRoute = () => <ProfileList />;
@@ -103,7 +108,9 @@ const ProfileScreen = ({ navigation }) => {
         renderTabBar={(props) => (
           <TabBar
             {...props}
-            indicatorStyle={{ backgroundColor: "white" }}
+            indicatorStyle={{
+              backgroundColor: "white",
+            }}
             style={{ backgroundColor: "black" }}
             activeColor={"white"}
             inactiveColor={"white"}

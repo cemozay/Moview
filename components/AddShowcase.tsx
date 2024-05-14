@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useRef } from "react";
-import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import DraggableFlatList, {
   ScaleDecorator,
   ShadowDecorator,
@@ -17,7 +17,6 @@ type Item = {
   type: string;
   key: string;
   text: string;
-  backgroundColor: string;
   isSelected: boolean;
 };
 
@@ -177,7 +176,6 @@ const AddShowcase = () => {
         type: "",
         key: Math.random().toString(),
         text: `Item ${data.length + 1}`,
-        backgroundColor: getRandomColor(),
         isSelected: false,
       };
       setData((prevData) => [...prevData, newItem]);
@@ -186,22 +184,6 @@ const AddShowcase = () => {
 
   const handleDeleteItem = (key: string) => {
     setData((prevData) => prevData.filter((item) => item.key !== key));
-  };
-
-  const getRandomColor = () => {
-    const colors = [
-      "red",
-      "green",
-      "blue",
-      "yellow",
-      "orange",
-      "purple",
-      "pink",
-      "cyan",
-      "magenta",
-      "brown",
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
   };
 
   const handleSelectItemType = (type: string) => {
@@ -225,13 +207,11 @@ const AddShowcase = () => {
           renderItem={renderItem}
           dragItemOverflow={true}
           ListHeaderComponent={SettingsHeaderComponents}
-          ListFooterComponent={SettingsFooterComponents({
-            handleAddItem,
-          })}
+          ListFooterComponent={SettingsFooterComponents({ handleAddItem })}
         />
         {isBottomSheetOpen && (
           <BottomSheet ref={bottomSheetRef} index={0} snapPoints={[300, 400]}>
-            <View style={styles.bottomSheetContent}>
+            <View className="bg-white p-4 h-72 items-center justify-center">
               <TouchableOpacity onPress={() => handleSelectItemType("type1")}>
                 <Text>Type 1</Text>
               </TouchableOpacity>
@@ -248,51 +228,5 @@ const AddShowcase = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  addButton: {
-    backgroundColor: "blue",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    marginBottom: 10,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 18,
-  },
-  rowItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  itemContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    color: "white",
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  deleteButton: {
-    backgroundColor: "red",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  deleteButtonText: {
-    color: "white",
-  },
-  bottomSheetContent: {
-    backgroundColor: "white",
-    padding: 16,
-    height: 300,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
 
 export default AddShowcase;

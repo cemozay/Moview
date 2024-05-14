@@ -53,7 +53,6 @@ const ReviewScreen = ({
     try {
       await deleteDoc(doc(reviewRef, reviewId));
       console.log("Review deleted successfully.");
-      // İnceleme silindiğinde geri dön
       navigation.goBack();
     } catch (error) {
       console.error("Error deleting review:", error);
@@ -76,14 +75,14 @@ const ReviewScreen = ({
     );
   }
 
-  const { date, movieId, puan, review, userId } = reviewData;
+  const { date, mediaId, rating, text, userId } = reviewData;
 
   return (
     <View>
       <Text>Date: {date}</Text>
-      <Text>Movie ID: {movieId}</Text>
-      <Text>Puan: {puan}</Text>
-      <Text>Review: {review}</Text>
+      <Text>Movie ID: {mediaId}</Text>
+      <Text>Puan: {rating}</Text>
+      <Text>Review: {text}</Text>
       <Text>User: {userId}</Text>
 
       {user && user.uid === userId && (

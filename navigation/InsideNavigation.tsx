@@ -1,17 +1,19 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Entypo } from "@expo/vector-icons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { View } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import MovieCreditsList from "../components/PersonList";
+import MovieCreditsList from "../components/MovieCreditsList";
 import MovieDetails from "../components/MovieDetails";
 import AddReview from "../components/AddReview";
 import Selectlist from "../components/Selectlist";
 import PersonScreen from "../screens/PersonScreen";
 import SearchScreen from "../screens/SearchScreen";
-import ListScreen from "../screens/ListScreen";
-import ReviewScreen from "../screens/ReviewScreen";
+import ListsScreen from "../screens/ListsScreen";
+import ReviewScreen from "../components/ReviewScreen";
 import Review from "../screens/ReviewsScreen";
 import ReviewsScreen from "../screens/ReviewsScreen";
 import ProfileReviews from "../screens/profile/ProfileReviews";
@@ -32,6 +34,7 @@ export type InsideStackParamList = {
   ReviewsScreen: undefined;
   LikedMovies: undefined;
   ProfileReviews: undefined;
+  ProfileScreen: undefined;
   ProfileAyarlar: undefined;
 };
 
@@ -45,7 +48,7 @@ const InsideNavigation = () => {
   const user = useUserStore((state) => state.user);
 
   if (!user) {
-    return null; // Login ekranına atılacak
+    return null;
   } else {
     return (
       <InsideStack.Navigator
@@ -62,6 +65,7 @@ const InsideNavigation = () => {
         <InsideStack.Screen name="ReviewsScreen" component={ReviewsScreen} />
         <InsideStack.Screen name="ReviewScreen" component={ReviewScreen} />
         <InsideStack.Screen name="ProfileReviews" component={ProfileReviews} />
+        <InsideStack.Screen name="ProfileScreen" component={ProfileScreen} />
         <InsideStack.Screen name="ProfileAyarlar" component={ProfileAyarlar} />
         <InsideStack.Screen
           name="MovieCreditsList"
@@ -74,7 +78,7 @@ const InsideNavigation = () => {
 
 export type TabParamList = {
   Home: undefined;
-  ListScreen: undefined;
+  ListsScreen: undefined;
   Profile: undefined;
   Review: { movieid: string };
 };
@@ -107,7 +111,7 @@ const HomeTabs = () => {
           },
           tabBarIcon: () => {
             return (
-              <View style={{ alignItems: "center", justifyContent: "center" }}>
+              <View className="items-center justify-center">
                 <Entypo name="home" size={24} color={"#fff"} />
               </View>
             );
@@ -115,16 +119,16 @@ const HomeTabs = () => {
         }}
       />
       <Tab.Screen
-        name="ListScreen"
-        component={ListScreen}
+        name="ListsScreen"
+        component={ListsScreen}
         options={{
           tabBarStyle: {
             backgroundColor: "black",
           },
           tabBarIcon: () => {
             return (
-              <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <Entypo name="home" size={24} color={"#fff"} />
+              <View className="items-center justify-center">
+                <FontAwesome5 name="list-ul" size={24} color="white" />
               </View>
             );
           },
@@ -139,8 +143,8 @@ const HomeTabs = () => {
           },
           tabBarIcon: () => {
             return (
-              <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <Entypo name="home" size={24} color={"#fff"} />
+              <View className="items-center justify-center">
+                <MaterialIcons name="reviews" size={24} color="white" />
               </View>
             );
           },
@@ -155,8 +159,11 @@ const HomeTabs = () => {
           },
           tabBarIcon: () => {
             return (
-              <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <Entypo name="home" size={24} color={"#fff"} />
+              <View className="items-center justify-center">
+                {/*                 <Image
+                  className="w-6 h-6"
+                  source={require("../screens/avatar.jpg")}
+                /> */}
               </View>
             );
           },

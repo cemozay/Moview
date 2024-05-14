@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
-import MovieCreditsList from "./PersonList";
+import MovieCreditsList from "./MovieCreditsList";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { getDoc, doc } from "firebase/firestore";
@@ -25,7 +25,6 @@ type MovieDetailsProp = NativeStackScreenProps<
 const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
   const user = useUserStore((state) => state.user);
   const docRef = doc(FirebaseDB, "likedmovie", user!.uid);
-  const [renk, setRenk] = useState("white"); // Buna type atanacak
 
   const { movieId } = route.params;
 
@@ -40,7 +39,6 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
         const fieldNames = Object.keys(docSnap.data());
 
         if (fieldNames.includes("movieId")) {
-          setRenk("green");
         }
       } else {
         console.log("No such document!");
@@ -50,17 +48,8 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
     }
   };
 
-  // movieId içeriyorsa yeşil, içermiyorsa kırmızı renk ata
   useEffect(() => {
     fetchData();
-    if (
-      movieData &&
-      movieData.genres.some((genre: any) => genre.name === "movieId")
-    ) {
-      setRenk("green");
-    } else {
-      setRenk("red");
-    }
   }, [movieId]);
 
   return (
@@ -129,7 +118,6 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
                 marginLeft: 4,
                 height: 60,
                 width: 60,
-                backgroundColor: renk,
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 30,
@@ -140,11 +128,7 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
           </View>
         </View>
       )}
-      <MovieCreditsList
-        navigation={navigation}
-        route={route}
-        movieId={movieId}
-      />
+      <MovieCreditsList movieId={movieId} />
       <View className="border-b border-white items-center justify-between flex-row">
         <Text className="text-white text-2xl m-2">Review</Text>
         <Text className="text-white text-base m-2">1200 Review</Text>

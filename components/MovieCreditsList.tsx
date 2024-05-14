@@ -30,7 +30,7 @@ type People = {
 const MovieCreditsList = ({
   navigation,
   movieId,
-}: NativeStackScreenProps<InsideStackParamList, "MovieDetails"> & {
+}: NativeStackScreenProps<InsideStackParamList, "MovieCreditsList"> & {
   movieId: string;
 }) => {
   const { data: credits }: { data: CreditList } = useFetch(

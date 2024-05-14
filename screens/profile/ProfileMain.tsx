@@ -3,10 +3,6 @@ import React, { Component } from "react";
 
 export default class ProfileMain extends Component {
   render() {
-    return (
-      <View>
-        <Text>ProfileMain</Text>
-      </View>
-    );
+    return <View className="bg-black flex-1"></View>;
   }
 }

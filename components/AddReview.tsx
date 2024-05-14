@@ -45,10 +45,10 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
   const addData = async () => {
     try {
       let reviewData = {
-        date: selectedDate ? selectedDate.toISOString().split("T")[0] : "",
-        puan: puan,
-        review: review,
-        movieId: movieId,
+        timestamp: selectedDate ? selectedDate.toISOString().split("T")[0] : "",
+        rating: puan,
+        text: review,
+        mediaId: movieId,
         userId: userId!.uid,
       };
       await addDoc(reviewRef, reviewData);
