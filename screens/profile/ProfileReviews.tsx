@@ -4,7 +4,7 @@ import Icon from "@expo/vector-icons/FontAwesome";
 import { collection, where, query, getDocs } from "firebase/firestore";
 import { FirebaseDB } from "../../firebaseConfig";
 import useUserStore from "../../utils/hooks/useUserStore";
-import { useMovieData } from "utils/hooks/useMovieData";
+import { useMovieData, MovieData } from "utils/hooks/useMovieData";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 
@@ -14,8 +14,9 @@ type ProfileReviewsProp = NativeStackScreenProps<
 >;
 
 type Review = {
+  id: string;
   date: string;
-  movieId: string;
+  mediaId: string;
   puan: string;
   review: string;
 };
@@ -23,57 +24,54 @@ type Review = {
 const ProfileReviews = ({ navigation }: ProfileReviewsProp) => {
   const user = useUserStore((state) => state.user);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [movieDataMap, setMovieDataMap] = useState<{ [key: string]: any }>({});
+  const [movies, setMovies] = useState<MovieData[]>([]);
+
+  const movieIds = reviews?.map((review) => review.mediaId);
+  const {
+    data: movieData,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useMovieData(movieIds);
 
   const reviewRef = collection(FirebaseDB, "reviews");
+  const doc_query = query(reviewRef, where("user", "==", user!.uid));
 
-  const fetchMovieData = (review: Review) => {
+  const fetchReviews = async () => {
     try {
-      const apiResponse = useMovieData(review.movieId);
-      const movieData = apiResponse.data;
-
-      setMovieDataMap((prevMap) => ({
-        ...prevMap,
-        [review.movieId]: movieData,
-      }));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const q = query(reviewRef, where("user", "==", user!.uid));
-
-  const fetchData = async () => {
-    try {
-      const snapshot = await getDocs(q);
+      const snapshot = await getDocs(doc_query);
       const reviewList = snapshot.docs.map((doc) => {
         const reviewData = doc.data() as Review;
         return { ...reviewData, id: doc.id };
       });
 
       setReviews(reviewList);
-
-      const movieIds = reviewList.map((review) => review.movieId);
-      movieIds.forEach((movieId) => {
-        fetchMovieData({
-          movieId,
-          date: "",
-          puan: "",
-          review: "",
-        });
-      });
-    } catch (e) {
-      alert(e);
+    } catch (err) {
+      alert(err);
     }
   };
 
+  const handleRefresh = () => {
+    fetchReviews();
+    refetch();
+  };
+
   useEffect(() => {
-    fetchData();
+    fetchReviews();
+    refetch();
   }, []);
 
-  const handleRefresh = () => {
-    fetchData();
-  };
+  useEffect(() => {
+    if (!isLoading && !isError && movieData) {
+      setMovies(movieData);
+    } else {
+      setMovies([]);
+      if (isError) {
+        console.log(error);
+      }
+    }
+  }, [movieData, isLoading, isError]);
 
   return (
     <View style={{ flex: 1, backgroundColor: "black" }}>
@@ -86,7 +84,7 @@ const ProfileReviews = ({ navigation }: ProfileReviewsProp) => {
         {reviews.map((review, index) => (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate("ReviewScreen", { reviewId: review.movieId })
+              navigation.navigate("ReviewScreen", { reviewId: review.mediaId })
             }
             key={index}
             style={{
@@ -100,16 +98,18 @@ const ProfileReviews = ({ navigation }: ProfileReviewsProp) => {
           >
             <View>
               <Text style={{ color: "white" }}>{review.date}</Text>
-              <Text style={{ color: "white" }}>{review.movieId}</Text>
+              <Text style={{ color: "white" }}>{review.mediaId}</Text>
               <Text style={{ color: "white" }}>{review.puan}</Text>
               <Text style={{ color: "white" }}>{review.review}</Text>
             </View>
-            {movieDataMap[review.movieId] && (
+            {movies && (
               <Image
                 style={{ width: 150, height: 200 }}
                 source={{
                   uri: `https://image.tmdb.org/t/p/original${
-                    movieDataMap[review.movieId].poster_path
+                    movies.find(
+                      (movie) => movie.id.toString() === review.mediaId
+                    )?.poster_path
                   }`,
                 }}
               />

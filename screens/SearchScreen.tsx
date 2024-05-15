@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -23,25 +23,33 @@ const SearchScreen = ({ navigation }: SearchScreenProp) => {
   const [showResults, setShowResults] = useState(false);
   const [mediaType, setMediaType] = useState("multi"); // default: multi = "movie" | "tv" | "person"
 
+  const { data, error, isLoading, isError, refetch } = useSearch(
+    mediaType,
+    searchQuery
+  );
+
   const handleSearch = (text: string) => {
     if (text.length > 0) {
       setSearchQuery(text);
-      const { data, error, isLoading, isError } = useSearch(mediaType, text);
-
-      if (isLoading) {
-        return console.error("Loading...");
-      }
-      if (isError) {
-        console.error(error);
-        return;
-      }
-
-      setResults(data.results);
-      setShowResults(true);
+      refetch();
     } else {
+      setSearchQuery("");
       setShowResults(false);
     }
   };
+
+  useEffect(() => {
+    if (!isLoading && !isError && data) {
+      setResults(data.results);
+      setShowResults(true);
+    } else {
+      setResults(null);
+      setShowResults(false);
+      if (isError) {
+        console.log(error);
+      }
+    }
+  }, [data, isLoading, isError]);
 
   return (
     <ScrollView className="bg-black">
@@ -55,60 +63,68 @@ const SearchScreen = ({ navigation }: SearchScreenProp) => {
           value={searchQuery}
         />
 
-        {showResults && (
-          <View>
-            <Text className="color-white m-1 text-2xl">Film Sonuçları</Text>
-            <FlatList
-              data={results?.filter((item) => item.media_type == "movie")}
-              keyExtractor={(item) => item.id.toString()}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("MovieDetails", {
-                      movieId: item.id.toString(),
-                    })
-                  }
-                  className="m-2"
-                >
-                  <Image
-                    className="w-28 h-40 bg-red-500 m-1"
-                    source={{
-                      uri: `https://image.tmdb.org/t/p/w200${item.poster_path}`,
-                    }}
-                  />
-                  <Text className="color-white m-1">{item.title}</Text>
-                </TouchableOpacity>
-              )}
-            />
+        {isLoading ? (
+          <Text style={{ color: "white" }}>Loading...</Text>
+        ) : isError ? (
+          <Text style={{ color: "red" }}>
+            Error occurred while fetching data!
+          </Text>
+        ) : (
+          showResults && (
+            <View>
+              <Text className="color-white m-1 text-2xl">Film Sonuçları</Text>
+              <FlatList
+                data={results?.filter((item) => item.media_type == "movie")}
+                keyExtractor={(item) => item.id.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("MovieDetails", {
+                        movieId: item.id.toString(),
+                      })
+                    }
+                    className="m-2"
+                  >
+                    <Image
+                      className="w-28 h-40 bg-red-500 m-1"
+                      source={{
+                        uri: `https://image.tmdb.org/t/p/w200${item.poster_path}`,
+                      }}
+                    />
+                    <Text className="color-white m-1">{item.title}</Text>
+                  </TouchableOpacity>
+                )}
+              />
 
-            <Text className="color-white m-1 text-2xl">Kişi Sonuçları</Text>
-            <FlatList
-              data={results?.filter((item) => item.media_type == "person")}
-              keyExtractor={(item) => item.id.toString()}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("PersonScreen", {
-                      personId: item.id,
-                    })
-                  }
-                  className="m-2"
-                >
-                  <Image
-                    className="w-28 h-40 bg-red-500 m-1"
-                    source={{
-                      uri: `https://image.tmdb.org/t/p/w200${item.profile_path}`,
-                    }}
-                  />
-                  <Text className="color-white m-1">{item.name}</Text>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
+              <Text className="color-white m-1 text-2xl">Kişi Sonuçları</Text>
+              <FlatList
+                data={results?.filter((item) => item.media_type == "person")}
+                keyExtractor={(item) => item.id.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("PersonScreen", {
+                        personId: item.id,
+                      })
+                    }
+                    className="m-2"
+                  >
+                    <Image
+                      className="w-28 h-40 bg-red-500 m-1"
+                      source={{
+                        uri: `https://image.tmdb.org/t/p/w200${item.profile_path}`,
+                      }}
+                    />
+                    <Text className="color-white m-1">{item.name}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          )
         )}
       </View>
     </ScrollView>

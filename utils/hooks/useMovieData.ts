@@ -1,6 +1,6 @@
 import { useFetch } from "./useFetch";
 
-type MovieData = {
+export type MovieData = {
   adult: boolean;
   backdrop_path: string;
   belongs_to_collection: null;
@@ -56,10 +56,11 @@ export function useMovieData(id: string): {
   error: any;
   isLoading: boolean;
   isError: boolean;
+  refetch: () => void;
 } {
   const apiKey = process.env.EXPO_PUBLIC_TMDB_AUTH_KEY;
 
-  const { data, error, isLoading, isError } = useFetch(
+  const { data, error, isLoading, isError, refetch } = useFetch(
     ["movies", id],
     `${process.env.EXPO_PUBLIC_TMDB_API_URL}/movie/${id}?language=en-US`,
     {
@@ -69,7 +70,6 @@ export function useMovieData(id: string): {
       },
     }
   );
-console.log(data);
 
-  return { data, error, isLoading, isError };
+  return { data, error, isLoading, isError, refetch };
 }

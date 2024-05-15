@@ -35,52 +35,55 @@ type Review = {
 };
 
 export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
-  const reviewRef = collection(FirebaseDB, "reviews");
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [movieDataMap, setMovieDataMap] = useState<MovieData>({});
+  const [movies, setMovies] = useState<MovieData[]>([]);
 
-  const fetchMovieData = async (review: Review) => {
-    const apiResponse = await useMovieData(review.mediaId);
-    const movieData = apiResponse.data;
-    setMovieDataMap((prevMap) => ({
-      ...prevMap,
-      [review.mediaId]: movieData,
-    }));
-  };
+  const movieIds = reviews?.map((review) => review.mediaId);
+  const {
+    data: movieData,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useMovieData(movieIds);
 
-  const fetchData = async () => {
+  const reviewRef = collection(FirebaseDB, "reviews");
+  const doc_query = query(reviewRef);
+
+  const fetchReviews = async () => {
     try {
-      const snapshot = await getDocs(query(reviewRef));
+      const snapshot = await getDocs(doc_query);
       const reviewList = snapshot.docs.map((doc) => {
         const reviewData = doc.data() as Review;
         return { ...reviewData, id: doc.id };
       });
+
       setReviews(reviewList);
-
-      const movieIds = reviewList.map((review) => review.mediaId);
-
-      movieIds.forEach((mediaId) => {
-        fetchMovieData({
-          mediaId,
-          timestamp: "",
-          rating: "",
-          text: "",
-          userId: "",
-          id: "", // Dummy id for fetchMovieData
-        });
-      });
-    } catch (e) {
-      alert(e);
+    } catch (err) {
+      alert(err);
     }
   };
 
+  const handleRefresh = () => {
+    fetchReviews();
+    refetch();
+  };
+
   useEffect(() => {
-    fetchData();
+    fetchReviews();
+    refetch();
   }, []);
 
-  const handleRefresh = () => {
-    fetchData();
-  };
+  useEffect(() => {
+    if (!isLoading && !isError && movieData) {
+      setMovies(movieData);
+    } else {
+      setMovies([]);
+      if (isError) {
+        console.log(error);
+      }
+    }
+  }, [movieData, isLoading, isError]);
 
   const formatTimestamp = (timestamp: any) => {
     if (!timestamp) return "";
@@ -102,6 +105,7 @@ export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
       return `${Math.floor(diffInMonths)} months ago`;
     }
   };
+
   return (
     <View className="flex-1 bg-black">
       <View className="flex-row justify-between items-center p-3">
@@ -118,76 +122,83 @@ export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
         </View>
       </View>
       <ScrollView>
-        {reviews.map((review) => (
-          <TouchableOpacity
-            key={review.id}
-            onPress={() =>
-              navigation.navigate("ReviewScreen", { reviewId: review.id })
-            }
-          >
-            <ImageBackground
-              className=" bg-black border-y border-white p-4 "
-              source={null}
+        {movies &&
+          reviews &&
+          reviews.length > 0 &&
+          movies.length > 0 &&
+          reviews.map((review) => (
+            <TouchableOpacity
+              key={review.id}
+              onPress={() =>
+                navigation.navigate("ReviewScreen", { reviewId: review.id })
+              }
             >
-              <LinearGradient
-                colors={["rgba(0,0,0,0.7)", "rgba(0,0,0,0.7)"]}
-                style={{ ...StyleSheet.absoluteFillObject }}
-              />
-              <View className="flex-row justify-between">
-                {/*                 {movieDataMap[review.mediaId] && (
-                 */}
-                <View>
-                  <Text className="text-white text-2xl">
-                    Filmin Adı
-                    {/* {movieDataMap[review.mediaId].poster_path} */}
-                  </Text>
-                  <Text className="text-white">{review.rating}</Text>
-                </View>
-                <View className="flex-row items-center">
-                  <Text className="text-white">{review.userId}</Text>
-                  <Image
-                    className="w-10 h-10 rounded-full"
-                    source={require("./avatar.jpg")}
-                  />
-                </View>
-              </View>
-              <View className="flex-row mt-2">
-                <View className="w-1/4">
+              <ImageBackground
+                className=" bg-black border-y border-white p-4 "
+                source={null}
+              >
+                <LinearGradient
+                  colors={["rgba(0,0,0,0.7)", "rgba(0,0,0,0.7)"]}
+                  style={{ ...StyleSheet.absoluteFillObject }}
+                />
+                <View className="flex-row justify-between">
                   {/*                 {movieDataMap[review.mediaId] && (
                    */}
-                  <Image
-                    className="h-36 rounded-xl w-24 "
-                    source={
-                      require("../poster.jpg")
-                      /*             {
+                  <View>
+                    <Text className="text-white text-2xl">
+                      {
+                        movies.find(
+                          (movie) => movie.id.toString() === review.mediaId
+                        )?.title
+                      }
+                    </Text>
+                    <Text className="text-white">{review.rating}</Text>
+                  </View>
+                  <View className="flex-row items-center">
+                    <Text className="text-white">{review.userId}</Text>
+                    <Image
+                      className="w-10 h-10 rounded-full"
+                      source={require("./avatar.jpg")}
+                    />
+                  </View>
+                </View>
+                <View className="flex-row mt-2">
+                  <View className="w-1/4">
+                    {/*                 {movieDataMap[review.mediaId] && (
+                     */}
+                    <Image
+                      className="h-36 rounded-xl w-24 "
+                      source={
+                        require("../poster.jpg")
+                        /*             {
                                             uri: `https://image.tmdb.org/t/p/original${
                         movieDataMap[review.mediaId].poster_path
                       }`,
                     } */
-                    }
-                  />
-                </View>
-                <View className="justify-center ml-1 w-3/4">
-                  <View className="my-4 ">
-                    <Text numberOfLines={4} className="text-white text-sm	">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Et sit enim nisi corrupti labore officiis, dolores
-                      voluptatum debitis officia deserunt porro obcaecati, eos
-                      aspernatur facere nemo quaerat dicta quisquam X
-                    </Text>
+                      }
+                    />
                   </View>
-                  <View className="my-4 flex-row gap-3">
-                    <Text className="text-white">
-                      {formatTimestamp(review.timestamp)}
-                    </Text>
-                    <Text className="color-white">X Yorum</Text>
-                    <Text className="color-white">X Beğeni</Text>
+                  <View className="justify-center ml-1 w-3/4">
+                    <View className="my-4 ">
+                      <Text numberOfLines={4} className="text-white text-sm	">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Et sit enim nisi corrupti labore officiis, dolores
+                        voluptatum debitis officia deserunt porro obcaecati, eos
+                        aspernatur facere nemo quaerat dicta quisquam X
+                      </Text>
+                    </View>
+                    <View className="my-4 flex-row gap-3">
+                      <Text className="text-white">
+                        {formatTimestamp(review.timestamp)}
+                      </Text>
+                      <Text className="color-white">X Yorum</Text>
+                      <Text className="color-white">X Beğeni</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            </ImageBackground>
-          </TouchableOpacity>
-        ))}
+              </ImageBackground>
+            </TouchableOpacity>
+          ))}
       </ScrollView>
       <View className="items-end pb-4 pr-4">
         <TouchableOpacity

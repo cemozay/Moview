@@ -63,10 +63,11 @@ export function useSearch(
   error: any;
   isLoading: boolean;
   isError: boolean;
+  refetch: () => void;
 } {
   const apiKey = process.env.EXPO_PUBLIC_TMDB_AUTH_KEY;
 
-  const { data, error, isLoading, isError } = useFetch(
+  const { data, error, isLoading, isError, refetch } = useFetch(
     ["search", mediaType, searchQuery],
     `${process.env.EXPO_PUBLIC_TMDB_API_URL}/search/${mediaType}?query=${searchQuery}`,
     {
@@ -77,5 +78,5 @@ export function useSearch(
     }
   );
 
-  return { data, error, isLoading, isError };
+  return { data, error, isLoading, isError, refetch };
 }

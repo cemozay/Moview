@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -21,27 +21,35 @@ const Selectlist = ({ navigation }: SearchScreenProp) => {
   const [results, setResults] = useState<SearchResult[] | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [mediaType, setMediaType] = useState("multi"); // default search value
+  const [mediaType, setMediaType] = useState("multi"); // default: multi = "movie" | "tv" | "person"
+
+  const { data, error, isLoading, isError, refetch } = useSearch(
+    mediaType,
+    searchQuery
+  );
 
   const handleSearch = (text: string) => {
     if (text.length > 0) {
       setSearchQuery(text);
-      const { data, error, isLoading, isError } = useSearch(mediaType, text);
-
-      if (isLoading) {
-        return console.error("Loading...");
-      }
-      if (isError) {
-        console.error(error);
-        return;
-      }
-
-      setResults(data.results);
-      setShowResults(true);
+      refetch();
     } else {
+      setSearchQuery("");
       setShowResults(false);
     }
   };
+
+  useEffect(() => {
+    if (!isLoading && !isError && data) {
+      setResults(data.results);
+      setShowResults(true);
+    } else {
+      setResults(null);
+      setShowResults(false);
+      if (isError) {
+        console.log(error);
+      }
+    }
+  }, [data, isLoading, isError]);
 
   return (
     <ScrollView className="bg-black">
@@ -54,32 +62,39 @@ const Selectlist = ({ navigation }: SearchScreenProp) => {
           onChangeText={handleSearch}
           value={searchQuery}
         />
-        {showResults && (
-          <View>
-            <FlatList
-              data={results}
-              keyExtractor={(item) => item.id.toString()}
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("AddReview", {
-                      movieId: item.id.toString(),
-                    })
-                  }
-                  className="flex-row items-center m-2"
-                >
-                  <Image
-                    className="w-28 h-40 bg-red-500 m-1"
-                    source={{
-                      uri: `https://image.tmdb.org/t/p/w200${item.poster_path}`,
-                    }}
-                  />
-                  <Text className="color-white m-1">{item.title}</Text>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
+
+        {isLoading ? (
+          <Text className="color-white">Loading...</Text>
+        ) : isError ? (
+          <Text className="color-white">Error</Text>
+        ) : (
+          showResults && (
+            <View>
+              <FlatList
+                data={results}
+                keyExtractor={(item) => item.id.toString()}
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("AddReview", {
+                        movieId: item.id.toString(),
+                      })
+                    }
+                    className="flex-row items-center m-2"
+                  >
+                    <Image
+                      className="w-28 h-40 bg-red-500 m-1"
+                      source={{
+                        uri: `https://image.tmdb.org/t/p/w200${item.poster_path}`,
+                      }}
+                    />
+                    <Text className="color-white m-1">{item.title}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          )
         )}
       </View>
     </ScrollView>
