@@ -13,7 +13,7 @@ import { collection, query, getDocs } from "firebase/firestore";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { FirebaseDB } from "firebaseConfig";
-import { useMovieData } from "utils/hooks/useMovieData";
+import { useMovieDataArray } from "utils/hooks/useMovieDataArray";
 import LinearGradient from "react-native-linear-gradient";
 
 type ReviewsScreenProp = NativeStackScreenProps<
@@ -38,14 +38,14 @@ export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [movies, setMovies] = useState<MovieData[]>([]);
 
-  const movieIds = reviews?.map((review) => review.mediaId);
+  const movieIds = reviews.map((review) => review.mediaId);
   const {
     data: movieData,
     isLoading,
     isError,
     error,
     refetch,
-  } = useMovieData(movieIds);
+  } = useMovieDataArray(movieIds);
 
   const reviewRef = collection(FirebaseDB, "reviews");
   const doc_query = query(reviewRef);
@@ -70,11 +70,7 @@ export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
   };
 
   useEffect(() => {
-    fetchReviews();
-    refetch();
-  }, []);
-
-  useEffect(() => {
+    console.log(movieData);
     if (!isLoading && !isError && movieData) {
       setMovies(movieData);
     } else {
@@ -83,7 +79,7 @@ export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
         console.log(error);
       }
     }
-  }, [movieData, isLoading, isError]);
+  }, []);
 
   const formatTimestamp = (timestamp: any) => {
     if (!timestamp) return "";
@@ -122,9 +118,7 @@ export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
         </View>
       </View>
       <ScrollView>
-        {movies &&
-          reviews &&
-          reviews.length > 0 &&
+        {reviews.length > 0 &&
           movies.length > 0 &&
           reviews.map((review) => (
             <TouchableOpacity
@@ -135,15 +129,16 @@ export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
             >
               <ImageBackground
                 className=" bg-black border-y border-white p-4 "
-                source={null}
+                source={
+                  movies.find((movie) => movie.id.toString() === review.mediaId)
+                    ?.backdrop_path
+                }
               >
                 <LinearGradient
                   colors={["rgba(0,0,0,0.7)", "rgba(0,0,0,0.7)"]}
                   style={{ ...StyleSheet.absoluteFillObject }}
                 />
                 <View className="flex-row justify-between">
-                  {/*                 {movieDataMap[review.mediaId] && (
-                   */}
                   <View>
                     <Text className="text-white text-2xl">
                       {
@@ -164,17 +159,12 @@ export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
                 </View>
                 <View className="flex-row mt-2">
                   <View className="w-1/4">
-                    {/*                 {movieDataMap[review.mediaId] && (
-                     */}
                     <Image
                       className="h-36 rounded-xl w-24 "
                       source={
-                        require("../poster.jpg")
-                        /*             {
-                                            uri: `https://image.tmdb.org/t/p/original${
-                        movieDataMap[review.mediaId].poster_path
-                      }`,
-                    } */
+                        movies.find(
+                          (movie) => movie.id.toString() === review.mediaId
+                        )?.poster_path
                       }
                     />
                   </View>
