@@ -3,11 +3,13 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
-import ComingSoon from "components/ComingSoon";
 import { Button } from "@rneui/themed";
-import Movie from "components/HomeScreenMovie";
-import TvSerials from "components/HomeScreenTvSerials";
-import Anime from "components/HomeScreenAnime";
+import {
+  HomeScreenMovieScreen,
+  ComingSoon,
+  HomeScreenTvSerials,
+  HomeScreenAnimeScreen,
+} from "components/HomeScreenComponents";
 
 type HomeScreenProp = NativeStackScreenProps<InsideStackParamList, "HomeStack">;
 
@@ -64,9 +66,15 @@ const HomeScreen = ({ navigation, route }: HomeScreenProp) => {
         {selectedButton === null && (
           <ComingSoon navigation={navigation} route={route} />
         )}
-        {selectedButton === "Movie" && <Movie />}
-        {selectedButton === "TV" && <TvSerials />}
-        {selectedButton === "Anime" && <Anime />}
+        {selectedButton === "Movie" && (
+          <HomeScreenMovieScreen navigation={navigation} route={route} />
+        )}
+        {selectedButton === "TV" && (
+          <HomeScreenTvSerials navigation={navigation} route={route} />
+        )}
+        {selectedButton === "Anime" && (
+          <HomeScreenAnimeScreen navigation={navigation} route={route} />
+        )}
       </ScrollView>
     </View>
   );

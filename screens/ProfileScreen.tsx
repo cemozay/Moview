@@ -28,7 +28,7 @@ const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
 
   const SecondRoute = () => <ProfileList />;
 
-  const ThirdRoute = () => <ProfileReviews />;
+  const ThirdRoute = () => <ProfileReviews navigation={navigation} />;
   const FourthRoute = () => <ProfileDiary />;
 
   const FifthRoute = () => <ProfileActivity />;

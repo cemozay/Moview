@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
-import Icon from "@expo/vector-icons/FontAwesome";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ImageBackground,
+  ScrollView,
+} from "react-native";
 import { collection, where, query, getDocs } from "firebase/firestore";
 import { FirebaseDB } from "../../firebaseConfig";
 import useUserStore from "../../utils/hooks/useUserStore";
-import { useMovieData, MovieData } from "utils/hooks/useMovieData";
+import { useMovieData } from "utils/hooks/useMovieData";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
+import LinearGradient from "react-native-linear-gradient";
 
 type ProfileReviewsProp = NativeStackScreenProps<
   InsideStackParamList,
@@ -14,29 +22,25 @@ type ProfileReviewsProp = NativeStackScreenProps<
 >;
 
 type Review = {
-  id: string;
-  date: string;
+  timestamp: any;
   mediaId: string;
-  puan: string;
-  review: string;
+  rating: string;
+  text: string;
+  userId: string;
+  id: string;
+};
+
+type ReviewItemProps = {
+  review: Review;
+  navigation: ProfileReviewsProp["navigation"];
 };
 
 const ProfileReviews = ({ navigation }: ProfileReviewsProp) => {
   const user = useUserStore((state) => state.user);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [movies, setMovies] = useState<MovieData[]>([]);
-
-  const movieIds = reviews?.map((review) => review.mediaId);
-  const {
-    data: movieData,
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useMovieData(movieIds);
 
   const reviewRef = collection(FirebaseDB, "reviews");
-  const doc_query = query(reviewRef, where("user", "==", user!.uid));
+  const doc_query = query(reviewRef, where("userId", "==", user!.uid));
 
   const fetchReviews = async () => {
     try {
@@ -52,72 +56,104 @@ const ProfileReviews = ({ navigation }: ProfileReviewsProp) => {
     }
   };
 
-  const handleRefresh = () => {
-    fetchReviews();
-    refetch();
-  };
-
   useEffect(() => {
     fetchReviews();
-    refetch();
   }, []);
 
-  useEffect(() => {
-    if (!isLoading && !isError && movieData) {
-      setMovies(movieData);
-    } else {
-      setMovies([]);
-      if (isError) {
-        console.log(error);
-      }
-    }
-  }, [movieData, isLoading, isError]);
-
   return (
-    <View style={{ flex: 1, backgroundColor: "black" }}>
-      <View>
-        <TouchableOpacity onPress={handleRefresh}>
-          <Icon name="refresh" size={30} color="white" />
-        </TouchableOpacity>
-      </View>
+    <View className="flex-1 bg-black">
       <ScrollView>
-        {reviews.map((review, index) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("ReviewScreen", { reviewId: review.mediaId })
-            }
-            key={index}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              backgroundColor: "red",
-              borderWidth: 2,
-              borderColor: "white",
-              padding: 4,
-            }}
-          >
-            <View>
-              <Text style={{ color: "white" }}>{review.date}</Text>
-              <Text style={{ color: "white" }}>{review.mediaId}</Text>
-              <Text style={{ color: "white" }}>{review.puan}</Text>
-              <Text style={{ color: "white" }}>{review.review}</Text>
-            </View>
-            {movies && (
-              <Image
-                style={{ width: 150, height: 200 }}
-                source={{
-                  uri: `https://image.tmdb.org/t/p/original${
-                    movies.find(
-                      (movie) => movie.id.toString() === review.mediaId
-                    )?.poster_path
-                  }`,
-                }}
-              />
-            )}
-          </TouchableOpacity>
+        {reviews.map((review: Review) => (
+          <ReviewItem key={review.id} review={review} navigation={navigation} />
         ))}
       </ScrollView>
     </View>
+  );
+};
+
+const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
+  const formatTimestamp = (timestamp: any) => {
+    if (!timestamp) return "";
+    const now = new Date();
+    const date = timestamp.toDate();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    const diffInHours = diffInSeconds / 3600;
+    const diffInDays = diffInSeconds / 86400;
+    const diffInWeeks = diffInSeconds / (86400 * 7);
+    const diffInMonths = diffInSeconds / (86400 * 30);
+
+    if (diffInHours < 24) {
+      return `${Math.floor(diffInHours)} hours ago`;
+    } else if (diffInDays < 7) {
+      return `${Math.floor(diffInDays)} days ago`;
+    } else if (diffInWeeks < 4) {
+      return `${Math.floor(diffInWeeks)} weeks ago`;
+    } else {
+      return `${Math.floor(diffInMonths)} months ago`;
+    }
+  };
+
+  const { data: movie, isLoading, isError } = useMovieData(review.mediaId);
+
+  if (isLoading) {
+    return <Text className="color-white">Loading...</Text>;
+  }
+
+  if (isError) {
+    return <Text className="color-white">Error loading movie data</Text>;
+  }
+
+  return (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("ReviewScreen", { reviewId: review.id })
+      }
+    >
+      <ImageBackground
+        className="p-3 border-white border-t"
+        source={{
+          uri: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
+        }}
+      >
+        <LinearGradient
+          colors={["rgba(0,0,0,0.7)", "rgba(0,0,0,0.7)"]}
+          style={{ ...StyleSheet.absoluteFillObject }}
+        />
+        <View className="flex-row justify-between">
+          <View>
+            <Text className="color-white">{movie.title}</Text>
+            <Text className="color-white">{review.rating}</Text>
+          </View>
+          <View className="flex-row items-center">
+            <Text className="color-white">{review.userId}</Text>
+            <Image
+              className="w-10 h-10 rounded-full"
+              source={require("../avatar.jpg")}
+            />
+          </View>
+        </View>
+        <View className="flex-row m-2">
+          <Image
+            className="h-36 w-24"
+            source={{
+              uri: `https://image.tmdb.org/t/p/original${movie.poster_path}`,
+            }}
+          />
+          <View className="flex-1 ml-3">
+            <Text numberOfLines={4} className="color-white">
+              {review.text}
+            </Text>
+            <View className="flex-row mt-2">
+              <Text className="color-white">
+                {formatTimestamp(review.timestamp)}
+              </Text>
+              <Text className="color-white ml-2">X Yorum</Text>
+              <Text className="color-white ml-2">X Beğeni</Text>
+            </View>
+          </View>
+        </View>
+      </ImageBackground>
+    </TouchableOpacity>
   );
 };
 

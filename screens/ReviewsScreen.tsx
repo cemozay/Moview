@@ -10,20 +10,16 @@ import {
 } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { collection, query, getDocs } from "firebase/firestore";
-import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { FirebaseDB } from "firebaseConfig";
-import { useMovieDataArray } from "utils/hooks/useMovieDataArray";
+import { useMovieData } from "utils/hooks/useMovieData";
 import LinearGradient from "react-native-linear-gradient";
 
 type ReviewsScreenProp = NativeStackScreenProps<
   InsideStackParamList,
   "ReviewsScreen"
 >;
-
-type MovieData = {
-  [key: string]: any;
-};
 
 type Review = {
   timestamp: any;
@@ -33,19 +29,12 @@ type Review = {
   userId: string;
   id: string;
 };
-
-export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
+type ReviewItemProps = {
+  review: Review;
+  navigation: ReviewsScreenProp["navigation"];
+};
+const ReviewScreen = ({ navigation }: ReviewsScreenProp) => {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [movies, setMovies] = useState<MovieData[]>([]);
-
-  const movieIds = reviews.map((review) => review.mediaId);
-  const {
-    data: movieData,
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useMovieDataArray(movieIds);
 
   const reviewRef = collection(FirebaseDB, "reviews");
   const doc_query = query(reviewRef);
@@ -66,21 +55,46 @@ export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
 
   const handleRefresh = () => {
     fetchReviews();
-    refetch();
   };
 
   useEffect(() => {
-    console.log(movieData);
-    if (!isLoading && !isError && movieData) {
-      setMovies(movieData);
-    } else {
-      setMovies([]);
-      if (isError) {
-        console.log(error);
-      }
-    }
+    fetchReviews();
   }, []);
 
+  return (
+    <View className="flex-1 bg-black">
+      <View className="flex-row justify-between items-center py-3 px-3">
+        <View>
+          <Text className="color-white text-3xl">Review</Text>
+        </View>
+
+        <View className="flex-row gap-3">
+          <TouchableOpacity onPress={() => navigation.navigate("SearchScreen")}>
+            <Icon name="search" size={30} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Icon name="heart" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <ScrollView>
+        {reviews.map((review: Review) => (
+          <ReviewItem key={review.id} review={review} navigation={navigation} />
+        ))}
+      </ScrollView>
+      <View className="items-end pb-4 pr-4">
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Selectlist")}
+          className="ml-4 h-16 w-16 bg-white justify-center items-center rounded-full"
+        >
+          <Icon name="heart" size={30} color="black" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
   const formatTimestamp = (timestamp: any) => {
     if (!timestamp) return "";
     const now = new Date();
@@ -101,103 +115,68 @@ export default function ReviewScreen({ navigation }: ReviewsScreenProp) {
       return `${Math.floor(diffInMonths)} months ago`;
     }
   };
+  const { data: movie, isLoading, isError } = useMovieData(review.mediaId);
+
+  if (isLoading) {
+    return <Text className="color-white">Loading...</Text>;
+  }
+
+  if (isError) {
+    return <Text className="color-white">Error loading movie data</Text>;
+  }
 
   return (
-    <View className="flex-1 bg-black">
-      <View className="flex-row justify-between items-center p-3">
-        <View>
-          <Text className="text-white text-3xl">Review</Text>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("ReviewScreen", { reviewId: review.id })
+      }
+    >
+      <ImageBackground
+        className="p-3 border-white border-t"
+        source={{
+          uri: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
+        }}
+      >
+        <LinearGradient
+          colors={["rgba(0,0,0,0.7)", "rgba(0,0,0,0.7)"]}
+          style={{ ...StyleSheet.absoluteFillObject }}
+        />
+        <View className="flex-row justify-between">
+          <View>
+            <Text className="color-white">{movie.title}</Text>
+            <Text className="color-white">{review.rating}</Text>
+          </View>
+          <View className="flex-row items-center">
+            <Text className="color-white">{review.userId}</Text>
+            <Image
+              className="w-10 h-10 rounded-full"
+              source={require("./avatar.jpg")}
+            />
+          </View>
         </View>
-        <View className="flex-row gap-3">
-          <TouchableOpacity onPress={() => navigation.navigate("SearchScreen")}>
-            <Icon name="search" size={30} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleRefresh}>
-            <Icon name="refresh" size={30} color="white" />
-          </TouchableOpacity>
+        <View className="flex-row m-2">
+          <Image
+            className="h-36 w-24"
+            source={{
+              uri: `https://image.tmdb.org/t/p/original${movie.poster_path}`,
+            }}
+          />
+          <View className="flex-1 ml-3">
+            <Text numberOfLines={4} className="color-white">
+              {review.text}
+            </Text>
+            <View className="flex-row mt-2">
+              <Text className="color-white">
+                {formatTimestamp(review.timestamp)}
+              </Text>
+              <Text className="color-white ml-2">X Yorum</Text>
+              <Text className="color-white ml-2">X Beğeni</Text>
+            </View>
+          </View>
         </View>
-      </View>
-      <ScrollView>
-        {reviews.length > 0 &&
-          movies.length > 0 &&
-          reviews.map((review) => (
-            <TouchableOpacity
-              key={review.id}
-              onPress={() =>
-                navigation.navigate("ReviewScreen", { reviewId: review.id })
-              }
-            >
-              <ImageBackground
-                className=" bg-black border-y border-white p-4 "
-                source={
-                  movies.find((movie) => movie.id.toString() === review.mediaId)
-                    ?.backdrop_path
-                }
-              >
-                <LinearGradient
-                  colors={["rgba(0,0,0,0.7)", "rgba(0,0,0,0.7)"]}
-                  style={{ ...StyleSheet.absoluteFillObject }}
-                />
-                <View className="flex-row justify-between">
-                  <View>
-                    <Text className="text-white text-2xl">
-                      {
-                        movies.find(
-                          (movie) => movie.id.toString() === review.mediaId
-                        )?.title
-                      }
-                    </Text>
-                    <Text className="text-white">{review.rating}</Text>
-                  </View>
-                  <View className="flex-row items-center">
-                    <Text className="text-white">{review.userId}</Text>
-                    <Image
-                      className="w-10 h-10 rounded-full"
-                      source={require("./avatar.jpg")}
-                    />
-                  </View>
-                </View>
-                <View className="flex-row mt-2">
-                  <View className="w-1/4">
-                    <Image
-                      className="h-36 rounded-xl w-24 "
-                      source={
-                        movies.find(
-                          (movie) => movie.id.toString() === review.mediaId
-                        )?.poster_path
-                      }
-                    />
-                  </View>
-                  <View className="justify-center ml-1 w-3/4">
-                    <View className="my-4 ">
-                      <Text numberOfLines={4} className="text-white text-sm	">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Et sit enim nisi corrupti labore officiis, dolores
-                        voluptatum debitis officia deserunt porro obcaecati, eos
-                        aspernatur facere nemo quaerat dicta quisquam X
-                      </Text>
-                    </View>
-                    <View className="my-4 flex-row gap-3">
-                      <Text className="text-white">
-                        {formatTimestamp(review.timestamp)}
-                      </Text>
-                      <Text className="color-white">X Yorum</Text>
-                      <Text className="color-white">X Beğeni</Text>
-                    </View>
-                  </View>
-                </View>
-              </ImageBackground>
-            </TouchableOpacity>
-          ))}
-      </ScrollView>
-      <View className="items-end pb-4 pr-4">
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Selectlist")}
-          className="ml-4 h-16 w-16 bg-white justify-center items-center rounded-full"
-        >
-          <Icon name="heart" size={30} color="black" />
-        </TouchableOpacity>
-      </View>
-    </View>
+      </ImageBackground>
+    </TouchableOpacity>
   );
-}
+};
+
+export default ReviewScreen;

@@ -53,89 +53,26 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
   }, [movieId]);
 
   return (
-    <ScrollView className="bg-black">
+    <View className="bg-black">
       {movieData && (
         <View>
-          <View className="justify-center items-center	">
+          <View className="items-center">
             <ImageBackground
-              className="w-screen h-64"
-              resizeMode="contain"
+              className="w-screen h-96"
+              resizeMode="cover"
+              resizeMethod="auto"
               source={{
-                uri: `https://image.tmdb.org/t/p/original${movieData.backdrop_path}`,
+                uri: `https://image.tmdb.org/t/p/original${movieData.poster_path}`,
               }}
-            />
-            <View className="absolute items-center">
-              <Image
-                className="w-48 h-72"
-                source={{
-                  uri: `https://image.tmdb.org/t/p/original${movieData.poster_path}`,
-                }}
-              />
-              <View className="pt-1 justify-center items-center">
-                <Text className="color-white text-2xl">{movieData.title}</Text>
-                <Text className="pt-1 color-white text-1xl">
-                  {movieData.release_date.toString()}
-                </Text>
-                <View className="flex pt-1 flex-row flex-wrap">
-                  {movieData.genres.map((genre: any) => (
-                    <Text key={genre.id} className="color-white  mr-2">
-                      {genre.name}
-                    </Text>
-                  ))}
-                </View>
-              </View>
-            </View>
-            <View className="w-screen h-72  justify-end">
-              <View className=" h-20 flex-row">
-                <View className=" w-1/2 justify-center items-center">
-                  <Text className="color-white">⭐⭐⭐⭐</Text>
-                </View>
-                <View className="w-1/2 justify-center items-center">
-                  <Text className="color-white">190 Review</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-          <View className=" w-scren h-16 border-white items-center flex-row justify-center">
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("AddReview", {
-                  movieId: movieData.id.toString(),
-                })
-              }
-              className="mx-4 h-16 w-16 bg-white justify-center items-center rounded-full"
-            >
-              <Icon name="heart" size={30} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity className="mx-4 h-16 w-16 bg-white justify-center items-center rounded-full">
-              <Icon name="list" size={30} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity className="mx-4 h-16 w-16 bg-white justify-center items-center rounded-full">
-              <Icon name="save" size={30} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                marginLeft: 4,
-                height: 60,
-                width: 60,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 30,
-              }}
-            >
-              <Icon name="star" size={30} color="black" />
-            </TouchableOpacity>
+            ></ImageBackground>
           </View>
         </View>
       )}
-      <MovieCreditsList movieId={movieId} />
-      <View className="border-b border-white items-center justify-between flex-row">
-        <Text className="text-white text-2xl m-2">Review</Text>
-        <Text className="text-white text-base m-2">1200 Review</Text>
-      </View>
-      <Button title="Geri Git" onPress={() => navigation.goBack()} />
-    </ScrollView>
+    </View>
   );
 };
 
 export default MovieDetailScreen;
+{
+  /*                 <MovieCreditsList movieId={movieId} /> */
+}

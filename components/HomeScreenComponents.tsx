@@ -5,6 +5,7 @@ import {
   Dimensions,
   StatusBar,
   FlatList,
+  Text,
   ActivityIndicator,
 } from "react-native";
 import { baseImagePath } from "../utils/functions";
@@ -153,4 +154,36 @@ const ComingSoon = ({
   );
 };
 
-export default ComingSoon;
+const HomeScreenAnimeScreen = ({
+  navigation,
+}: NativeStackScreenProps<InsideStackParamList, "HomeStack">) => {
+  return (
+    <ScrollView>
+      <Text className="color-red-500">HomeScreenAnimeScreen</Text>
+    </ScrollView>
+  );
+};
+const HomeScreenMovieScreen = ({
+  navigation,
+}: NativeStackScreenProps<InsideStackParamList, "HomeStack">) => {
+  return (
+    <ScrollView>
+      <Text className="color-red-500">HomeScreenMovieScreen</Text>
+    </ScrollView>
+  );
+};
+const HomeScreenTvSerials = ({
+  navigation,
+}: NativeStackScreenProps<InsideStackParamList, "HomeStack">) => {
+  return (
+    <ScrollView>
+      <Text className="color-red-500">HomeScreenTvSerials</Text>
+    </ScrollView>
+  );
+};
+export {
+  HomeScreenAnimeScreen,
+  HomeScreenMovieScreen,
+  HomeScreenTvSerials,
+  ComingSoon,
+};

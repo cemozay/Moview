@@ -56,7 +56,7 @@ export default function ListScreen({ navigation }: ListScreenProp) {
 
       const mediaIds = listCollection.flatMap((list) =>
         list.mediaItems.slice(0, 20)
-      ); // Sadece ilk 20 öğeyi al
+      );
 
       mediaIds.forEach((mediaId) => {
         fetchMovieData(mediaId);

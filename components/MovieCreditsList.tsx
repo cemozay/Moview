@@ -27,12 +27,15 @@ type People = {
   job?: string;
 };
 
-const MovieCreditsList = ({
-  navigation,
-  movieId,
-}: NativeStackScreenProps<InsideStackParamList, "MovieCreditsList"> & {
+type MovieCreditsList = NativeStackScreenProps<
+  InsideStackParamList,
+  "MovieCreditsList"
+>;
+type MovieCreditsListProps = {
+  navigation: MovieCreditsList["navigation"];
   movieId: string;
-}) => {
+};
+const MovieCreditsList = ({ navigation, movieId }: MovieCreditsListProps) => {
   const { data: credits }: { data: CreditList } = useFetch(
     ["movies", movieId, "credits"],
     `${process.env.EXPO_PUBLIC_TMDB_API_URL}/movie/${movieId}?credits?language=en-US`,

@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { FirebaseDB } from "firebaseConfig";
 import useUserStore from "../utils/hooks/useUserStore";
 import CalendarPicker from "react-native-calendar-picker";
@@ -45,7 +45,9 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
   const addData = async () => {
     try {
       let reviewData = {
-        timestamp: selectedDate ? selectedDate.toISOString().split("T")[0] : "",
+        timestamp: selectedDate
+          ? Timestamp.fromDate(selectedDate)
+          : Timestamp.now(),
         rating: puan,
         text: review,
         mediaId: movieId,
@@ -58,6 +60,7 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
       alert(e);
     }
   };
+
   const onDateChange = (date: Date) => {
     setSelectedDate(date);
   };
