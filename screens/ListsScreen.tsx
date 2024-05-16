@@ -3,9 +3,9 @@ import {
   View,
   Text,
   Image,
-  FlatList,
   TouchableOpacity,
   ScrollView,
+  FlatList,
 } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { collection, query, getDocs } from "firebase/firestore";
@@ -19,31 +19,50 @@ type ListScreenProp = NativeStackScreenProps<
   "ListsScreen"
 >;
 
-type MovieData = {
-  [key: string]: any;
-};
-
 type List = {
   id: string;
   listName: string;
   mediaItems: string[];
-  timestamp: any; // Timestamp object from Firestore
+  timestamp: any;
   userId: string;
 };
 
-export default function ListScreen({ navigation }: ListScreenProp) {
+type MovieItemProps = {
+  mediaId: string;
+};
+
+const MovieItem = ({ mediaId }: MovieItemProps) => {
+  const { data: movie, isLoading, isError } = useMovieData(mediaId);
+
+  if (isLoading) {
+    return (
+      <View className="mr-3 h-48 w-24 bg-gray-500">
+        <Text className="text-white">Loading...</Text>
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View className="mr-3 h-48 w-24 bg-gray-500">
+        <Text className="text-white">Error loading movie data</Text>
+      </View>
+    );
+  }
+
+  return (
+    <Image
+      className="h-36 w-24 rounded-xl"
+      source={{
+        uri: `https://image.tmdb.org/t/p/original${movie.poster_path}`,
+      }}
+    />
+  );
+};
+
+const ListScreen = ({ navigation }: ListScreenProp) => {
   const listsRef = collection(FirebaseDB, "lists");
   const [lists, setLists] = useState<List[]>([]);
-  const [movieDataMap, setMovieDataMap] = useState<MovieData>({});
-
-  const fetchMovieData = async (mediaId: string) => {
-    const apiResponse = await useMovieData(mediaId);
-    const movieData = apiResponse.data;
-    setMovieDataMap((prevMap) => ({
-      ...prevMap,
-      [mediaId]: movieData,
-    }));
-  };
 
   const fetchData = async () => {
     try {
@@ -53,14 +72,6 @@ export default function ListScreen({ navigation }: ListScreenProp) {
         return { ...listData, id: doc.id };
       });
       setLists(listCollection);
-
-      const mediaIds = listCollection.flatMap((list) =>
-        list.mediaItems.slice(0, 20)
-      );
-
-      mediaIds.forEach((mediaId) => {
-        fetchMovieData(mediaId);
-      });
     } catch (e) {
       alert(e);
     }
@@ -95,6 +106,56 @@ export default function ListScreen({ navigation }: ListScreenProp) {
     }
   };
 
+  const renderListItem = ({ item }: { item: List }) => (
+    <TouchableOpacity
+      key={item.id}
+      className="flex-row justify-between bg-gray-700 rounded-xl p-3"
+      onPress={() =>
+        navigation.navigate("ListDetailsScreen", { listId: item.id })
+      }
+    >
+      <View>
+        <View className="w-full flex-row justify-between">
+          <View>
+            <Text className="color-white text-xl">{item.listName}</Text>
+          </View>
+          <View className="flex-row items-center">
+            <Text className="color-white">{item.userId}</Text>
+            <Image
+              className="w-10 h-10 rounded-full"
+              source={require("./avatar.jpg")}
+            />
+          </View>
+        </View>
+        <View>
+          <Text numberOfLines={2} className="color-white">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Exercitationem magni quod error nulla aliquid mollitia magnam fuga
+            est, maiores perspiciatis?
+          </Text>
+        </View>
+        <FlatList
+          data={item.mediaItems}
+          keyExtractor={(mediaId) => mediaId}
+          horizontal
+          renderItem={({ item: mediaId }) => <MovieItem mediaId={mediaId} />}
+        />
+        <View className="flex-row justify-between gap-3">
+          <View className="gap-3">
+            <Text className="text-white">
+              {formatTimestamp(item.timestamp)}
+            </Text>
+          </View>
+          <View className="flex-row gap-3">
+            <Text className="text-white">{item.mediaItems.length} Film</Text>
+            <Text className="text-white">X Yorum</Text>
+            <Text className="text-white">X Beğeni</Text>
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <View className="flex-1 bg-black">
       <View className="flex-row justify-between items-center p-3">
@@ -111,69 +172,7 @@ export default function ListScreen({ navigation }: ListScreenProp) {
         </View>
       </View>
       <ScrollView>
-        {lists.map((list) => (
-          <TouchableOpacity
-            key={list.id}
-            className="flex-row justify-between bg-gray-700 rounded-xl p-3"
-            onPress={() =>
-              navigation.navigate("ListDetailsScreen", { listId: list.id })
-            }
-          >
-            <View>
-              <View className="w-full flex-row justify-between">
-                <View>
-                  <Text className="color-white text-xl">{list.listName}</Text>
-                </View>
-
-                <View className="flex-row items-center">
-                  <Text className="color-white">{list.userId}</Text>
-                  <Image
-                    className="w-10 h-10 rounded-full"
-                    source={require("./avatar.jpg")}
-                  />
-                </View>
-              </View>
-              <View>
-                <Text numberOfLines={2} className="color-white">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Exercitationem magni quod error nulla aliquid mollitia magnam
-                  fuga est, maiores perspiciatis?
-                </Text>
-              </View>
-              <FlatList
-                data={list.mediaItems}
-                keyExtractor={(item) => item}
-                horizontal
-                renderItem={({ item }) => (
-                  <View className="mr-3">
-                    {movieDataMap[item] && (
-                      <Image
-                        className="h-48 w-24"
-                        source={{
-                          uri: `https://image.tmdb.org/t/p/original${movieDataMap[item].poster_path}`,
-                        }}
-                      />
-                    )}
-                  </View>
-                )}
-              />
-              <View className="flex-row justify-between gap-3">
-                <View className="gap-3">
-                  <Text className="text-white">
-                    {formatTimestamp(list.timestamp)}
-                  </Text>
-                </View>
-                <View className="flex-row gap-3">
-                  <Text className="text-white">
-                    {list.mediaItems.length} Film
-                  </Text>
-                  <Text className="text-white">X Yorum</Text>
-                  <Text className="text-white">X Beğeni</Text>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
+        {lists.map((list) => renderListItem({ item: list }))}
       </ScrollView>
       <View className="items-end pb-4 pr-4">
         <TouchableOpacity
@@ -185,4 +184,5 @@ export default function ListScreen({ navigation }: ListScreenProp) {
       </View>
     </View>
   );
-}
+};
+export default ListScreen;

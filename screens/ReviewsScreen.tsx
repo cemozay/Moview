@@ -72,8 +72,8 @@ const ReviewScreen = ({ navigation }: ReviewsScreenProp) => {
           <TouchableOpacity onPress={() => navigation.navigate("SearchScreen")}>
             <Icon name="search" size={30} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Icon name="heart" size={30} color="white" />
+          <TouchableOpacity onPress={() => handleRefresh}>
+            <Icon name="refresh" size={30} color="white" />
           </TouchableOpacity>
         </View>
       </View>
@@ -156,7 +156,7 @@ const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
         </View>
         <View className="flex-row m-2">
           <Image
-            className="h-36 w-24"
+            className="h-36 w-24 rounded-xl"
             source={{
               uri: `https://image.tmdb.org/t/p/original${movie.poster_path}`,
             }}

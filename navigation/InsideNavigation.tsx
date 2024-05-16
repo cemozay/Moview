@@ -9,6 +9,7 @@ import ProfileScreen from "../screens/ProfileScreen";
 import MovieCreditsList from "../components/MovieCreditsList";
 import MovieDetails from "../components/MovieDetails";
 import AddReview from "../components/AddReview";
+import ListDetailsScreen from "../components/ListDetailsScreen";
 import Selectlist from "../components/Selectlist";
 import PersonScreen from "../screens/PersonScreen";
 import SearchScreen from "../screens/SearchScreen";
@@ -26,6 +27,8 @@ export type InsideStackParamList = {
   MovieCreditsList: { movieId: string };
   PersonScreen: { personId: number };
   SearchScreen: undefined;
+  ListsScreen: undefined;
+  ListDetailsScreen: { listId: string };
   Review: { movieid: string };
   ReviewScreen: { reviewId: string };
   AddReview: { movieId: string };
@@ -59,6 +62,11 @@ const InsideNavigation = () => {
         <InsideStack.Screen name="MovieDetails" component={MovieDetails} />
         <InsideStack.Screen name="PersonScreen" component={PersonScreen} />
         <InsideStack.Screen name="SearchScreen" component={SearchScreen} />
+        <InsideStack.Screen name="ListsScreen" component={ListsScreen} />
+        <InsideStack.Screen
+          name="ListDetailsScreen"
+          component={ListDetailsScreen}
+        />
         <InsideStack.Screen name="Review" component={Review} />
         <InsideStack.Screen name="AddReview" component={AddReview} />
         <InsideStack.Screen name="Selectlist" component={Selectlist} />
