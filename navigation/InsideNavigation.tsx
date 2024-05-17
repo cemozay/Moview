@@ -6,7 +6,6 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { View } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import MovieCreditsList from "../components/MovieCreditsList";
 import MovieDetails from "../components/MovieDetails";
 import AddReview from "../components/AddReview";
 import ListDetailsScreen from "../components/ListDetailsScreen";
@@ -24,7 +23,6 @@ import useUserStore from "../utils/hooks/useUserStore";
 export type InsideStackParamList = {
   HomeStack: { screen: string; params: any };
   MovieDetails: { movieId: string };
-  MovieCreditsList: { movieId: string };
   PersonScreen: { personId: number };
   SearchScreen: undefined;
   ListsScreen: undefined;
@@ -75,10 +73,6 @@ const InsideNavigation = () => {
         <InsideStack.Screen name="ProfileReviews" component={ProfileReviews} />
         <InsideStack.Screen name="ProfileScreen" component={ProfileScreen} />
         <InsideStack.Screen name="ProfileAyarlar" component={ProfileAyarlar} />
-        <InsideStack.Screen
-          name="MovieCreditsList"
-          component={MovieCreditsList}
-        />
       </InsideStack.Navigator>
     );
   }

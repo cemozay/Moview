@@ -5,7 +5,7 @@ export type MovieData = {
   backdrop_path: string;
   belongs_to_collection: null;
   budget: number;
-  genres: Genre[];
+  genres: genres[];
   homepage: string;
   id: number;
   imdb_id: string;
@@ -28,7 +28,7 @@ export type MovieData = {
   vote_count: number;
 };
 
-type Genre = {
+type genres = {
   id: number;
   name: string;
 };
