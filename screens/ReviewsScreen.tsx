@@ -9,9 +9,9 @@ import {
   StyleSheet,
 } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
-import { collection, query, getDocs } from "firebase/firestore";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
+import { collection, query, getDocs } from "firebase/firestore";
 import { FirebaseDB } from "firebaseConfig";
 import { useMovieData } from "utils/hooks/useMovieData";
 import LinearGradient from "react-native-linear-gradient";
@@ -131,52 +131,83 @@ const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
         navigation.navigate("ReviewScreen", { reviewId: review.id })
       }
     >
-      <ImageBackground
-        className="p-3 border-white border-t"
-        source={{
-          uri: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
-        }}
-      >
-        <LinearGradient
-          colors={["rgba(0,0,0,0.7)", "rgba(0,0,0,0.7)"]}
-          style={{ ...StyleSheet.absoluteFillObject }}
-        />
-        <View className="flex-row justify-between">
-          <View>
-            <Text className="color-white">{movie.title}</Text>
-            <Text className="color-white">{review.rating}</Text>
-          </View>
-          <View className="flex-row items-center">
-            <Text className="color-white">{review.userId}</Text>
-            <Image
-              className="w-10 h-10 rounded-full"
-              source={require("./avatar.jpg")}
-            />
-          </View>
-        </View>
-        <View className="flex-row m-2">
-          <Image
-            className="h-36 w-24 rounded-xl"
-            source={{
-              uri: `https://image.tmdb.org/t/p/original${movie.poster_path}`,
-            }}
+      <View style={styles.reviewContainer}>
+        <ImageBackground
+          style={styles.imageBackground}
+          imageStyle={styles.imageBackgroundImage}
+          source={{
+            uri: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
+          }}
+        >
+          <LinearGradient
+            colors={["rgba(0,0,0,0.5)", "rgba(0,0,0,0.5)"]}
+            style={StyleSheet.absoluteFillObject}
           />
-          <View className="flex-1 ml-3">
-            <Text numberOfLines={4} className="color-white">
-              {review.text}
-            </Text>
-            <View className="flex-row mt-2">
-              <Text className="color-white">
-                {formatTimestamp(review.timestamp)}
-              </Text>
-              <Text className="color-white ml-2">X Yorum</Text>
-              <Text className="color-white ml-2">X Beğeni</Text>
+          <View className="flex-row justify-between">
+            <View>
+              <Text className="color-white text-2xl">{movie.title}</Text>
+              <Text className="color-white">{review.rating}</Text>
             </View>
           </View>
-        </View>
-      </ImageBackground>
+          <View className="flex-row m-2">
+            <Image
+              className="h-36 w-24 rounded-xl"
+              source={{
+                uri: `https://image.tmdb.org/t/p/original${movie.poster_path}`,
+              }}
+            />
+            <View className="flex-1 ml-3">
+              <Text numberOfLines={4} className="color-white">
+                {review.text}
+              </Text>
+              <View>
+                <View className="flex-row items-center m-2">
+                  <Image
+                    className="w-10 h-10 rounded-full"
+                    source={require("./avatar.jpg")}
+                  />
+                  <View>
+                    <Text className="text-xs color-white">Alperen Ağırman</Text>
+                  </View>
+                  <View className="justify-center items-center">
+                    <Icon name="search" size={24} color="white" />
+
+                    <Text className="color-white ml-2 text-xs">X Yorum</Text>
+                  </View>
+                  <View className="justify-center items-center">
+                    <Icon name="search" size={24} color="white" />
+                    <Text className="color-white ml-2 text-xs">X Beğeni</Text>
+                  </View>
+                </View>
+              </View>
+              <View className="items-end">
+                <Text className="color-white text-xs">
+                  {formatTimestamp(review.timestamp)}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </ImageBackground>
+      </View>
     </TouchableOpacity>
   );
 };
 
+const styles = StyleSheet.create({
+  reviewContainer: {
+    borderColor: "#585858",
+    borderWidth: 1,
+    marginBottom: 16,
+    borderRadius: 40, // Add border radius to the container
+    overflow: "hidden", // Ensure child components are clipped to the rounded corners
+  },
+  imageBackground: {
+    padding: 16,
+  },
+  imageBackgroundImage: {
+    borderRadius: 16, // Add border radius to the ImageBackground
+  },
+});
+
 export default ReviewScreen;
+ReviewItem;
