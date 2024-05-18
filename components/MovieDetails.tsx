@@ -2,30 +2,33 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   ImageBackground,
-  Image,
   TouchableOpacity,
+  Linking,
   ScrollView,
   FlatList,
+  Image,
   Dimensions,
+  StyleSheet,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { useMovieData } from "utils/hooks/useMovieData";
 import LinearGradient from "react-native-linear-gradient";
-import { FloatingAction } from "react-native-floating-action";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { FirebaseDB } from "firebaseConfig";
+import { fetchTrailer } from "utils/hooks/useFetchTrailer"; // fetchTrailer fonksiyonunu içe aktarın
+import useFetchCrew from "utils/hooks/useFetchCrew"; // fetchTrailer fonksiyonunu içe aktarın
+import { FloatingAction } from "react-native-floating-action";
+
+const screenWidth = Dimensions.get("window").width;
 
 type MovieDetailsProp = NativeStackScreenProps<
   InsideStackParamList,
   "MovieDetails"
 >;
-
-const screenWidth = Dimensions.get("window").width;
 
 type People = {
   adult: boolean;
@@ -56,34 +59,14 @@ type Review = {
 const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
   const { movieId } = route.params;
   const apiResponse = useMovieData(movieId);
-  const movieData = apiResponse.data;
-  const [cast, setCast] = useState<People[]>([]);
-  const [crew, setCrew] = useState<People[]>([]);
+  const { data: movieData } = apiResponse;
+  const [trailerUrl, setTrailerUrl] = useState<string | null>(null);
+  const { cast, crew } = useFetchCrew(movieId);
   const [reviews, setReviews] = useState<Review[]>([]);
 
-  const fetchData = async () => {
-    try {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2UzY2MwNDE2ZjcwM2RmOTI1NmM1ZTgyYmEwZTVmYiIsInN1YiI6IjY1ODM2NTZhMDgzNTQ3NDRmMzNlODc5NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Nv0234eCrGmSRXSURyFUGO7uIub5OAOeCA0t9kCPLr0",
-        },
-      };
-
-      const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US`,
-        options
-      );
-      const data = await response.json();
-
-      setCast(data.cast);
-      setCrew(data.crew);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  useEffect(() => {
+    fetchTrailer(movieId, setTrailerUrl);
+  }, [movieId]);
 
   const fetchReviews = async () => {
     try {
@@ -103,12 +86,16 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [movieId]);
-
-  useEffect(() => {
     fetchReviews();
   }, [movieData]);
+
+  const handlePress = () => {
+    if (trailerUrl) {
+      Linking.openURL(trailerUrl);
+    } else {
+      alert("Trailer not available");
+    }
+  };
 
   const formatTimestamp = (timestamp: any) => {
     if (!timestamp) return "";
@@ -133,32 +120,32 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
 
   const actions = [
     {
-      text: "Accessibility",
+      text: "Already Watch",
       icon: <Icon name="search" size={30} color="white" />,
-      name: "bt_accessibility",
-      position: 2,
-      color: "gray",
-    },
-    {
-      text: "Language",
-      icon: <Icon name="search" size={30} color="white" />,
-      name: "bt_language",
+      name: "bt_alreadywatch",
       position: 1,
-      color: "gray",
+      color: "#FF5C00",
     },
     {
-      text: "Location",
+      text: "WatchList",
       icon: <Icon name="search" size={30} color="white" />,
-      name: "bt_room",
+      name: "bt_watchlist",
+      position: 2,
+      color: "#FF5C00",
+    },
+    {
+      text: "AddList",
+      icon: <Icon name="search" size={30} color="white" />,
+      name: "bt_addlist",
       position: 3,
-      color: "gray",
+      color: "#FF5C00",
     },
     {
-      text: "Video",
+      text: "Review",
       icon: <Icon name="search" size={30} color="white" />,
-      name: "bt_videocam",
+      name: "bt_review",
       position: 4,
-      color: "gray",
+      color: "#FF5C00",
     },
   ];
 
@@ -246,19 +233,27 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
             <View>
               <ImageBackground
                 style={{ width: "100%", height: 500 }}
-                className="w-screen h-96"
+                className="w-screen h-96 mb-12"
                 resizeMode="cover"
                 source={{
                   uri: `https://image.tmdb.org/t/p/original${movieData.poster_path}`,
                 }}
               >
-                <View className="flex-row items-center absolute z-10">
-                  <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    className=" justify-center items-center pt-4 pl-2 "
-                  >
-                    <AntDesign name="left" size={26} color="white" />
-                  </TouchableOpacity>
+                <View className="flex-row justify-between z-10">
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => navigation.goBack()}
+                      className=" justify-center items-center pt-4 pl-3 "
+                    >
+                      <AntDesign name="left" size={26} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+                    <TouchableOpacity className=" justify-center items-center pt-4 pr-3 ">
+                      <Icon name="heart" size={26} color="white" />
+                      {/* Eğer Beğendiği bir film ise kalp kırmızı olur eğer hali hazırda beğenmediği bir film ise rengini korur */}
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 <LinearGradient
                   colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.9999)"]}
@@ -275,11 +270,11 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
                     {movieData.title}
                   </Text>
                   <Text className="text-neutral-700 text-2xl">
-                    {movieData.release_date}
+                    {/*                     {movieData.release_date}
+                     */}
+                    24 Mayıs 2023
                   </Text>
-                  <Text className="color-red-700 text-xl">
-                    {movieData.genres.name}
-                  </Text>
+                  <Text className="color-red-700 text-xl">genres{}</Text>
                 </View>
               </ImageBackground>
               <View>
@@ -293,16 +288,20 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
                       52.780 Vote
                     </Text>
                   </View>
-                  <View className="flex-row items-center gap-2">
-                    <AntDesign name="playcircleo" size={24} color="white" />
-                    <Text className="pr-3 color-white text-base">
-                      Watch Trailer
-                    </Text>
+                  <View>
+                    <TouchableOpacity
+                      className="flex-row items-center gap-2"
+                      onPress={handlePress}
+                    >
+                      <AntDesign name="playcircleo" size={24} color="white" />
+                      <Text className="pr-3 color-white text-base">
+                        Watch Trailer
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
             </View>
-
             <View>
               <View className="items-center">
                 <View className="color-red-800 border-neutral-800 border w-11/12"></View>
@@ -354,11 +353,6 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
                   snapToAlignment="center"
                   decelerationRate="fast"
                   snapToInterval={screenWidth}
-                  getItemLayout={(data, index) => ({
-                    length: screenWidth,
-                    offset: screenWidth * index,
-                    index,
-                  })}
                 />
               </View>
             </View>
@@ -367,8 +361,9 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
       </ScrollView>
       <FloatingAction
         actions={actions}
-        color="gray"
-        overlayColor="rgba(68, 68, 68, 0.7)"
+        color="#FF5C00"
+        distanceToEdge={16}
+        overlayColor="rgba(0, 0, 0, 0.85)"
         onPressItem={(name) => {
           console.log(`selected button: ${name}`);
         }}

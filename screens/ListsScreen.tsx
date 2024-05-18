@@ -109,7 +109,7 @@ const ListScreen = ({ navigation }: ListScreenProp) => {
   const renderListItem = ({ item }: { item: List }) => (
     <TouchableOpacity
       key={item.id}
-      className="flex-row justify-between bg-gray-700 rounded-xl p-3"
+      className="flex-row justify-between bg-neutral-800 rounded-xl p-3 border border-neutral-600"
       onPress={() =>
         navigation.navigate("ListDetailsScreen", { listId: item.id })
       }
@@ -127,7 +127,7 @@ const ListScreen = ({ navigation }: ListScreenProp) => {
             />
           </View>
         </View>
-        <View>
+        <View className="pb-2">
           <Text numberOfLines={2} className="color-white">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
             Exercitationem magni quod error nulla aliquid mollitia magnam fuga
@@ -138,6 +138,7 @@ const ListScreen = ({ navigation }: ListScreenProp) => {
           data={item.mediaItems}
           keyExtractor={(mediaId) => mediaId}
           horizontal
+          ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
           renderItem={({ item: mediaId }) => <MovieItem mediaId={mediaId} />}
         />
         <View className="flex-row justify-between gap-3">
