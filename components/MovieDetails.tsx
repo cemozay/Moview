@@ -19,8 +19,8 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { FirebaseDB } from "firebaseConfig";
-import { fetchTrailer } from "utils/hooks/useFetchTrailer"; // fetchTrailer fonksiyonunu içe aktarın
-import useFetchCrew from "utils/hooks/useFetchCrew"; // fetchTrailer fonksiyonunu içe aktarın
+import { fetchTrailer } from "utils/hooks/useFetchTrailer";
+import useFetchCrew from "utils/hooks/useFetchCrew";
 import { FloatingAction } from "react-native-floating-action";
 
 const screenWidth = Dimensions.get("window").width;

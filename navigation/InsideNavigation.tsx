@@ -27,9 +27,9 @@ export type InsideStackParamList = {
   SearchScreen: undefined;
   ListsScreen: undefined;
   ListDetailsScreen: { listId: string };
-  Review: { movieid: string };
+  Review: { movieid: string; route: string };
   ReviewScreen: { reviewId: string };
-  AddReview: { movieId: string };
+  AddReview: { movieId: number; reviewId: string };
   ComingSoon: undefined;
   Selectlist: undefined;
   ReviewsScreen: undefined;
@@ -65,7 +65,6 @@ const InsideNavigation = () => {
           name="ListDetailsScreen"
           component={ListDetailsScreen}
         />
-        <InsideStack.Screen name="Review" component={Review} />
         <InsideStack.Screen name="AddReview" component={AddReview} />
         <InsideStack.Screen name="Selectlist" component={Selectlist} />
         <InsideStack.Screen name="ReviewsScreen" component={ReviewsScreen} />

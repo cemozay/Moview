@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, addDoc, doc, getDoc, Timestamp } from "firebase/firestore";
 import { FirebaseDB } from "firebaseConfig";
 import useUserStore from "../utils/hooks/useUserStore";
 import CalendarPicker from "react-native-calendar-picker";
@@ -18,19 +18,39 @@ import { AirbnbRating } from "react-native-ratings";
 import { useMovieData } from "utils/hooks/useMovieData";
 
 type AddReviewProp = NativeStackScreenProps<InsideStackParamList, "AddReview">;
-
-const AddReview = ({ route, navigation }: AddReviewProp) => {
+type ReviewsIdProps = {
+  reviewId: string;
+};
+const AddReview = ({ route, navigation }: AddReviewProp & ReviewsIdProps) => {
   const userId = useUserStore((state) => state.user);
   const [puan, setPuan] = useState(0);
   const [review, setReview] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const reviewId = route.params.reviewId;
   const today = new Date();
   const reviewRef = collection(FirebaseDB, "reviews");
   const { movieId } = route.params;
+  const movieIdString = movieId.toString();
 
-  const apiResponse = useMovieData(movieId);
+  const apiResponse = useMovieData(movieIdString);
+
+  useEffect(() => {
+    const fetchReviewData = async () => {
+      if (reviewId) {
+        const reviewDocRef = doc(reviewRef, reviewId);
+        const reviewDoc = await getDoc(reviewDocRef);
+        if (reviewDoc.exists()) {
+          const data = reviewDoc.data();
+          setPuan(data.rating);
+          setReview(data.text);
+          setSelectedDate(data.timestamp.toDate());
+        }
+      }
+    };
+
+    fetchReviewData();
+  }, [reviewId]);
 
   if (apiResponse.isError) {
     console.log("Error!");
@@ -50,7 +70,7 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
           : Timestamp.now(),
         rating: puan,
         text: review,
-        mediaId: movieId,
+        mediaId: movieIdString,
         userId: userId!.uid,
       };
       await addDoc(reviewRef, reviewData);
@@ -96,7 +116,7 @@ const AddReview = ({ route, navigation }: AddReviewProp) => {
                 showRating
                 count={10}
                 reviews={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
-                defaultRating={0}
+                defaultRating={puan}
                 size={20}
                 onFinishRating={(rating) => setPuan(rating)}
               />
