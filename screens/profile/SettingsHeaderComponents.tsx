@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { getAuth, updateProfile } from "firebase/auth";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 const SettingsHeaderComponents = () => {
   const [username, setUsername] = useState("");
@@ -56,7 +57,7 @@ const SettingsHeaderComponents = () => {
           className="justify-center items-center"
           onPress={updateProfileInfo}
         >
-          <AntDesign name="check" size={24} color="white" />
+          <FontAwesome6 name="check" size={26} color="white" />
         </TouchableOpacity>
       </View>
       <ImageBackground

@@ -2,26 +2,29 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  FlatList,
   Image,
-  TouchableOpacity,
   TextInput,
+  FlatList,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { SearchResult, useSearch } from "utils/hooks/useSearch";
 
-type SearchScreenProp = NativeStackScreenProps<
+type SelectFilmForListProps = NativeStackScreenProps<
   InsideStackParamList,
-  "SearchScreen"
+  "SelectFilmForList"
 >;
 
-const Selectlist = ({ navigation }: SearchScreenProp) => {
+const SelectFilmForList = ({ navigation }: SelectFilmForListProps) => {
+  const selectMovie = (movieId: string) => {
+    navigation.navigate("ListContent", { movieId: movieId });
+  };
   const [results, setResults] = useState<SearchResult[] | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [mediaType, setMediaType] = useState("multi"); // default: multi = "movie" | "tv" | "person"
+  const [mediaType] = useState("movie");
 
   const { data, error, isLoading, isError, refetch } = useSearch(
     mediaType,
@@ -69,32 +72,25 @@ const Selectlist = ({ navigation }: SearchScreenProp) => {
           <Text className="color-white">Error</Text>
         ) : (
           showResults && (
-            <View>
-              <FlatList
-                data={results}
-                keyExtractor={(item) => item.id.toString()}
-                showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate("AddReview", {
-                        movieId: item.id.toString(),
-                        reviewId: null,
-                      })
-                    }
-                    className="flex-row items-center m-2"
-                  >
-                    <Image
-                      className="w-28 h-40 bg-red-500 m-1"
-                      source={{
-                        uri: `https://image.tmdb.org/t/p/w200${item.poster_path}`,
-                      }}
-                    />
-                    <Text className="color-white m-1">{item.title}</Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
+            <FlatList
+              data={results}
+              keyExtractor={(item) => item.id.toString()}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => selectMovie(item.id.toString())} // Use item.id here
+                  className="flex-row items-center m-2"
+                >
+                  <Image
+                    className="w-28 h-40 bg-red-500 m-1"
+                    source={{
+                      uri: `https://image.tmdb.org/t/p/w200${item.poster_path}`,
+                    }}
+                  />
+                  <Text className="color-white m-1">{item.title}</Text>
+                </TouchableOpacity>
+              )}
+            />
           )
         )}
       </View>
@@ -102,4 +98,4 @@ const Selectlist = ({ navigation }: SearchScreenProp) => {
   );
 };
 
-export default Selectlist;
+export default SelectFilmForList;

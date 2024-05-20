@@ -23,7 +23,7 @@ import { useAuthentication } from "utils/hooks/useAuthentication";
 import { useMovieData } from "utils/hooks/useMovieData";
 import LinearGradient from "react-native-linear-gradient";
 import Entypo from "@expo/vector-icons/Entypo";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -121,20 +121,20 @@ const ReviewScreen = ({
     );
   }
 
-  if (!reviewData) {
+  if (isLoading) {
     return (
-      <View>
-        <Text>Review not found.</Text>
+      <View className="bg-black flex-1">
+        <Text className="color-white    ">Loading...</Text>
       </View>
     );
   }
 
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
-
   if (isError) {
-    return <Text>Error loading movie data</Text>;
+    return (
+      <View className="bg-black flex-1">
+        <Text className="color-white    ">Error loading movie data</Text>
+      </View>
+    );
   }
 
   const openBottomSheet = () => {
@@ -156,7 +156,7 @@ const ReviewScreen = ({
                 onPress={() => navigation.goBack()}
                 className=" justify-center items-center pt-4 pl-3 "
               >
-                <AntDesign name="left" size={26} color="white" />
+                <FontAwesome6 name="angle-left" size={26} color="white" />
               </TouchableOpacity>
             </View>
             <View>
@@ -238,24 +238,26 @@ const ReviewScreen = ({
         <View style={styles.bottomSheetContent}>
           <Text style={styles.bottomSheetText}>Options</Text>
           {user && user.uid === userId && (
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() =>
-                navigation.navigate("AddReview", {
-                  reviewId: route.params.reviewId,
-                  movieId: movie.id,
-                })
-              }
-            >
-              <Text style={styles.textStyle}>Edit Review</Text>
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() =>
+                  navigation.navigate("AddReview", {
+                    reviewId: route.params.reviewId,
+                    movieId: movie.id.toString(),
+                  })
+                }
+              >
+                <Text style={styles.textStyle}>Edit Review</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleDeleteReview}
+              >
+                <Text style={styles.textStyle}>Delete Review</Text>
+              </TouchableOpacity>
+            </View>
           )}
-          <TouchableOpacity
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => bottomSheetRef.current?.close()}
-          >
-            <Text style={styles.textStyle}>Close</Text>
-          </TouchableOpacity>
         </View>
       </BottomSheet>
     </GestureHandlerRootView>

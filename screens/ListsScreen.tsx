@@ -31,6 +31,14 @@ type MovieItemProps = {
   mediaId: string;
 };
 
+type Movie = {
+  id: string;
+  title: string;
+  poster: string;
+};
+
+type Movies = Movie[];
+
 const MovieItem = ({ mediaId }: MovieItemProps) => {
   const { data: movie, isLoading, isError } = useMovieData(mediaId);
 
@@ -63,6 +71,7 @@ const MovieItem = ({ mediaId }: MovieItemProps) => {
 const ListScreen = ({ navigation }: ListScreenProp) => {
   const listsRef = collection(FirebaseDB, "lists");
   const [lists, setLists] = useState<List[]>([]);
+  const [array] = useState<Movies[]>([]);
 
   const fetchData = async () => {
     try {
@@ -177,7 +186,7 @@ const ListScreen = ({ navigation }: ListScreenProp) => {
       </ScrollView>
       <View className="items-end pb-4 pr-4">
         <TouchableOpacity
-          onPress={() => navigation.navigate("Selectlist")}
+          onPress={() => navigation.navigate("AddList", { movies: array })}
           className="ml-4 h-16 w-16 bg-white justify-center items-center rounded-full"
         >
           <Icon name="heart" size={30} color="black" />

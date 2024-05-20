@@ -18,8 +18,6 @@ export const fetchTrailer = async (movieId: string, setTrailerUrl: (url: string)
     );
     const data = await response.json();
 
-    console.log("API response:", data);
-
     if (data.results && data.results.length > 0) {
       const trailer = data.results.find(
         (video: { type: string; site: string; name: string; key: string }) =>

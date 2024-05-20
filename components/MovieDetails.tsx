@@ -16,6 +16,7 @@ import { InsideStackParamList } from "navigation/InsideNavigation";
 import { useMovieData } from "utils/hooks/useMovieData";
 import LinearGradient from "react-native-linear-gradient";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { FontAwesome6 } from "@expo/vector-icons";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { FirebaseDB } from "firebaseConfig";
@@ -58,6 +59,7 @@ type Review = {
 
 const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
   const { movieId } = route.params;
+
   const apiResponse = useMovieData(movieId);
   const { data: movieData } = apiResponse;
   const [trailerUrl, setTrailerUrl] = useState<string | null>(null);
@@ -117,14 +119,24 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
       return `${Math.floor(diffInMonths)} months ago`;
     }
   };
-
-  const actions = [
+  type ActionItem = {
+    text: string;
+    icon: JSX.Element;
+    onPress?: () => void;
+    name: string;
+    position: number;
+    color: string;
+  };
+  const actions: ActionItem[] = [
     {
       text: "Already Watch",
       icon: <Icon name="search" size={30} color="white" />,
       name: "bt_alreadywatch",
       position: 1,
       color: "#FF5C00",
+      onPress: () => {
+        console.log("Already Watch pressed");
+      },
     },
     {
       text: "WatchList",
@@ -132,6 +144,9 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
       name: "bt_watchlist",
       position: 2,
       color: "#FF5C00",
+      onPress: () => {
+        console.log("WatchList pressed");
+      },
     },
     {
       text: "AddList",
@@ -139,13 +154,23 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
       name: "bt_addlist",
       position: 3,
       color: "#FF5C00",
+      onPress: () => {
+        console.log("AddList pressed");
+      },
     },
     {
       text: "Review",
-      icon: <Icon name="search" size={30} color="white" />,
+      icon: <FontAwesome6 name="add" size={16} color="white" />,
       name: "bt_review",
       position: 4,
       color: "#FF5C00",
+      onPress: () => {
+        console.log("Review pressed");
+        navigation.navigate("AddReview", {
+          reviewId: null,
+          movieId: movieData.id.toString(),
+        });
+      },
     },
   ];
 
@@ -365,7 +390,12 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
         distanceToEdge={16}
         overlayColor="rgba(0, 0, 0, 0.85)"
         onPressItem={(name) => {
-          console.log(`selected button: ${name}`);
+          const action = actions.find((item) => item.name === name);
+          if (action && action.onPress) {
+            action.onPress();
+          } else {
+            console.log(`No onPress function defined for action: ${name}`);
+          }
         }}
       />
     </View>

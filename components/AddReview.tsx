@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Modal,
   Button,
+  ImageBackground,
+  StyleSheet,
 } from "react-native";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -16,16 +18,19 @@ import useUserStore from "../utils/hooks/useUserStore";
 import CalendarPicker from "react-native-calendar-picker";
 import { AirbnbRating } from "react-native-ratings";
 import { useMovieData } from "utils/hooks/useMovieData";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import Icon from "@expo/vector-icons/FontAwesome";
+import LinearGradient from "react-native-linear-gradient";
 
 type AddReviewProp = NativeStackScreenProps<InsideStackParamList, "AddReview">;
 type ReviewsIdProps = {
-  reviewId: string;
+  reviewId: string | null;
 };
 const AddReview = ({ route, navigation }: AddReviewProp & ReviewsIdProps) => {
   const userId = useUserStore((state) => state.user);
   const [puan, setPuan] = useState(0);
   const [review, setReview] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [modalVisible, setModalVisible] = useState(false);
   const reviewId = route.params.reviewId;
   const today = new Date();
@@ -85,63 +90,139 @@ const AddReview = ({ route, navigation }: AddReviewProp & ReviewsIdProps) => {
     setSelectedDate(date);
   };
 
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("tr-TR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
   return (
-    <View style={{ flex: 1, backgroundColor: "black", padding: 20 }}>
+    <View style={{ flex: 1, backgroundColor: "black" }}>
       {movieData && (
-        <View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <View style={{ justifyContent: "flex-start" }}>
-              <Text style={{ color: "white", fontSize: 20 }}>
-                {movieData.title}
-              </Text>
+        <View className="flex-1">
+          <View>
+            <ImageBackground
+              style={styles.imageBackground}
+              source={{
+                uri: `https://image.tmdb.org/t/p/original${movieData.backdrop_path}`,
+              }}
+            >
+              <View className=" justify-between flex-row z-10">
+                <View>
+                  <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    className=" justify-center items-center pt-4 pl-3 "
+                  >
+                    <FontAwesome6 name="angle-left" size={26} color="white" />
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <TouchableOpacity
+                    onPress={addData}
+                    className=" justify-center items-center pt-4 pr-3 "
+                  >
+                    <FontAwesome6 name="check" size={26} color="white" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <LinearGradient
+                className="justify-end"
+                colors={["rgba(0,0,0,0.5)", "rgba(0,0,0,0.9)"]}
+                style={StyleSheet.absoluteFillObject}
+              >
+                <View className=" flex-row  items-center justify-between ">
+                  <View className="items-center m-3 pt-10">
+                    <View className="m-3">
+                      <Text style={{ color: "white", fontSize: 20 }}>
+                        {movieData.title}
+                      </Text>
+                    </View>
+                    <View className="m-3">
+                      <AirbnbRating
+                        showRating={false}
+                        count={5}
+                        reviews={["1", "2", "3", "4", "5"]}
+                        defaultRating={puan}
+                        size={16}
+                        onFinishRating={(rating) => setPuan(rating)}
+                      />
+                    </View>
+                    <View style={{ justifyContent: "flex-start" }}>
+                      <TouchableOpacity
+                        onPress={() => setModalVisible(true)}
+                        style={{
+                          marginBottom: 10,
+                          padding: 10,
+                          backgroundColor: "#1E1E1E",
+                          borderRadius: 30,
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text style={{ color: "#FF5C00" }}>
+                          {selectedDate
+                            ? "Seçilen Tarih: " + formatDate(selectedDate)
+                            : "Henüz Tarih Seçilmedi"}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  <View>
+                    <Image
+                      className="h-48 w-36 rounded-2xl mr-3"
+                      source={{
+                        uri: `https://image.tmdb.org/t/p/original${movieData.poster_path}`,
+                      }}
+                    />
+                  </View>
+                </View>
+              </LinearGradient>
+            </ImageBackground>
+          </View>
+          <View className="items-center">
+            <View className="color-red-800 mb-2 border-neutral-800 border w-full"></View>
+          </View>
+          <View className="flex-row mt-2 justify-between items-center mx-3">
+            <View>
+              <TouchableOpacity>
+                <Icon name="heart" size={30} color="white" />
+              </TouchableOpacity>
+            </View>
+            <View>
               <TouchableOpacity
-                onPress={() => setModalVisible(true)}
                 style={{
-                  marginBottom: 10,
-                  padding: 10,
-                  backgroundColor: "blue",
+                  padding: 14,
+                  backgroundColor: "#1E1E1E",
+                  borderRadius: 30,
                   alignItems: "center",
                 }}
               >
-                <Text style={{ color: "white" }}>
-                  {selectedDate
-                    ? "Seçilen Tarih:" +
-                      selectedDate.toISOString().split("T")[0]
-                    : "Henüz Tarih Seçilmedi"}
-                </Text>
+                <Text style={{ color: "#FF5C00" }}>Afişi Değiştir</Text>
               </TouchableOpacity>
-              <AirbnbRating
-                showRating
-                count={10}
-                reviews={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
-                defaultRating={puan}
-                size={20}
-                onFinishRating={(rating) => setPuan(rating)}
-              />
             </View>
-            <Image
-              style={{ width: 150, height: 200 }}
-              source={{
-                uri: `https://image.tmdb.org/t/p/original${movieData.poster_path}`,
-              }}
-            />
           </View>
-          <View
-            style={{
-              borderWidth: 2,
-              borderColor: "white",
-              marginBottom: 10,
-            }}
-          >
+          <View className="items-center">
+            <View className="color-red-800 m-2 border-neutral-800 border w-full"></View>
+          </View>
+          <View className="flex-1 ">
             <TextInput
-              style={{ color: "white" }}
+              className=" mx-3"
+              style={{
+                color: "white",
+                flex: 1,
+                textAlignVertical: "top",
+                fontSize: 18,
+              }}
+              multiline
               placeholder="İnceleme ekleyin..."
               placeholderTextColor="white"
               value={review}
               onChangeText={(text) => setReview(text)}
             />
+          </View>
+          <View className="items-center">
+            <View className="color-red-800 m-2 border-neutral-800 border w-full"></View>
           </View>
           <Modal
             animationType="slide"
@@ -217,20 +298,13 @@ const AddReview = ({ route, navigation }: AddReviewProp & ReviewsIdProps) => {
               </View>
             </View>
           </Modal>
-          <TouchableOpacity
-            style={{
-              backgroundColor: "blue",
-              padding: 10,
-              alignItems: "center",
-            }}
-            onPress={addData}
-          >
-            <Text style={{ color: "white" }}>İnceleme Ekle</Text>
-          </TouchableOpacity>
         </View>
       )}
     </View>
   );
 };
 
+const styles = StyleSheet.create({
+  imageBackground: { width: "100%", height: 300 },
+});
 export default AddReview;

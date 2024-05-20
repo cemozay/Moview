@@ -9,16 +9,27 @@ import ProfileScreen from "../screens/ProfileScreen";
 import MovieDetails from "../components/MovieDetails";
 import AddReview from "../components/AddReview";
 import ListDetailsScreen from "../components/ListDetailsScreen";
+import ListContent from "../components/ListContent";
 import Selectlist from "../components/Selectlist";
 import PersonScreen from "../screens/PersonScreen";
 import SearchScreen from "../screens/SearchScreen";
 import ListsScreen from "../screens/ListsScreen";
 import ReviewScreen from "../components/ReviewScreen";
+import AddList from "../components/AddList";
+import SelectFilmForList from "../components/SelectFilmForList";
 import Review from "../screens/ReviewsScreen";
 import ReviewsScreen from "../screens/ReviewsScreen";
 import ProfileReviews from "../screens/profile/ProfileReviews";
 import ProfileAyarlar from "../screens/profile/ProfileAyarlar";
 import useUserStore from "../utils/hooks/useUserStore";
+
+type Movie = {
+  id: string;
+  title: string;
+  poster: string;
+};
+
+type Movies = Movie[];
 
 export type InsideStackParamList = {
   HomeStack: { screen: string; params: any };
@@ -29,7 +40,7 @@ export type InsideStackParamList = {
   ListDetailsScreen: { listId: string };
   Review: { movieid: string; route: string };
   ReviewScreen: { reviewId: string };
-  AddReview: { movieId: number; reviewId: string };
+  AddReview: { movieId: string; reviewId: string | null };
   ComingSoon: undefined;
   Selectlist: undefined;
   ReviewsScreen: undefined;
@@ -37,6 +48,9 @@ export type InsideStackParamList = {
   ProfileReviews: undefined;
   ProfileScreen: undefined;
   ProfileAyarlar: undefined;
+  AddList: { movies: Movies };
+  ListContent: { movies: Movies; movieId: string };
+  SelectFilmForList: undefined;
 };
 
 const InsideStack = createNativeStackNavigator<InsideStackParamList>();
@@ -72,6 +86,12 @@ const InsideNavigation = () => {
         <InsideStack.Screen name="ProfileReviews" component={ProfileReviews} />
         <InsideStack.Screen name="ProfileScreen" component={ProfileScreen} />
         <InsideStack.Screen name="ProfileAyarlar" component={ProfileAyarlar} />
+        <InsideStack.Screen name="AddList" component={AddList} />
+        <InsideStack.Screen name="ListContent" component={ListContent} />
+        <InsideStack.Screen
+          name="SelectFilmForList"
+          component={SelectFilmForList}
+        />
       </InsideStack.Navigator>
     );
   }
