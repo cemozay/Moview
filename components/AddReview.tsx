@@ -28,13 +28,16 @@ type ReviewsIdProps = {
 };
 const AddReview = ({ route, navigation }: AddReviewProp & ReviewsIdProps) => {
   const userId = useUserStore((state) => state.user);
-  const [puan, setPuan] = useState(0);
-  const [review, setReview] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [modalVisible, setModalVisible] = useState(false);
-  const reviewId = route.params.reviewId;
-  const today = new Date();
   const reviewRef = collection(FirebaseDB, "reviews");
+  const [review, setReview] = useState("");
+
+  const [puan, setPuan] = useState(0);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const today = new Date();
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const reviewId = route.params.reviewId;
   const { movieId } = route.params;
   const movieIdString = movieId.toString();
 

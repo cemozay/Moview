@@ -38,13 +38,11 @@ const ListContent = ({ navigation, route }: ListContentProps) => {
         title: movie.title,
         poster: movie.poster_path,
       };
-      // Yeni filmi movies state'ine ekleyin
       setMovies((prevMovies) => [...prevMovies, newMovie]);
     }
   }, [movie, route.params.movieId, movies]);
 
   useEffect(() => {
-    // Bu kod yalnızca component ilk kez render edildiğinde çalışır
     setMovies((prevMovies) => [...prevMovies, ...lastList]);
   }, []);
 

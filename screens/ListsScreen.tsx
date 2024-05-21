@@ -21,10 +21,11 @@ type ListScreenProp = NativeStackScreenProps<
 
 type List = {
   id: string;
-  listName: string;
-  mediaItems: string[];
+  name: string;
+  movies: string[];
   timestamp: any;
   userId: string;
+  description: string;
 };
 
 type MovieItemProps = {
@@ -126,7 +127,7 @@ const ListScreen = ({ navigation }: ListScreenProp) => {
       <View>
         <View className="w-full flex-row justify-between">
           <View>
-            <Text className="color-white text-xl">{item.listName}</Text>
+            <Text className="color-white text-xl">{item.name}</Text>
           </View>
           <View className="flex-row items-center">
             <Text className="color-white">{item.userId}</Text>
@@ -138,13 +139,11 @@ const ListScreen = ({ navigation }: ListScreenProp) => {
         </View>
         <View className="pb-2">
           <Text numberOfLines={2} className="color-white">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Exercitationem magni quod error nulla aliquid mollitia magnam fuga
-            est, maiores perspiciatis?
+            {item.description}
           </Text>
         </View>
         <FlatList
-          data={item.mediaItems}
+          data={item.movies}
           keyExtractor={(mediaId) => mediaId}
           horizontal
           ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
@@ -157,7 +156,9 @@ const ListScreen = ({ navigation }: ListScreenProp) => {
             </Text>
           </View>
           <View className="flex-row gap-3">
-            <Text className="text-white">{item.mediaItems.length} Film</Text>
+            <Text className="text-white">
+              {item.movies ? item.movies.length : 0} Film
+            </Text>
             <Text className="text-white">X Yorum</Text>
             <Text className="text-white">X Beğeni</Text>
           </View>

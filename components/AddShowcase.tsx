@@ -22,6 +22,7 @@ type Item = {
 
 const AddShowcase = () => {
   const [data, setData] = useState<Item[]>([]);
+
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
 

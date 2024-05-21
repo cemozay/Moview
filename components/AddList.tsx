@@ -8,14 +8,17 @@ import {
   ImageBackground,
   Image,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import LinearGradient from "react-native-linear-gradient";
+import useUserStore from "utils/hooks/useUserStore";
+import { FirebaseDB } from "../firebaseConfig";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 type AddListProps = NativeStackScreenProps<InsideStackParamList, "AddList"> & {
-  movies: Movies; // "movies" prop'u ekleniyor
+  movies: Movies;
 };
 
 type Movie = {
@@ -26,8 +29,35 @@ type Movie = {
 
 type Movies = Movie[];
 
-const AddList = ({ navigation, route }: AddListProps & Movies) => {
+const AddList = ({ navigation, route }: AddListProps) => {
   const { movies } = route.params || [];
+  const numColumns = 3; // Setting the number of columns to 3
+
+  const user = useUserStore((state) => state.user);
+
+  const [listName, setListName] = useState("");
+  const [description, setDescription] = useState("");
+
+  const listsRef = collection(FirebaseDB, "lists");
+
+  const handleAddList = async () => {
+    if (listName.trim() && description.trim()) {
+      try {
+        let listData = {
+          timestamp: serverTimestamp(), // Adding the timestamp
+          name: listName,
+          description: description,
+          movies: movies.map((movie) => movie.id),
+          userId: user!.uid,
+        };
+        await addDoc(listsRef, listData);
+        navigation.goBack();
+      } catch (error) {
+        console.error("Error adding document: ", error);
+      }
+    } else {
+    }
+  };
 
   return (
     <View className="flex-1 bg-black">
@@ -35,17 +65,20 @@ const AddList = ({ navigation, route }: AddListProps & Movies) => {
         style={styles.imageBackground}
         source={require("../screens/profile.jpg")}
       >
-        <View className=" justify-between flex-row z-10">
+        <View className="justify-between flex-row z-10">
           <View>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
-              className=" justify-center items-center pt-4 pl-3 "
+              className="justify-center items-center pt-4 pl-3"
             >
               <FontAwesome6 name="angle-left" size={26} color="white" />
             </TouchableOpacity>
           </View>
           <View>
-            <TouchableOpacity className=" justify-center items-center pt-4 pr-3 ">
+            <TouchableOpacity
+              onPress={handleAddList}
+              className="justify-center items-center pt-4 pr-3"
+            >
               <FontAwesome6 name="check" size={26} color="white" />
             </TouchableOpacity>
           </View>
@@ -70,6 +103,8 @@ const AddList = ({ navigation, route }: AddListProps & Movies) => {
               numberOfLines={1}
               placeholder="Listenin ismi"
               placeholderTextColor="white"
+              value={listName}
+              onChangeText={setListName}
             />
           </View>
         </LinearGradient>
@@ -87,6 +122,8 @@ const AddList = ({ navigation, route }: AddListProps & Movies) => {
           placeholder="Açıklama"
           maxLength={100}
           placeholderTextColor="white"
+          value={description}
+          onChangeText={setDescription}
         />
       </View>
 
@@ -112,13 +149,16 @@ const AddList = ({ navigation, route }: AddListProps & Movies) => {
         >
           <Text className="color-white m-3 text-base">Add Films..</Text>
           <FlatList
+            key={numColumns} // Add key prop based on numColumns
             data={movies}
             keyExtractor={(item) => item.id}
+            numColumns={numColumns}
             renderItem={({ item }) => (
-              <View style={styles.movieItem}>
-                <Text style={styles.movieTitle}>{item.title}</Text>
+              <View style={styles.moviePosterContainer}>
                 <Image
-                  source={{ uri: item.poster }}
+                  source={{
+                    uri: `https://image.tmdb.org/t/p/w200${item.poster}`,
+                  }}
                   style={styles.moviePoster}
                 />
               </View>
@@ -132,6 +172,7 @@ const AddList = ({ navigation, route }: AddListProps & Movies) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -141,21 +182,14 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 300,
   },
-  movieItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "white",
-  },
-  movieTitle: {
-    color: "white",
-    fontSize: 18,
-    marginRight: 10,
+  moviePosterContainer: {
+    padding: 5,
+    flex: 1 / 3, // Ensure the items take up 1/3rd of the row
   },
   moviePoster: {
-    width: 50,
-    height: 70,
+    width: 125,
+    height: 175,
   },
 });
+
 export default AddList;
