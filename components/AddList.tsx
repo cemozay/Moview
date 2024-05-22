@@ -8,55 +8,116 @@ import {
   ImageBackground,
   Image,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import LinearGradient from "react-native-linear-gradient";
-import useUserStore from "utils/hooks/useUserStore";
 import { FirebaseDB } from "../firebaseConfig";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import useUserStore from "../utils/hooks/useUserStore";
+import {
+  collection,
+  getDoc,
+  doc,
+  addDoc,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { useMovieData } from "utils/hooks/useMovieData";
 
 type AddListProps = NativeStackScreenProps<InsideStackParamList, "AddList"> & {
-  movies: Movies;
+  movies: string[]; // Change the type to array of strings
 };
-
-type Movie = {
-  id: string;
-  title: string;
-  poster: string;
-};
-
-type Movies = Movie[];
 
 const AddList = ({ navigation, route }: AddListProps) => {
-  const { movies } = route.params || [];
+  const listid = route.params.listId || null;
   const numColumns = 3; // Setting the number of columns to 3
-
-  const user = useUserStore((state) => state.user);
 
   const [listName, setListName] = useState("");
   const [description, setDescription] = useState("");
+  const [localMovies, setLocalMovies] = useState<string[]>([]);
+  const [listMovies, setListMovies] = useState<string[]>([]);
+  const user = useUserStore((state) => state.user);
 
-  const listsRef = collection(FirebaseDB, "lists");
+  useEffect(() => {
+    const fetchListData = async () => {
+      if (listid) {
+        const listsRef = collection(FirebaseDB, "lists");
+        const reviewDocRef = doc(listsRef, listid);
+        const reviewDoc = await getDoc(reviewDocRef);
+
+        if (reviewDoc.exists()) {
+          const data = reviewDoc.data();
+          setListName(data.name);
+          setDescription(data.description);
+          const movieIds = data.movies || [];
+
+          setListMovies(movieIds);
+        }
+      }
+    };
+
+    fetchListData();
+  }, [listid]);
+
+  useEffect(() => {
+    if (route.params.movies) {
+      setLocalMovies(route.params.movies);
+    } else if (listMovies.length > 0) {
+      setLocalMovies(listMovies);
+    } else {
+      setLocalMovies([]);
+    }
+  }, [route.params.movies, listMovies]);
+
+  console.log(localMovies);
 
   const handleAddList = async () => {
     if (listName.trim() && description.trim()) {
       try {
-        let listData = {
-          timestamp: serverTimestamp(), // Adding the timestamp
+        const listsRef = collection(FirebaseDB, "lists");
+        const listData = {
+          timestamp: serverTimestamp(),
           name: listName,
           description: description,
-          movies: movies.map((movie) => movie.id),
+          movies: localMovies.map((movie) => movie),
           userId: user!.uid,
         };
-        await addDoc(listsRef, listData);
-        navigation.goBack();
+
+        if (listid) {
+          const reviewDocRef = doc(listsRef, listid);
+          await setDoc(reviewDocRef, listData);
+        } else {
+          await addDoc(listsRef, listData);
+        }
+
+        navigation.navigate("ListDetailsScreen", { listId: listid });
       } catch (error) {
-        console.error("Error adding document: ", error);
+        console.error("Error adding or updating document: ", error);
       }
     } else {
+      console.error("List name and description cannot be empty!");
     }
+  };
+
+  const MovieItem = ({ movieId }: { movieId: string }) => {
+    const { data: movie } = useMovieData(movieId);
+
+    if (!movieId) {
+      return null;
+    }
+
+    return (
+      <View style={styles.moviePosterContainer}>
+        <Image
+          source={{
+            uri: `https://image.tmdb.org/t/p/w200${movie.poster_path}`,
+          }}
+          style={styles.moviePoster}
+        />
+        <Text className="color-white">{movie.title}a</Text>
+      </View>
+    );
   };
 
   return (
@@ -145,29 +206,24 @@ const AddList = ({ navigation, route }: AddListProps) => {
       <View className="flex-1 bg-black">
         <TouchableOpacity
           className="flex-1"
-          onPress={() => navigation.navigate("ListContent", { movies: movies })}
+          onPress={() =>
+            navigation.navigate("ListContent", {
+              movies: localMovies,
+              movieId: null,
+              listid: listid,
+            })
+          }
         >
           <Text className="color-white m-3 text-base">Add Films..</Text>
           <FlatList
-            key={numColumns} // Add key prop based on numColumns
-            data={movies}
-            keyExtractor={(item) => item.id}
+            key={numColumns}
+            scrollEnabled
+            data={localMovies}
+            keyExtractor={(item) => item}
             numColumns={numColumns}
-            renderItem={({ item }) => (
-              <View style={styles.moviePosterContainer}>
-                <Image
-                  source={{
-                    uri: `https://image.tmdb.org/t/p/w200${item.poster}`,
-                  }}
-                  style={styles.moviePoster}
-                />
-              </View>
-            )}
+            renderItem={({ item }) => <MovieItem movieId={item} />}
           />
         </TouchableOpacity>
-      </View>
-      <View className="items-center">
-        <View className="color-red-800 m-2 border-neutral-800 border w-full"></View>
       </View>
     </View>
   );
@@ -184,7 +240,7 @@ const styles = StyleSheet.create({
   },
   moviePosterContainer: {
     padding: 5,
-    flex: 1 / 3, // Ensure the items take up 1/3rd of the row
+    flex: 1 / 3,
   },
   moviePoster: {
     width: 125,

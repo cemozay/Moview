@@ -18,8 +18,12 @@ type SelectFilmForListProps = NativeStackScreenProps<
 >;
 
 const SelectFilmForList = ({ navigation }: SelectFilmForListProps) => {
-  const selectMovie = (movieId: string) => {
-    navigation.navigate("ListContent", { movieId: movieId });
+  const selectMovie = (item: string) => {
+    navigation.navigate("ListContent", {
+      movies: [],
+      listid: null,
+      movieId: item,
+    });
   };
   const [results, setResults] = useState<SearchResult[] | null>(null);
   const [showResults, setShowResults] = useState(false);

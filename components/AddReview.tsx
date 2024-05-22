@@ -29,8 +29,8 @@ type ReviewsIdProps = {
 const AddReview = ({ route, navigation }: AddReviewProp & ReviewsIdProps) => {
   const userId = useUserStore((state) => state.user);
   const reviewRef = collection(FirebaseDB, "reviews");
-  const [review, setReview] = useState("");
 
+  const [review, setReview] = useState("");
   const [puan, setPuan] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const today = new Date();

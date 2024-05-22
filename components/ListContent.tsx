@@ -15,56 +15,50 @@ type ListContentProps = NativeStackScreenProps<
   "ListContent"
 >;
 
-type Movie = {
-  id: string;
-  title: string;
-  poster: string;
-};
-
 const ListContent = ({ navigation, route }: ListContentProps) => {
   const lastList = route.params.movies || [];
-  const [movies, setMovies] = useState<Movie[]>([]);
-
-  const { data: movie } = useMovieData(route.params.movieId);
-
-  useEffect(() => {
-    if (
-      movie &&
-      route.params.movieId &&
-      !movies.some((m) => m.id === route.params.movieId)
-    ) {
-      const newMovie = {
-        id: route.params.movieId,
-        title: movie.title,
-        poster: movie.poster_path,
-      };
-      setMovies((prevMovies) => [...prevMovies, newMovie]);
-    }
-  }, [movie, route.params.movieId, movies]);
+  const [movies, setMovies] = useState<string[]>([]);
+  const movieId = route.params.movieId;
+  const listid = route.params.listid;
 
   useEffect(() => {
     setMovies((prevMovies) => [...prevMovies, ...lastList]);
   }, []);
 
-  const renderItem = ({ item, drag, isActive }: RenderItemParams<Movie>) => (
-    <TouchableOpacity
-      style={[
-        styles.item,
-        {
-          borderColor: "white",
-          borderWidth: 2,
-          backgroundColor: isActive ? "#131313" : "#0000",
-        },
-      ]}
-      onLongPress={drag}
-    >
-      <Image
-        source={{ uri: `https://image.tmdb.org/t/p/w200${item.poster}` }}
-        style={styles.poster}
-      />
-      <Text className="color-white">{item.title}</Text>
-    </TouchableOpacity>
-  );
+  useEffect(() => {
+    if (movieId !== null && !movies.includes(movieId)) {
+      setMovies((prevMovies) => [...prevMovies, movieId]);
+      console.log(movies);
+    }
+  }, [movieId]);
+
+  const renderItem = ({ item, drag, isActive }: RenderItemParams<string>) => {
+    const { data: movieData } = useMovieData(item);
+
+    if (!movieData) return null;
+
+    return (
+      <TouchableOpacity
+        style={[
+          styles.item,
+          {
+            borderColor: "white",
+            borderWidth: 2,
+            backgroundColor: isActive ? "#131313" : "#0000",
+          },
+        ]}
+        onLongPress={drag}
+      >
+        <Image
+          source={{
+            uri: `https://image.tmdb.org/t/p/w200${movieData.poster_path}`,
+          }}
+          style={styles.poster}
+        />
+        <Text style={{ color: "white" }}>{movieData.title}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -80,7 +74,10 @@ const ListContent = ({ navigation, route }: ListContentProps) => {
             <Text style={styles.headerTitle}>Add Film...</Text>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate("AddList", { movies: movies })}
+            onPress={() =>
+              navigation.navigate("AddList", { movies: movies, listId: listid })
+            }
+            onFocus={() => console.log(movies)}
             style={styles.headerButton}
           >
             <FontAwesome6 name="check" size={26} color="white" />
@@ -89,14 +86,17 @@ const ListContent = ({ navigation, route }: ListContentProps) => {
         <DraggableFlatList
           data={movies}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item}
           onDragEnd={({ data }) => {
             setMovies(data);
+            console.log(movies);
           }}
         />
         <View style={styles.heartIconContainer}>
           <TouchableOpacity
-            onPress={() => navigation.navigate("SelectFilmForList")}
+            onPress={() =>
+              navigation.navigate("SelectFilmForList", { listId: listid })
+            }
             style={styles.heartIcon}
           >
             <Icon name="heart" size={30} color="white" />

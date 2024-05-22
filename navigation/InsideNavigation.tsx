@@ -23,21 +23,13 @@ import ProfileReviews from "../screens/profile/ProfileReviews";
 import ProfileAyarlar from "../screens/profile/ProfileAyarlar";
 import useUserStore from "../utils/hooks/useUserStore";
 
-type Movie = {
-  id: string;
-  title: string;
-  poster: string;
-};
-
-type Movies = Movie[];
-
 export type InsideStackParamList = {
   HomeStack: { screen: string; params: any };
   MovieDetails: { movieId: string };
   PersonScreen: { personId: number };
   SearchScreen: undefined;
   ListsScreen: undefined;
-  ListDetailsScreen: { listId: string };
+  ListDetailsScreen: { listId: string | null };
   Review: { movieid: string; route: string };
   ReviewScreen: { reviewId: string };
   AddReview: { movieId: string; reviewId: string | null };
@@ -48,9 +40,13 @@ export type InsideStackParamList = {
   ProfileReviews: undefined;
   ProfileScreen: undefined;
   ProfileAyarlar: undefined;
-  AddList: { movies: Movies };
-  ListContent: { movies: Movies; movieId: string };
-  SelectFilmForList: undefined;
+  AddList: { movies: string[] | undefined; listId: string | null };
+  ListContent: {
+    movies: string[];
+    listid: string | null;
+    movieId: string | null;
+  };
+  SelectFilmForList: { listId: string | null };
 };
 
 const InsideStack = createNativeStackNavigator<InsideStackParamList>();
