@@ -24,7 +24,11 @@ import LinearGradient from "react-native-linear-gradient";
 
 type AddReviewProp = NativeStackScreenProps<InsideStackParamList, "AddReview">;
 type ReviewsIdProps = {
-  reviewId: string | null;
+  route: {
+    params: {
+      reviewId: string | null;
+    };
+  };
 };
 const AddReview = ({ route, navigation }: AddReviewProp & ReviewsIdProps) => {
   const userId = useUserStore((state) => state.user);

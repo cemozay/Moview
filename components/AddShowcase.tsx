@@ -208,7 +208,9 @@ const AddShowcase = () => {
           renderItem={renderItem}
           dragItemOverflow={true}
           ListHeaderComponent={SettingsHeaderComponents}
-          ListFooterComponent={SettingsFooterComponents({ handleAddItem })}
+          ListFooterComponent={
+            <SettingsFooterComponents handleAddItem={handleAddItem} />
+          }
         />
         {isBottomSheetOpen && (
           <BottomSheet ref={bottomSheetRef} index={0} snapPoints={[300, 400]}>

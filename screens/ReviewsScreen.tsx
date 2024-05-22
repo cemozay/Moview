@@ -33,6 +33,7 @@ type ReviewItemProps = {
   review: Review;
   navigation: ReviewsScreenProp["navigation"];
 };
+
 const ReviewScreen = ({ navigation }: ReviewsScreenProp) => {
   const [reviews, setReviews] = useState<Review[]>([]);
 

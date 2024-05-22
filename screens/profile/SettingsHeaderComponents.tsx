@@ -29,18 +29,22 @@ const SettingsHeaderComponents = () => {
   }, [user]);
 
   const updateProfileInfo = async () => {
-    try {
-      await updateProfile(user, {
-        displayName: username,
-        photoURL: photoURL,
-      });
+    if (user) {
+      try {
+        await updateProfile(user, {
+          displayName: username,
+          photoURL: photoURL,
+        });
 
-      console.log("Kullanıcı bilgileri güncellendi");
-    } catch (error) {
-      console.error(
-        "Kullanıcı bilgileri güncellenirken bir hata oluştu:",
-        error
-      );
+        console.log("Kullanıcı bilgileri güncellendi");
+      } catch (error) {
+        console.error(
+          "Kullanıcı bilgileri güncellenirken bir hata oluştu:",
+          error
+        );
+      }
+    } else {
+      console.error("Kullanıcı bilgileri bulunamadı.");
     }
   };
 

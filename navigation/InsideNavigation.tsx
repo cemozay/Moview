@@ -17,10 +17,12 @@ import ListsScreen from "../screens/ListsScreen";
 import ReviewScreen from "../components/ReviewScreen";
 import AddList from "../components/AddList";
 import SelectFilmForList from "../components/SelectFilmForList";
+import MovieDetailAddlist from "../components/MovieDetailAddlist";
 import Review from "../screens/ReviewsScreen";
 import ReviewsScreen from "../screens/ReviewsScreen";
 import ProfileReviews from "../screens/profile/ProfileReviews";
 import ProfileAyarlar from "../screens/profile/ProfileAyarlar";
+import ProfileList from "../screens/profile/ProfileList";
 import useUserStore from "../utils/hooks/useUserStore";
 
 export type InsideStackParamList = {
@@ -40,6 +42,7 @@ export type InsideStackParamList = {
   ProfileReviews: undefined;
   ProfileScreen: undefined;
   ProfileAyarlar: undefined;
+  ProfileList: undefined;
   AddList: { movies: string[] | undefined; listId: string | null };
   ListContent: {
     movies: string[];
@@ -47,6 +50,7 @@ export type InsideStackParamList = {
     movieId: string | null;
   };
   SelectFilmForList: { listId: string | null };
+  MovieDetailAddlist: { movieId: string };
 };
 
 const InsideStack = createNativeStackNavigator<InsideStackParamList>();
@@ -76,6 +80,7 @@ const InsideNavigation = () => {
           component={ListDetailsScreen}
         />
         <InsideStack.Screen name="AddReview" component={AddReview} />
+        <InsideStack.Screen name="ProfileList" component={ProfileList} />
         <InsideStack.Screen name="Selectlist" component={Selectlist} />
         <InsideStack.Screen name="ReviewsScreen" component={ReviewsScreen} />
         <InsideStack.Screen name="ReviewScreen" component={ReviewScreen} />
@@ -84,6 +89,10 @@ const InsideNavigation = () => {
         <InsideStack.Screen name="ProfileAyarlar" component={ProfileAyarlar} />
         <InsideStack.Screen name="AddList" component={AddList} />
         <InsideStack.Screen name="ListContent" component={ListContent} />
+        <InsideStack.Screen
+          name="MovieDetailAddlist"
+          component={MovieDetailAddlist}
+        />
         <InsideStack.Screen
           name="SelectFilmForList"
           component={SelectFilmForList}
@@ -175,14 +184,7 @@ const HomeTabs = () => {
             backgroundColor: "black",
           },
           tabBarIcon: () => {
-            return (
-              <View className="items-center justify-center">
-                {/*                 <Image
-                  className="w-6 h-6"
-                  source={require("../screens/avatar.jpg")}
-                /> */}
-              </View>
-            );
+            return <View className="items-center justify-center"></View>;
           },
         }}
       />

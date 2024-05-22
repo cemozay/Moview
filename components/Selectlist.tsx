@@ -14,7 +14,7 @@ import { SearchResult, useSearch } from "utils/hooks/useSearch";
 
 type SearchScreenProp = NativeStackScreenProps<
   InsideStackParamList,
-  "SearchScreen"
+  "Selectlist"
 >;
 
 const Selectlist = ({ navigation }: SearchScreenProp) => {

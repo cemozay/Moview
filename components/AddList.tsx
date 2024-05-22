@@ -26,7 +26,12 @@ import {
 import { useMovieData } from "utils/hooks/useMovieData";
 
 type AddListProps = NativeStackScreenProps<InsideStackParamList, "AddList"> & {
-  movies: string[]; // Change the type to array of strings
+  route: {
+    params: {
+      movies: string[] | undefined;
+      listId: string | null;
+    };
+  };
 };
 
 const AddList = ({ navigation, route }: AddListProps) => {

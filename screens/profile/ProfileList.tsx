@@ -14,9 +14,9 @@ import { FirebaseDB } from "firebaseConfig";
 import { useMovieData } from "utils/hooks/useMovieData";
 import useUserStore from "../../utils/hooks/useUserStore";
 
-type ListScreenProp = NativeStackScreenProps<
+type ProfileListProp = NativeStackScreenProps<
   InsideStackParamList,
-  "ListsScreen"
+  "ProfileList"
 >;
 
 type List = {
@@ -61,7 +61,7 @@ const MovieItem = ({ mediaId }: MovieItemProps) => {
   );
 };
 
-const ListScreen = ({ navigation }: ListScreenProp) => {
+const ProfileList = ({ navigation }: ProfileListProp) => {
   const user = useUserStore((state) => state.user);
   const listsRef = collection(FirebaseDB, "lists");
   const [lists, setLists] = useState<List[]>([]);
@@ -164,4 +164,4 @@ const ListScreen = ({ navigation }: ListScreenProp) => {
     </View>
   );
 };
-export default ListScreen;
+export default ProfileList;

@@ -155,7 +155,9 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
       position: 3,
       color: "#FF5C00",
       onPress: () => {
-        console.log("AddList pressed");
+        navigation.navigate("MovieDetailAddlist", {
+          movieId: movieData.id.toString(),
+        });
       },
     },
     {
