@@ -9,17 +9,16 @@ import {
   StyleSheet,
 } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { InsideStackParamList } from "navigation/InsideNavigation";
+
 import { collection, query, getDocs } from "firebase/firestore";
 import { FirebaseDB } from "firebaseConfig";
 import { useMovieData } from "utils/hooks/useMovieData";
 import LinearGradient from "react-native-linear-gradient";
 
-type ReviewsScreenProp = NativeStackScreenProps<
-  InsideStackParamList,
-  "ReviewsScreen"
->;
+export interface ReviewsScreenProp {
+  navigation: any;
+  route: any;
+}
 
 type Review = {
   timestamp: any;
@@ -31,10 +30,10 @@ type Review = {
 };
 type ReviewItemProps = {
   review: Review;
-  navigation: ReviewsScreenProp["navigation"];
+  navigation: any;
 };
 
-const ReviewScreen = ({ navigation }: ReviewsScreenProp) => {
+const ReviewScreen: React.FC<ReviewsScreenProp> = ({ navigation }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
 
   const reviewRef = collection(FirebaseDB, "reviews");

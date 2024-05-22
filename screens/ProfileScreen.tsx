@@ -8,8 +8,7 @@ import {
   Image,
   StatusBar,
 } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
-import { InsideStackParamList } from "navigation/InsideNavigation";
+
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import ProfileMain from "./profile/ProfileMain";
 import ProfileActivity from "./profile/ProfileActivity";
@@ -19,11 +18,12 @@ import ProfileDiary from "./profile/ProfileDiary";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Feather from "@expo/vector-icons/Feather";
 
-type ProfileScreenProp = NativeStackScreenProps<
-  InsideStackParamList,
-  "ProfileScreen"
->;
-const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
+export interface ProfileScreenProp {
+  navigation: any;
+  route: any;
+}
+
+const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation }) => {
   const FirstRoute = () => <ProfileMain />;
 
   const SecondRoute = () => <ProfileList />;

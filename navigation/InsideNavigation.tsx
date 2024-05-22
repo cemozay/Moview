@@ -25,7 +25,7 @@ import ProfileList from "../screens/profile/ProfileList";
 import useUserStore from "../utils/hooks/useUserStore";
 
 export type InsideStackParamList = {
-  Home: undefined;
+  HomeScreen: undefined;
   MovieDetails: { movieId: string };
   PersonScreen: { personId: number };
   SearchScreen: undefined;
@@ -67,9 +67,9 @@ const InsideNavigation = () => {
     return (
       <InsideStack.Navigator
         screenOptions={stackScreenOptions}
-        initialRouteName={"Home"}
+        initialRouteName="HomeScreen"
       >
-        <InsideStack.Screen name="Home" component={HomeScreen} />
+        <InsideStack.Screen name="HomeScreen" component={HomeScreen} />
         <InsideStack.Screen name="MovieDetails" component={MovieDetails} />
         <InsideStack.Screen name="PersonScreen" component={PersonScreen} />
         <InsideStack.Screen name="SearchScreen" component={SearchScreen} />
@@ -104,8 +104,8 @@ const InsideNavigation = () => {
 export type TabParamList = {
   Home: undefined;
   ListsScreen: undefined;
-  Profile: undefined;
-  Review: { movieid: string };
+  ProfileScreen: undefined;
+  ReviewsScreen: { movieid: string };
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -120,15 +120,16 @@ const tabScreenOptions = {
     left: 0,
     elevation: 0,
     height: 60,
-    backgroundColor: "#000", // Corrected from 'background' to 'backgroundColor'
-  } as ViewStyle, // Cast tabBarStyle as ViewStyle
+    backgroundColor: "#000",
+  } as ViewStyle,
 };
+
 const HomeTabs = () => {
   return (
     <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen
         name="Home"
-        component={InsideNavigation} // İçerideki Navigasyon bileşenini burada çağırın
+        component={InsideNavigation}
         options={{
           tabBarStyle: {
             backgroundColor: "black",
@@ -159,8 +160,8 @@ const HomeTabs = () => {
         }}
       />
       <Tab.Screen
-        name="Review"
-        component={InsideNavigation}
+        name="ReviewsScreen"
+        component={ReviewsScreen}
         options={{
           tabBarStyle: {
             backgroundColor: "black",
@@ -175,8 +176,8 @@ const HomeTabs = () => {
         }}
       />
       <Tab.Screen
-        name="Profile"
-        component={InsideNavigation}
+        name="ProfileScreen"
+        component={ProfileScreen}
         options={{
           tabBarStyle: {
             backgroundColor: "black",
