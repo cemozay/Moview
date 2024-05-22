@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Entypo } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import MovieDetails from "../components/MovieDetails";
@@ -18,7 +18,6 @@ import ReviewScreen from "../components/ReviewScreen";
 import AddList from "../components/AddList";
 import SelectFilmForList from "../components/SelectFilmForList";
 import MovieDetailAddlist from "../components/MovieDetailAddlist";
-import Review from "../screens/ReviewsScreen";
 import ReviewsScreen from "../screens/ReviewsScreen";
 import ProfileReviews from "../screens/profile/ProfileReviews";
 import ProfileAyarlar from "../screens/profile/ProfileAyarlar";
@@ -26,7 +25,7 @@ import ProfileList from "../screens/profile/ProfileList";
 import useUserStore from "../utils/hooks/useUserStore";
 
 export type InsideStackParamList = {
-  HomeStack: { screen: string; params: any };
+  Home: undefined;
   MovieDetails: { movieId: string };
   PersonScreen: { personId: number };
   SearchScreen: undefined;
@@ -68,9 +67,9 @@ const InsideNavigation = () => {
     return (
       <InsideStack.Navigator
         screenOptions={stackScreenOptions}
-        initialRouteName={"HomeStack"}
+        initialRouteName={"Home"}
       >
-        <InsideStack.Screen name="HomeStack" component={HomeTabs} />
+        <InsideStack.Screen name="Home" component={HomeScreen} />
         <InsideStack.Screen name="MovieDetails" component={MovieDetails} />
         <InsideStack.Screen name="PersonScreen" component={PersonScreen} />
         <InsideStack.Screen name="SearchScreen" component={SearchScreen} />
@@ -121,16 +120,15 @@ const tabScreenOptions = {
     left: 0,
     elevation: 0,
     height: 60,
-    background: "#000",
-  },
+    backgroundColor: "#000", // Corrected from 'background' to 'backgroundColor'
+  } as ViewStyle, // Cast tabBarStyle as ViewStyle
 };
-
 const HomeTabs = () => {
   return (
     <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={InsideNavigation} // İçerideki Navigasyon bileşenini burada çağırın
         options={{
           tabBarStyle: {
             backgroundColor: "black",
@@ -162,7 +160,7 @@ const HomeTabs = () => {
       />
       <Tab.Screen
         name="Review"
-        component={Review}
+        component={InsideNavigation}
         options={{
           tabBarStyle: {
             backgroundColor: "black",
@@ -178,7 +176,7 @@ const HomeTabs = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={InsideNavigation}
         options={{
           tabBarStyle: {
             backgroundColor: "black",
@@ -192,4 +190,4 @@ const HomeTabs = () => {
   );
 };
 
-export default InsideNavigation;
+export default HomeTabs;

@@ -20,7 +20,7 @@ const { width } = Dimensions.get("window");
 
 const ComingSoon = ({
   navigation,
-}: NativeStackScreenProps<InsideStackParamList, "HomeStack">) => {
+}: NativeStackScreenProps<InsideStackParamList, "Home">) => {
   const nowPlayingMoviesData = useMovieLists("now_playing");
   const popularMoviesData = useMovieLists("upcoming");
   const upcomingMoviesData = useMovieLists("popular");
@@ -156,7 +156,7 @@ const ComingSoon = ({
 
 const HomeScreenAnimeScreen = ({
   navigation,
-}: NativeStackScreenProps<InsideStackParamList, "HomeStack">) => {
+}: NativeStackScreenProps<InsideStackParamList, "Home">) => {
   return (
     <ScrollView>
       <Text className="color-red-500">HomeScreenAnimeScreen</Text>
@@ -165,7 +165,7 @@ const HomeScreenAnimeScreen = ({
 };
 const HomeScreenMovieScreen = ({
   navigation,
-}: NativeStackScreenProps<InsideStackParamList, "HomeStack">) => {
+}: NativeStackScreenProps<InsideStackParamList, "Home">) => {
   return (
     <ScrollView>
       <Text className="color-red-500">HomeScreenMovieScreen</Text>
@@ -174,7 +174,7 @@ const HomeScreenMovieScreen = ({
 };
 const HomeScreenTvSerials = ({
   navigation,
-}: NativeStackScreenProps<InsideStackParamList, "HomeStack">) => {
+}: NativeStackScreenProps<InsideStackParamList, "Home">) => {
   return (
     <ScrollView>
       <Text className="color-red-500">HomeScreenTvSerials</Text>

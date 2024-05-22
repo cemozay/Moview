@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { InsideStackParamList } from "navigation/InsideNavigation";
 import { Button } from "@rneui/themed";
 import {
   HomeScreenMovieScreen,
@@ -10,10 +8,12 @@ import {
   HomeScreenTvSerials,
   HomeScreenAnimeScreen,
 } from "components/HomeScreenComponents";
+export interface HomeScreenProp {
+  navigation: any;
+  route: any;
+}
 
-type HomeScreenProp = NativeStackScreenProps<InsideStackParamList, "HomeStack">;
-
-const HomeScreen = ({ navigation, route }: HomeScreenProp) => {
+const HomeScreen: React.FC<HomeScreenProp> = ({ navigation, route }) => {
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
 
   const handleButtonPress = (title: string) => {
