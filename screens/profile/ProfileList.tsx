@@ -11,8 +11,8 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { FirebaseDB } from "firebaseConfig";
-import { useMovieData } from "utils/hooks/useMovieData";
 import useUserStore from "../../utils/hooks/useUserStore";
+import { useMovieData } from "utils/hooks/useMovieData";
 
 type ProfileListProp = NativeStackScreenProps<
   InsideStackParamList,

@@ -68,8 +68,8 @@ const SeeMoreComponent = ({ navigation, route }: SeeMoreComponentProps) => {
         </Text>
       </View>
       <FlatList
-        data={filteredArray} // Use the filtered array
-        keyExtractor={(item, index) => index.toString()}
+        data={filteredArray}
+        keyExtractor={(index) => index.toString()}
         numColumns={3}
         renderItem={({ item }) => (
           <View className="p-2" style={{ flex: 1 / 3 }}>

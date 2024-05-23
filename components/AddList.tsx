@@ -36,7 +36,7 @@ type AddListProps = NativeStackScreenProps<InsideStackParamList, "AddList"> & {
 
 const AddList = ({ navigation, route }: AddListProps) => {
   const listid = route.params.listId || null;
-  const numColumns = 3; // Setting the number of columns to 3
+  const numColumns = 3;
 
   const [listName, setListName] = useState("");
   const [description, setDescription] = useState("");
@@ -96,7 +96,7 @@ const AddList = ({ navigation, route }: AddListProps) => {
           await addDoc(listsRef, listData);
         }
 
-        navigation.navigate("ListDetailsScreen", { listId: listid });
+        navigation.replace("ListDetailsScreen", { listId: listid });
       } catch (error) {
         console.error("Error adding or updating document: ", error);
       }
