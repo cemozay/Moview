@@ -1,27 +1,35 @@
 // useFetchCrew.js
 import { useEffect, useState } from "react";
 
-type People = {
-    adult: boolean;
-    gender: number;
+type MovieCreditsList = {
+    cast: Person[];
+    crew: Person[];
     id: number;
-    known_for_department: string;
-    name: string;
-    original_name: string;
+  };
+
+  type Person = {
+    adult: boolean;
+    backdrop_path: null | string;
+    genre_ids: number[];
+    id: number;
+    original_language: string;
+    original_title: string;
+    overview: string;
     popularity: number;
-    profile_path: null | string;
-    cast_id?: number;
+    poster_path: null | string;
+    release_date: Date;
+    title: string;
+    video: boolean;
+    vote_average: number;
+    vote_count: number;
     character?: string;
     credit_id: string;
     order?: number;
     department?: string;
     job?: string;
   };
-  
 
 const useFetchCrew = (movieId: string) => {
-  const [cast, setCast] = useState<People[]>([]);
-  const [crew, setCrew] = useState<People[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
 

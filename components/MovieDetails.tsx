@@ -334,7 +334,23 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
                 <View className="color-red-800 border-neutral-800 border w-11/12"></View>
               </View>
               <View className="m-3">
-                <Text className="color-white text-2xl">Cast</Text>
+                <TouchableOpacity
+                  className="flex-row justify-between items-center"
+                  onPress={() =>
+                    navigation.navigate("SeeMoreComponent", {
+                      name: "Cast",
+                      array: cast,
+                    })
+                  }
+                >
+                  <Text className="color-white text-2xl">Cast</Text>
+                  <View className="flex-row pr-3 items-center">
+                    <Text className="color-orange-400 pl-3 pr-2 py-3 text-xs">
+                      See More
+                    </Text>
+                    <Icon color={"orange"} name="chevron-right" size={8} />
+                  </View>
+                </TouchableOpacity>
                 <FlatList
                   horizontal
                   data={cast}
@@ -346,7 +362,23 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
                 <View className="items-center">
                   <View className="color-red-800 border-neutral-800 border w-11/12"></View>
                 </View>
-                <Text className="color-white text-2xl">Crew</Text>
+                <TouchableOpacity
+                  className="flex-row justify-between items-center"
+                  onPress={() =>
+                    navigation.navigate("SeeMoreComponent", {
+                      name: "Crew",
+                      array: crew,
+                    })
+                  }
+                >
+                  <Text className="color-white text-2xl">Crew</Text>
+                  <View className="flex-row pr-3 items-center">
+                    <Text className="color-orange-400 pl-3 pr-2 py-3 text-xs">
+                      See More
+                    </Text>
+                    <Icon color={"orange"} name="chevron-right" size={8} />
+                  </View>
+                </TouchableOpacity>
                 <FlatList
                   horizontal
                   data={crew}

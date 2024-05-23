@@ -20,7 +20,7 @@ const { width } = Dimensions.get("window");
 
 const ComingSoon = ({
   navigation,
-}: NativeStackScreenProps<InsideStackParamList, "Home">) => {
+}: NativeStackScreenProps<InsideStackParamList, "HomeScreen">) => {
   const nowPlayingMoviesData = useMovieLists("now_playing");
   const popularMoviesData = useMovieLists("upcoming");
   const upcomingMoviesData = useMovieLists("popular");
@@ -100,7 +100,15 @@ const ComingSoon = ({
           }}
         />
       </View>
-      <CategoryHeader title={"Popüler"} />
+      <CategoryHeader
+        title={"Popüler"}
+        onPress={() =>
+          navigation.navigate("SeeMoreComponent", {
+            array: popularMoviesList,
+            name: "Popüler",
+          })
+        }
+      />
       <FlatList
         data={popularMoviesList}
         keyExtractor={(item: any) => item.id}
@@ -124,7 +132,15 @@ const ComingSoon = ({
           />
         )}
       />
-      <CategoryHeader title={"Upcoming"} />
+      <CategoryHeader
+        title={"Upcoming"}
+        onPress={() =>
+          navigation.navigate("SeeMoreComponent", {
+            array: upcomingMoviesList,
+            name: "Upcoming",
+          })
+        }
+      />
       <FlatList
         data={upcomingMoviesList}
         keyExtractor={(item) => item.id.toString()}
@@ -156,7 +172,7 @@ const ComingSoon = ({
 
 const HomeScreenAnimeScreen = ({
   navigation,
-}: NativeStackScreenProps<InsideStackParamList, "Home">) => {
+}: NativeStackScreenProps<InsideStackParamList, "HomeScreen">) => {
   return (
     <ScrollView>
       <Text className="color-red-500">HomeScreenAnimeScreen</Text>
@@ -165,7 +181,7 @@ const HomeScreenAnimeScreen = ({
 };
 const HomeScreenMovieScreen = ({
   navigation,
-}: NativeStackScreenProps<InsideStackParamList, "Home">) => {
+}: NativeStackScreenProps<InsideStackParamList, "HomeScreen">) => {
   return (
     <ScrollView>
       <Text className="color-red-500">HomeScreenMovieScreen</Text>
@@ -174,7 +190,7 @@ const HomeScreenMovieScreen = ({
 };
 const HomeScreenTvSerials = ({
   navigation,
-}: NativeStackScreenProps<InsideStackParamList, "Home">) => {
+}: NativeStackScreenProps<InsideStackParamList, "HomeScreen">) => {
   return (
     <ScrollView>
       <Text className="color-red-500">HomeScreenTvSerials</Text>

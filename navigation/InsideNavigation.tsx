@@ -18,11 +18,46 @@ import ReviewScreen from "../components/ReviewScreen";
 import AddList from "../components/AddList";
 import SelectFilmForList from "../components/SelectFilmForList";
 import MovieDetailAddlist from "../components/MovieDetailAddlist";
+import SeeMoreComponent from "../components/SeeMoreComponent";
 import ReviewsScreen from "../screens/ReviewsScreen";
 import ProfileReviews from "../screens/profile/ProfileReviews";
 import ProfileAyarlar from "../screens/profile/ProfileAyarlar";
 import ProfileList from "../screens/profile/ProfileList";
 import useUserStore from "../utils/hooks/useUserStore";
+
+type Result = {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: number[];
+  id: number;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  release_date: Date;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+};
+
+type People = {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: null | string;
+  cast_id?: number;
+  character?: string;
+  credit_id: string;
+  order?: number;
+  department?: string;
+  job?: string;
+};
 
 export type InsideStackParamList = {
   HomeScreen: undefined;
@@ -50,6 +85,7 @@ export type InsideStackParamList = {
   };
   SelectFilmForList: { listId: string | null };
   MovieDetailAddlist: { movieId: string };
+  SeeMoreComponent: { array: Result[] | People[]; name: string };
 };
 
 const InsideStack = createNativeStackNavigator<InsideStackParamList>();
@@ -88,6 +124,10 @@ const InsideNavigation = () => {
         <InsideStack.Screen name="ProfileAyarlar" component={ProfileAyarlar} />
         <InsideStack.Screen name="AddList" component={AddList} />
         <InsideStack.Screen name="ListContent" component={ListContent} />
+        <InsideStack.Screen
+          name="SeeMoreComponent"
+          component={SeeMoreComponent}
+        />
         <InsideStack.Screen
           name="MovieDetailAddlist"
           component={MovieDetailAddlist}
