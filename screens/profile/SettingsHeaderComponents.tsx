@@ -8,17 +8,21 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import { getAuth, updateProfile } from "firebase/auth";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import * as ImagePicker from "react-native-image-picker";
+import useUserStore from "utils/hooks/useUserStore";
 
 const SettingsHeaderComponents = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [photoURL, setPhotoURL] = useState("");
+  const { user, updateUserProfile } = useUserStore((state) => ({
+    user: state.user,
+    updateUserProfile: state.updateUserProfile,
+  }));
 
-  const auth = getAuth();
-  const user = auth.currentUser;
+  const [username, setUsername] = useState(user?.displayName || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [photoURL, setPhotoURL] = useState(user?.photoURL || "");
 
   useEffect(() => {
     if (user) {
@@ -27,25 +31,49 @@ const SettingsHeaderComponents = () => {
       setPhotoURL(user.photoURL || "");
     }
   }, [user]);
+  console.log(user);
 
   const updateProfileInfo = async () => {
-    if (user) {
-      try {
-        await updateProfile(user, {
-          displayName: username,
-          photoURL: photoURL,
-        });
-
-        console.log("Kullanıcı bilgileri güncellendi");
-      } catch (error) {
-        console.error(
-          "Kullanıcı bilgileri güncellenirken bir hata oluştu:",
-          error
-        );
-      }
-    } else {
-      console.error("Kullanıcı bilgileri bulunamadı.");
+    try {
+      await updateUserProfile({ displayName: username, photoURL: photoURL });
+      console.log("Kullanıcı bilgileri güncellendi");
+    } catch (error) {
+      console.error(
+        "Kullanıcı bilgileri güncellenirken bir hata oluştu:",
+        error
+      );
     }
+  };
+
+  const handleImagePick = async () => {
+    ImagePicker.launchImageLibrary({ mediaType: "photo" }, async (response) => {
+      if (response.didCancel || response.errorMessage) {
+        console.log("Image picker cancelled or failed");
+        return;
+      }
+
+      if (response.assets && response.assets.length > 0) {
+        const asset = response.assets[0];
+        const uri = asset.uri;
+
+        if (uri) {
+          const storage = getStorage();
+          const storageRef = ref(storage, `profile_pictures/${user?.uid}.jpg`);
+          const img = await fetch(uri);
+          const bytes = await img.blob();
+
+          try {
+            await uploadBytes(storageRef, bytes);
+            const downloadURL = await getDownloadURL(storageRef);
+            setPhotoURL(downloadURL);
+            await updateUserProfile({ photoURL: downloadURL });
+            console.log("Profile picture updated successfully");
+          } catch (error) {
+            console.error("Error uploading image:", error);
+          }
+        }
+      }
+    });
   };
 
   return (
@@ -68,11 +96,15 @@ const SettingsHeaderComponents = () => {
         className="h-64 w-screen justify-center items-center flex-1"
         source={require("../profile.jpg")}
       >
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleImagePick}>
           <View className="items-center">
             <Image
               className="h-24 w-24 rounded-full"
-              source={require("../avatar.jpg")}
+              source={
+                user?.photoURL
+                  ? { uri: user.photoURL }
+                  : require("../avatar.jpg")
+              }
             />
             <Text className="text-white">Resmi veya arkaplanı düzenle</Text>
           </View>
@@ -92,6 +124,7 @@ const SettingsHeaderComponents = () => {
           onChangeText={(text) => setEmail(text)}
           keyboardType="email-address"
           className="text-white py-2 border-gray-600 border-b-2"
+          editable={false} // Email is typically not editable in profile settings
         />
       </View>
       <View className="items-center">
@@ -101,4 +134,5 @@ const SettingsHeaderComponents = () => {
     </ScrollView>
   );
 };
+
 export default SettingsHeaderComponents;

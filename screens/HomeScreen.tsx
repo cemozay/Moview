@@ -12,10 +12,10 @@ export interface HomeScreenProp {
   navigation: any;
   route: any;
 }
+import YearsListComponent from "../components/YearsListComponent";
 
 const HomeScreen: React.FC<HomeScreenProp> = ({ navigation, route }) => {
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
-
   const handleButtonPress = (title: string) => {
     setSelectedButton(selectedButton === title ? null : title);
   };
@@ -64,7 +64,17 @@ const HomeScreen: React.FC<HomeScreenProp> = ({ navigation, route }) => {
         </View>
 
         {selectedButton === null && (
-          <ComingSoon navigation={navigation} route={route} />
+          <View>
+            <ComingSoon navigation={navigation} route={route} />
+            <YearsListComponent
+              navigation={navigation}
+              route={{
+                key: "YearsListComponent",
+                name: "YearsListComponent",
+                params: { start: "1990", end: "2000" },
+              }}
+            />
+          </View>
         )}
         {selectedButton === "Movie" && (
           <HomeScreenMovieScreen navigation={navigation} route={route} />

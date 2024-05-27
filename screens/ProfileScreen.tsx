@@ -8,7 +8,6 @@ import {
   Image,
   StatusBar,
 } from "react-native";
-
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import ProfileMain from "./profile/ProfileMain";
 import ProfileActivity from "./profile/ProfileActivity";
@@ -17,20 +16,24 @@ import ProfileReviews from "./profile/ProfileReviews";
 import ProfileDiary from "./profile/ProfileDiary";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Feather from "@expo/vector-icons/Feather";
+import useUserStore from "utils/hooks/useUserStore";
 
 export interface ProfileScreenProp {
   navigation: any;
   route: any;
 }
 
-const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation }) => {
+const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
+  const user = useUserStore((state) => state.user);
+
   const FirstRoute = () => <ProfileMain />;
-
-  const SecondRoute = () => <ProfileList />;
-
-  const ThirdRoute = () => <ProfileReviews />;
+  const SecondRoute = () => (
+    <ProfileList navigation={navigation} route={route} />
+  );
+  const ThirdRoute = () => (
+    <ProfileReviews navigation={navigation} route={route} />
+  );
   const FourthRoute = () => <ProfileDiary />;
-
   const FifthRoute = () => <ProfileActivity />;
 
   const [index, setIndex] = useState(0);
@@ -65,31 +68,35 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <View className="justify-end flex-reverse items-start flex-1">
-          <View className=" flex-row">
+          <View className="flex-row">
             <TouchableOpacity>
               <Image
                 className="h-24 w-24 rounded-full"
-                source={require("./avatar.jpg")}
+                source={
+                  user?.photoURL
+                    ? { uri: user.photoURL }
+                    : require("./avatar.jpg")
+                }
               />
             </TouchableOpacity>
-            <View className=" w-screen h-28">
+            <View className="w-screen h-28">
               <View className="flex-row">
                 <View>
                   <Text className="color-white pt-4 text-xl font-bold">
-                    Alperen Ağırman
+                    {user?.displayName}
                   </Text>
                   <View className="flex-row">
                     <Text className="color-white text-xs pr-4">
-                      5001 Takipçi
+                      {user?.followers} Takipçi
                     </Text>
-                    <Text className="color-white text-xs ">
-                      5001 Takip Edilen
+                    <Text className="color-white text-xs">
+                      {user?.following} Takip Edilen
                     </Text>
                   </View>
                 </View>
-                <View className="w-36 items-end px-3 py-4 ">
+                <View className="w-36 items-end px-3 py-4">
                   <TouchableOpacity
-                    className=" bg-black w-28 h-12 justify-center items-center border-1 border-white rounded-xl"
+                    className="bg-black w-28 h-12 justify-center items-center border-1 border-white rounded-xl"
                     style={[{ backgroundColor: "black" }]}
                   >
                     <Text className="color-white">{"Takip Et"}</Text>
@@ -108,9 +115,7 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation }) => {
         renderTabBar={(props) => (
           <TabBar
             {...props}
-            indicatorStyle={{
-              backgroundColor: "white",
-            }}
+            indicatorStyle={{ backgroundColor: "white" }}
             style={{ backgroundColor: "black" }}
             activeColor={"white"}
             inactiveColor={"white"}

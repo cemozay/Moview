@@ -10,6 +10,7 @@ import MovieDetails from "../components/MovieDetails";
 import AddReview from "../components/AddReview";
 import ListDetailsScreen from "../components/ListDetailsScreen";
 import ListContent from "../components/ListContent";
+import YearsListComponent from "../components/YearsListComponent";
 import Selectlist from "../components/Selectlist";
 import PersonScreen from "../screens/PersonScreen";
 import SearchScreen from "../screens/SearchScreen";
@@ -86,6 +87,7 @@ export type InsideStackParamList = {
   SelectFilmForList: { listId: string | null };
   MovieDetailAddlist: { movieId: string };
   SeeMoreComponent: { array: Result[] | People[]; name: string };
+  YearsListComponent: { start: string; end: string };
 };
 
 const InsideStack = createNativeStackNavigator<InsideStackParamList>();
@@ -124,6 +126,11 @@ const InsideNavigation = () => {
         <InsideStack.Screen name="ProfileAyarlar" component={ProfileAyarlar} />
         <InsideStack.Screen name="AddList" component={AddList} />
         <InsideStack.Screen name="ListContent" component={ListContent} />
+        <InsideStack.Screen
+          name="YearsListComponent"
+          component={YearsListComponent}
+        />
+
         <InsideStack.Screen
           name="SeeMoreComponent"
           component={SeeMoreComponent}
