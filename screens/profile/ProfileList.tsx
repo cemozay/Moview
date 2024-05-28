@@ -11,13 +11,15 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { FirebaseDB } from "firebaseConfig";
-import useUserStore from "../../utils/hooks/useUserStore";
 import { useMovieData } from "utils/hooks/useMovieData";
+import { UserData } from "../ProfileScreen";
 
 type ProfileListProp = NativeStackScreenProps<
   InsideStackParamList,
   "ProfileList"
->;
+> & {
+  user: UserData;
+};
 
 type List = {
   id: string;
@@ -61,11 +63,11 @@ const MovieItem = ({ mediaId }: MovieItemProps) => {
   );
 };
 
-const ProfileList = ({ navigation }: ProfileListProp) => {
-  const user = useUserStore((state) => state.user);
+const ProfileList = ({ navigation, user }: ProfileListProp) => {
+  const baseUser = user;
   const listsRef = collection(FirebaseDB, "lists");
   const [lists, setLists] = useState<List[]>([]);
-  const doc_query = query(listsRef, where("userId", "==", user!.uid));
+  const doc_query = query(listsRef, where("userId", "==", baseUser.uid));
 
   const fetchData = async () => {
     try {

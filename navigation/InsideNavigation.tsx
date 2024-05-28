@@ -75,7 +75,7 @@ export type InsideStackParamList = {
   ReviewsScreen: undefined;
   LikedMovies: undefined;
   ProfileReviews: undefined;
-  ProfileScreen: undefined;
+  ProfileScreen: { route: string };
   ProfileAyarlar: undefined;
   ProfileList: undefined;
   AddList: { movies: string[] | undefined; listId: string | null };

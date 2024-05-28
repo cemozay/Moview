@@ -1,12 +1,17 @@
 import { Text, View } from "react-native";
-import React, { Component } from "react";
+import React from "react";
+import { UserData } from "screens/ProfileScreen";
 
-export default class ProfileDiary extends Component {
-  render() {
-    return (
-      <View>
-        <Text>ProfileDiary</Text>
-      </View>
-    );
-  }
-}
+type ProfileDiaryProp = {
+  user: UserData;
+  route: any;
+  navigation: any;
+};
+const ProfileDiary = ({ user }: ProfileDiaryProp) => {
+  return (
+    <View>
+      <Text>ProfileDiary</Text>
+    </View>
+  );
+};
+export default ProfileDiary;

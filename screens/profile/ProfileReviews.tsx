@@ -10,17 +10,19 @@ import {
 } from "react-native";
 import { collection, where, query, getDocs } from "firebase/firestore";
 import { FirebaseDB } from "../../firebaseConfig";
-import useUserStore from "../../utils/hooks/useUserStore";
 import { useMovieData } from "utils/hooks/useMovieData";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "@expo/vector-icons/FontAwesome";
+import { UserData } from "../ProfileScreen";
 
 type ProfileReviewsProp = NativeStackScreenProps<
   InsideStackParamList,
   "ProfileReviews"
->;
+> & {
+  user: UserData;
+};
 
 type Review = {
   timestamp: any;
@@ -36,12 +38,12 @@ type ReviewItemProps = {
   navigation: ProfileReviewsProp["navigation"];
 };
 
-const ProfileReviews = ({ navigation }: ProfileReviewsProp) => {
-  const user = useUserStore((state) => state.user);
+const ProfileReviews = ({ navigation, user }: ProfileReviewsProp) => {
+  const baseUser = user;
   const [reviews, setReviews] = useState<Review[]>([]);
 
   const reviewRef = collection(FirebaseDB, "reviews");
-  const doc_query = query(reviewRef, where("userId", "==", user!.uid));
+  const doc_query = query(reviewRef, where("userId", "==", baseUser.uid));
 
   const fetchReviews = async () => {
     try {
