@@ -76,8 +76,13 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
     <View className="flex-1">
       <View className="w-scren justify-end h-3/6">
         <ImageBackground className="w-full h-full" source={backgroundImage} />
+        <View className="w-scren justify-end">
+          <View className="w-screen items-start justify-end bg-black rounded-t-full self-center absolute h-28">
+            <Text className="text-4xl pl-16 color-white absolute">Welcome</Text>
+          </View>
+        </View>
         <View className="w-screen items-end h-16 bg-black">
-          <Text className="text-4xl pr-16 color-white ">Moview</Text>
+          <Text className="text-4xl pr-16 color-white ">to Moview</Text>
         </View>
       </View>
 
