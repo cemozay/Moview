@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>93761073008-2av2r0uaadd1i0jue6jk5n2imetumbun.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.93761073008-2av2r0uaadd1i0jue6jk5n2imetumbun</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBg4NvsVgaEBhSwrYmKbPpLKcSE0QAjnZg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>93761073008</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.moview.test</string>
+	<key>PROJECT_ID</key>
+	<string>moview-7</string>
+	<key>STORAGE_BUCKET</key>
+	<string>moview-7.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:93761073008:ios:f2ed979fe649e8912929b5</string>
+	<key>DATABASE_URL</key>
+	<string>https://moview-7-default-rtdb.europe-west1.firebasedatabase.app</string>
+</dict>
+</plist>
