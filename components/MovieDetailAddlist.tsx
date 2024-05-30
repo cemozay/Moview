@@ -39,7 +39,6 @@ const MovieDetailAddlist = ({
   const listsRef = collection(FirebaseDB, "lists");
   const [lists, setLists] = useState<List[]>([]);
   const doc_query = query(listsRef, where("userId", "==", user!.uid));
-  console.log(movieIdArray);
 
   const fetchData = async () => {
     try {

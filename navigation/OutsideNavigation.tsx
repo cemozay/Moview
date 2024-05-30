@@ -22,7 +22,7 @@ const screenOptions = {
 };
 
 const OutsideNavigation = () => {
-  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
+  const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
 
   useEffect(() => {
     checkAlreadyOnboarded();
@@ -32,8 +32,12 @@ const OutsideNavigation = () => {
     const alreadyOnboarded = getStorageBoolean("alreadyOnboarded");
 
     if (alreadyOnboarded == null) setShowOnboarding(true);
-    else setShowOnboarding(alreadyOnboarded!);
+    else setShowOnboarding(!alreadyOnboarded);
   };
+
+  if (showOnboarding == null) {
+    return null; // Loading screen can be added here
+  }
 
   return (
     <OutsideStack.Navigator

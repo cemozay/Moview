@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import { getAuth, onAuthStateChanged, updateProfile, User as FirebaseUser } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  updateProfile,
+  User as FirebaseUser,
+} from "firebase/auth";
 import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 
 interface ExtendedUser extends FirebaseUser {
@@ -37,7 +42,7 @@ const useUserStore = create<UserStore>((set) => ({
     }
   },
 }));
-
+/* 
 const fetchUserData = async (user: FirebaseUser): Promise<ExtendedUser> => {
   const db = getFirestore();
   const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -67,6 +72,6 @@ onAuthStateChanged(auth, async (user) => {
   } else {
     useUserStore.getState().setUser(null);
   }
-});
+}); */
 
 export default useUserStore;

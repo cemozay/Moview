@@ -37,49 +37,55 @@ const OnboardingScreen = ({ navigation }: OnboardingScreenProp) => {
             backgroundColor: "#a7f3d0",
             image: (
               <View className="w-80 h-80">
-                {
-                  <Lottie
-                    source={require("../assets/Animation3.json")}
-                    autoPlay
-                    loop
-                  />
-                }
+                <Lottie
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  source={require("../assets/Animation3.json")}
+                  autoPlay
+                  loop
+                />
               </View>
             ),
-            title: "Biz",
-            subtitle: "Kötüyüz",
+            title: "Moview",
+            subtitle: "Hosgeldiniz!",
           },
           {
             backgroundColor: "#fef3c7",
             image: (
               <View className="w-80 h-80">
-                {
-                  <Lottie
-                    source={require("../assets/Animation2.json")}
-                    autoPlay
-                    loop
-                  />
-                }
+                <Lottie
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  source={require("../assets/Animation2.json")}
+                  autoPlay
+                  loop
+                />
               </View>
             ),
-            title: "Aynen",
-            subtitle: "Öyle",
+            title: "Hesap olusturun!",
+            subtitle: "Giris yapin veya kayit olun!",
           },
           {
             backgroundColor: "#a78bfa",
             image: (
               <View className="w-80 h-80">
-                {
-                  <Lottie
-                    source={require("../assets/Animation1.json")}
-                    autoPlay
-                    loop
-                  />
-                }
+                <Lottie
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  source={require("../assets/Animation1.json")}
+                  autoPlay
+                  loop
+                />
               </View>
             ),
-            title: "mi",
-            subtitle: "olmus?",
+            title: "Hazir",
+            subtitle: "Hadi baslayalim!",
           },
         ]}
       />

@@ -13,13 +13,14 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import { FirebaseDB } from "firebaseConfig";
 import { getDoc, doc, deleteDoc } from "firebase/firestore";
-import { useAuthentication } from "utils/hooks/useAuthentication";
 import { useMovieData } from "utils/hooks/useMovieData";
 import LinearGradient from "react-native-linear-gradient";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import useUserStore from "../utils/hooks/useUserStore";
+
 type ListDetailsScreenNavigate = NativeStackScreenProps<
   InsideStackParamList,
   "ListDetailsScreen"
@@ -29,18 +30,18 @@ type ListDetailsScreenProp = {
   navigation: ListDetailsScreenNavigate["navigation"];
   route: ListDetailsScreenNavigate["route"];
 };
-type Movie = [];
+
 type ListProps = {
   id: string;
   name: string;
-  movies: Movie[];
+  movies: Array<string>;
   timestamp: any;
   userId: string;
   description: string;
 };
 
 const ListDetailsScreen = ({ navigation, route }: ListDetailsScreenProp) => {
-  const { user } = useAuthentication();
+  const user = useUserStore((state) => state.user);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const numColumns = 3;
 

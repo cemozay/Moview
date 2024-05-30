@@ -31,7 +31,6 @@ const SettingsHeaderComponents = () => {
       setPhotoURL(user.photoURL || "");
     }
   }, [user]);
-  console.log(user);
 
   const updateProfileInfo = async () => {
     try {

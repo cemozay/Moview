@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import OutsideNavigation from "./OutsideNavigation";
 import InsideNavigation from "./InsideNavigation";
 import { useAuthentication } from "utils/hooks/useAuthentication";
+import { View, Text } from "react-native";
 
 export type RootStackParamList = {
   Navigation: undefined;
@@ -18,7 +19,11 @@ const AppNavigation = () => {
   const { user, loading } = useAuthentication();
 
   if (loading) {
-    return null; // Loading splash screen
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text>Loading...</Text>
+      </View>
+    );
   }
 
   return (

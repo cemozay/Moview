@@ -76,7 +76,6 @@ const ListContent = ({ navigation, route }: ListContentProps) => {
             onPress={() =>
               navigation.navigate("AddList", { movies: movies, listId: listid })
             }
-            onFocus={() => console.log(movies)}
             style={styles.headerButton}
           >
             <FontAwesome6 name="check" size={26} color="white" />

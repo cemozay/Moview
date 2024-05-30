@@ -11,19 +11,15 @@ export function useAuthentication() {
     const unsubscribe = onAuthStateChanged(
       FirebaseAuth,
       (userData: User | null) => {
-        if (userData) {
-          setUser(userData);
-        } else {
-          setUser(null);
-        }
+        setUser(userData);
         setLoading(false);
       }
     );
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, [setUser]);
 
-  const { user } = useUserStore((state) => ({ user: state.user }));
+  const user = useUserStore((state) => state.user);
 
   return {
     user,

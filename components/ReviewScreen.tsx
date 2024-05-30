@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  ActivityIndicator,
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
@@ -19,7 +18,6 @@ import {
   deleteDoc,
   Timestamp,
 } from "firebase/firestore";
-import { useAuthentication } from "utils/hooks/useAuthentication";
 import { useMovieData } from "utils/hooks/useMovieData";
 import LinearGradient from "react-native-linear-gradient";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -27,6 +25,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { formatTimestamp } from "utils/functions";
+import useUserStore from "../utils/hooks/useUserStore";
 
 type ReviewScreenProp = NativeStackScreenProps<
   InsideStackParamList,
@@ -53,11 +52,12 @@ const ReviewScreen = ({
   route,
   navigation,
 }: ReviewScreenProp & ReviewsIdProps) => {
+  const user = useUserStore((state) => state.user);
   const { reviewId } = route.params;
-  const reviewRef = collection(FirebaseDB, "reviews");
   const [reviewData, setReviewData] = useState<ReviewData>();
+
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { user, loading } = useAuthentication();
+  const reviewRef = collection(FirebaseDB, "reviews");
 
   useEffect(() => {
     const fetchReview = async () => {
@@ -92,14 +92,6 @@ const ReviewScreen = ({
   const { date, mediaId, rating, text, userId } = reviewData || {};
 
   const { data: movie, isLoading, isError } = useMovieData(mediaId || "");
-
-  if (loading) {
-    return (
-      <View>
-        <ActivityIndicator size="large" color="blue" />
-      </View>
-    );
-  }
 
   if (isLoading) {
     return (
