@@ -42,10 +42,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-GoogleSignin.configure({
-  webClientId:
-    "93761073008-6vgvka5lq2aj6rj0ra42696ibbsitk7b.apps.googleusercontent.com",
-});
+GoogleSignin.configure();
 
 export {
   app,
