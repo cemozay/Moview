@@ -26,6 +26,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { formatTimestamp } from "utils/functions";
 
 type ReviewScreenProp = NativeStackScreenProps<
   InsideStackParamList,
@@ -85,27 +86,6 @@ const ReviewScreen = ({
       navigation.goBack();
     } catch (error) {
       console.error("Error deleting review:", error);
-    }
-  };
-
-  const formatTimestamp = (timestamp: Timestamp | undefined) => {
-    if (!timestamp) return "";
-    const now = new Date();
-    const date = timestamp.toDate();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    const diffInHours = diffInSeconds / 3600;
-    const diffInDays = diffInSeconds / 86400;
-    const diffInWeeks = diffInSeconds / (86400 * 7);
-    const diffInMonths = diffInSeconds / (86400 * 30);
-
-    if (diffInHours < 24) {
-      return `${Math.floor(diffInHours)} hours ago`;
-    } else if (diffInDays < 7) {
-      return `${Math.floor(diffInDays)} days ago`;
-    } else if (diffInWeeks < 4) {
-      return `${Math.floor(diffInWeeks)} weeks ago`;
-    } else {
-      return `${Math.floor(diffInMonths)} months ago`;
     }
   };
 
@@ -269,7 +249,7 @@ const styles = StyleSheet.create({
   bottomSheetContent: {
     padding: 20,
     flex: 1,
-    backgroundColor: "black", // Arka plan rengini siyah yap
+    backgroundColor: "black",
   },
   bottomSheetText: {
     fontSize: 18,
@@ -279,18 +259,18 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    backgroundColor: "#333", // Buton arka plan rengini değiştir
+    backgroundColor: "#333",
     marginBottom: 10,
   },
   buttonClose: {
-    backgroundColor: "#555", // Kapat butonunun arka plan rengini değiştir
+    backgroundColor: "#555",
   },
   textStyle: {
-    color: "white", // Buton metin rengini beyaz yap
+    color: "white",
     textAlign: "center",
   },
   whiteText: {
-    color: "white", // Metin rengini beyaz yap
+    color: "white",
   },
   bottomSheet: { backgroundColor: "black" },
 });

@@ -75,8 +75,6 @@ const AddList = ({ navigation, route }: AddListProps) => {
     }
   }, [route.params.movies, listMovies]);
 
-  console.log(localMovies);
-
   const handleAddList = async () => {
     if (listName.trim() && description.trim()) {
       try {
@@ -167,7 +165,7 @@ const AddList = ({ navigation, route }: AddListProps) => {
               selectTextOnFocus={true}
               multiline={false}
               numberOfLines={1}
-              placeholder="Listenin ismi"
+              placeholder="List Name"
               placeholderTextColor="white"
               value={listName}
               onChangeText={setListName}

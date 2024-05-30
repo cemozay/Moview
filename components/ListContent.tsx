@@ -28,7 +28,6 @@ const ListContent = ({ navigation, route }: ListContentProps) => {
   useEffect(() => {
     if (movieId !== null && !movies.includes(movieId)) {
       setMovies((prevMovies) => [...prevMovies, movieId]);
-      console.log(movies);
     }
   }, [movieId]);
 
@@ -89,7 +88,6 @@ const ListContent = ({ navigation, route }: ListContentProps) => {
           keyExtractor={(item) => item}
           onDragEnd={({ data }) => {
             setMovies(data);
-            console.log(movies);
           }}
         />
         <View style={styles.heartIconContainer}>

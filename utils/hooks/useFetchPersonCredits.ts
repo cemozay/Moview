@@ -1,33 +1,32 @@
-// useFetchCrew.js
 import { useEffect, useState } from "react";
 
 type MovieCreditsList = {
-    cast: Person[];
-    crew: Person[];
-    id: number;
-  };
+  cast: Person[];
+  crew: Person[];
+  id: number;
+};
 
-  type Person = {
-    adult: boolean;
-    backdrop_path: null | string;
-    genre_ids: number[];
-    id: number;
-    original_language: string;
-    original_title: string;
-    overview: string;
-    popularity: number;
-    poster_path: null | string;
-    release_date: Date;
-    title: string;
-    video: boolean;
-    vote_average: number;
-    vote_count: number;
-    character?: string;
-    credit_id: string;
-    order?: number;
-    department?: string;
-    job?: string;
-  };
+type Person = {
+  adult: boolean;
+  backdrop_path: null | string;
+  genre_ids: number[];
+  id: number;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: null | string;
+  release_date: Date;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+  character?: string;
+  credit_id: string;
+  order?: number;
+  department?: string;
+  job?: string;
+};
 
 const useFetchCrew = (movieId: string) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -66,8 +65,7 @@ const useFetchCrew = (movieId: string) => {
 
     fetchData();
 
-    return () => {
-    };
+    return () => {};
   }, [movieId]);
 
   return { cast, crew, isLoading, error };

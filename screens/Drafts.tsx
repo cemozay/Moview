@@ -16,10 +16,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "red", // Arka plan rengi siyah
+    backgroundColor: "red",
   },
   box: {
-    backgroundColor: "white", // Kutu rengi beyaz
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "black", // Metin rengi siyah
+    color: "black",
   },
 });
 

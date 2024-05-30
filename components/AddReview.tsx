@@ -139,7 +139,7 @@ const AddReview = ({ route, navigation }: AddReviewProp & ReviewsIdProps) => {
                 colors={["rgba(0,0,0,0.5)", "rgba(0,0,0,0.9)"]}
                 style={StyleSheet.absoluteFillObject}
               >
-                <View className=" flex-row  items-center justify-between ">
+                <View className=" flex-row items-center justify-between">
                   <View className="items-center m-3 pt-10">
                     <View className="m-3">
                       <Text style={{ color: "white", fontSize: 20 }}>
@@ -297,10 +297,7 @@ const AddReview = ({ route, navigation }: AddReviewProp & ReviewsIdProps) => {
                 />
 
                 <View>
-                  <Button
-                    title="Kapat"
-                    onPress={() => setModalVisible(false)}
-                  />
+                  <Button title="OK" onPress={() => setModalVisible(false)} />
                 </View>
               </View>
             </View>

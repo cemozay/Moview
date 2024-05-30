@@ -68,11 +68,10 @@ type Person = {
 };
 
 const PersonScreen = ({ route, navigation }: PersonScreenProps) => {
+  const { personId } = route.params;
+
   const window = useWindowDimensions();
   const [expanded, setExpanded] = useState(false);
-
-  // UseFetch for person details
-  const { personId } = route.params;
 
   const { data: personDetails }: { data: PersonDetails; isError: boolean } =
     useFetch(
@@ -86,7 +85,6 @@ const PersonScreen = ({ route, navigation }: PersonScreenProps) => {
       }
     );
 
-  // UseFetch for movie credits
   const {
     data: movieCredits,
     isError: movieCreditsError,

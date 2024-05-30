@@ -23,6 +23,7 @@ import { FirebaseDB } from "firebaseConfig";
 import { fetchTrailer } from "utils/hooks/useFetchTrailer";
 import useFetchCrew from "utils/hooks/useFetchCrew";
 import { FloatingAction } from "react-native-floating-action";
+import { formatTimestamp } from "utils/functions";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -55,6 +56,15 @@ type Review = {
   text: string;
   userId: string;
   id: string;
+};
+
+type ActionItem = {
+  text: string;
+  icon: JSX.Element;
+  onPress?: () => void;
+  name: string;
+  position: number;
+  color: string;
 };
 
 const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
@@ -99,54 +109,20 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
     }
   };
 
-  const formatTimestamp = (timestamp: any) => {
-    if (!timestamp) return "";
-    const now = new Date();
-    const date = timestamp.toDate();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    const diffInHours = diffInSeconds / 3600;
-    const diffInDays = diffInSeconds / 86400;
-    const diffInWeeks = diffInSeconds / (86400 * 7);
-    const diffInMonths = diffInSeconds / (86400 * 30);
-
-    if (diffInHours < 24) {
-      return `${Math.floor(diffInHours)} hours ago`;
-    } else if (diffInDays < 7) {
-      return `${Math.floor(diffInDays)} days ago`;
-    } else if (diffInWeeks < 4) {
-      return `${Math.floor(diffInWeeks)} weeks ago`;
-    } else {
-      return `${Math.floor(diffInMonths)} months ago`;
-    }
-  };
-  type ActionItem = {
-    text: string;
-    icon: JSX.Element;
-    onPress?: () => void;
-    name: string;
-    position: number;
-    color: string;
-  };
   const actions: ActionItem[] = [
     {
-      text: "Already Watch",
+      text: "Already Watched",
       icon: <Icon name="search" size={30} color="white" />,
       name: "bt_alreadywatch",
       position: 1,
       color: "#FF5C00",
-      onPress: () => {
-        console.log("Already Watch pressed");
-      },
     },
     {
-      text: "WatchList",
+      text: "Watchlist",
       icon: <Icon name="search" size={30} color="white" />,
       name: "bt_watchlist",
       position: 2,
       color: "#FF5C00",
-      onPress: () => {
-        console.log("WatchList pressed");
-      },
     },
     {
       text: "AddList",
@@ -167,7 +143,6 @@ const MovieDetailScreen = ({ navigation, route }: MovieDetailsProp) => {
       position: 4,
       color: "#FF5C00",
       onPress: () => {
-        console.log("Review pressed");
         navigation.navigate("AddReview", {
           reviewId: null,
           movieId: movieData.id.toString(),
@@ -441,15 +416,15 @@ const styles = StyleSheet.create({
     borderColor: "#585858",
     borderWidth: 1,
     marginBottom: 16,
-    borderRadius: 40, // Add border radius to the container
-    overflow: "hidden", // Ensure child components are clipped to the rounded corners
+    borderRadius: 40,
+    overflow: "hidden",
   },
   imageBackground: {
     width: "100%",
     height: 230,
   },
   imageBackgroundImage: {
-    borderRadius: 16, // Add border radius to the ImageBackground
+    borderRadius: 16,
   },
 });
 
