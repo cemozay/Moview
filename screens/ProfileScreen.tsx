@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   ImageBackground,
   Image,
@@ -35,7 +34,7 @@ export type UserData = {
 
 const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
   const { userId } = route.params || {};
-  const baseUser = useUserStore((state) => state.user) as UserData; // Type assertion
+  const baseUser = useUserStore((state) => state.user) as UserData;
   const [user, setUser] = useState<UserData | null>(null);
 
   useEffect(() => {
@@ -52,7 +51,6 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
       } else if (baseUser) {
         setUser(baseUser);
       } else {
-        // Default user data if both userId and baseUser are null
         setUser({
           displayName: "Varsayılan Kullanıcı",
           photoURL: "https://example.com/avatar.jpg",
@@ -117,24 +115,24 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1">
       <StatusBar hidden />
       <ImageBackground
-        style={styles.backgroundImage}
+        className="h-72 w-screen"
         source={require("./profile.jpg")}
       >
-        <View style={styles.settingsIconContainer}>
+        <View className="absolute z-10 w-screen items-end pr-2 pt-4">
           <TouchableOpacity
             onPress={() => navigation.navigate("ProfileAyarlar")}
           >
             <Feather name="settings" size={24} color="white" />
           </TouchableOpacity>
         </View>
-        <View style={styles.profileInfoContainer}>
-          <View style={styles.profileHeader}>
+        <View className="justify-end flex-reverse items-start flex-1">
+          <View className="flex-row">
             <TouchableOpacity>
               <Image
-                style={styles.profileImage}
+                className="h-24 w-24 rounded-full"
                 source={
                   user?.photoURL
                     ? { uri: user.photoURL }
@@ -142,22 +140,29 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
                 }
               />
             </TouchableOpacity>
-            <View style={styles.profileDetails}>
-              <View>
-                <Text style={styles.userName}>{user?.displayName}</Text>
-                <View style={styles.followInfo}>
-                  <Text style={styles.followText}>
-                    {user?.followers} Takipçi
+            <View className="w-screen h-28">
+              <View className="flex-row">
+                <View>
+                  <Text className="color-white pt-4 text-xl font-bold">
+                    {user?.displayName}
                   </Text>
-                  <Text style={styles.followText}>
-                    {user?.following} Takip Edilen
-                  </Text>
+                  <View className="flex-row">
+                    <Text className="color-white text-xs pr-4">
+                      {user?.followers} Takipçi
+                    </Text>
+                    <Text className="color-white text-xs">
+                      {user?.following} Takip Edilen
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <View style={styles.followButtonContainer}>
-                <TouchableOpacity style={styles.followButton}>
-                  <Text style={styles.followButtonText}>{"Takip Et"}</Text>
-                </TouchableOpacity>
+                <View className="w-36 items-end px-3 py-4">
+                  <TouchableOpacity
+                    className="bg-black w-28 h-12 justify-center items-center border-1 border-white rounded-xl"
+                    style={[{ backgroundColor: "black" }]}
+                  >
+                    <Text className="color-white">{"Takip Et"}</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
@@ -182,74 +187,5 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  backgroundImage: {
-    height: 288, // 72 * 4 (h-72 in tailwind)
-    width: "100%", // w-screen in tailwind
-  },
-  settingsIconContainer: {
-    position: "absolute",
-    zIndex: 10,
-    width: "100%", // w-screen in tailwind
-    alignItems: "flex-end", // items-end in tailwind
-    paddingRight: 8, // pr-2 in tailwind
-    paddingTop: 16, // pt-4 in tailwind
-  },
-  profileInfoContainer: {
-    flex: 1,
-    justifyContent: "flex-end", // justify-end in tailwind
-    alignItems: "flex-start", // items-start in tailwind
-  },
-  profileHeader: {
-    flexDirection: "row", // flex-row in tailwind
-  },
-  profileImage: {
-    height: 96, // h-24 in tailwind
-    width: 96, // w-24 in tailwind
-    borderRadius: 48, // rounded-full in tailwind
-  },
-  profileDetails: {
-    height: 112, // h-28 in tailwind
-    width: "100%", // w-screen in tailwind
-    flexDirection: "row", // flex-row in tailwind
-  },
-  userName: {
-    color: "white", // text-white in tailwind
-    paddingTop: 16, // pt-4 in tailwind
-    fontSize: 20, // text-xl in tailwind
-    fontWeight: "bold", // font-bold in tailwind
-  },
-  followInfo: {
-    flexDirection: "row", // flex-row in tailwind
-  },
-  followText: {
-    color: "white", // text-white in tailwind
-    fontSize: 12, // text-xs in tailwind
-    paddingRight: 16, // pr-4 in tailwind
-  },
-  followButtonContainer: {
-    width: 144, // w-36 in tailwind
-    alignItems: "flex-end", // items-end in tailwind
-    paddingHorizontal: 12, // px-3 in tailwind
-    paddingTop: 16, // py-4 in tailwind
-  },
-  followButton: {
-    backgroundColor: "black",
-    width: 112, // w-28 in tailwind
-    height: 48, // h-12 in tailwind
-    justifyContent: "center", // justify-center in tailwind
-    alignItems: "center", // items-center in tailwind
-    borderWidth: 1, // border-1 in tailwind
-    borderColor: "white", // border-white in tailwind
-    borderRadius: 24, // rounded-xl in tailwind
-  },
-  followButtonText: {
-    color: "white", // text-white in tailwind
-  },
-});
 
 export default ProfileScreen;

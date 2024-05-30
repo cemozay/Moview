@@ -14,7 +14,11 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import * as ImagePicker from "react-native-image-picker";
 import useUserStore from "utils/hooks/useUserStore";
 
-const SettingsHeaderComponents = () => {
+type updateProfileInfoType = () => void;
+
+const SettingsHeaderComponents: React.FC<{
+  updateProfileInfo: updateProfileInfoType;
+}> = ({ updateProfileInfo }) => {
   const { user, updateUserProfile } = useUserStore((state) => ({
     user: state.user,
     updateUserProfile: state.updateUserProfile,
@@ -31,18 +35,6 @@ const SettingsHeaderComponents = () => {
       setPhotoURL(user.photoURL || "");
     }
   }, [user]);
-
-  const updateProfileInfo = async () => {
-    try {
-      await updateUserProfile({ displayName: username, photoURL: photoURL });
-      console.log("Kullanıcı bilgileri güncellendi");
-    } catch (error) {
-      console.error(
-        "Kullanıcı bilgileri güncellenirken bir hata oluştu:",
-        error
-      );
-    }
-  };
 
   const handleImagePick = async () => {
     ImagePicker.launchImageLibrary({ mediaType: "photo" }, async (response) => {
@@ -123,7 +115,7 @@ const SettingsHeaderComponents = () => {
           onChangeText={(text) => setEmail(text)}
           keyboardType="email-address"
           className="text-white py-2 border-gray-600 border-b-2"
-          editable={false} // Email is typically not editable in profile settings
+          editable={false}
         />
       </View>
       <View className="items-center">
