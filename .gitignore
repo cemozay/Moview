@@ -37,3 +37,7 @@ yarn-error.*
 
 # build
 android/
+
+#google-services
+google-services.json
+GoogleService-Info.plist

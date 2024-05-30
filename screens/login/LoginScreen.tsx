@@ -4,7 +4,15 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/types
 import { OutsideStackParamList } from "../../navigation/OutsideNavigation";
 import CustomButton from "../../components/CustomButton";
 import { FirebaseAuth } from "../../firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithCredential,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 
 type LoginScreenProp = NativeStackScreenProps<OutsideStackParamList, "Login">;
 
@@ -31,19 +39,45 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const googleCredential = GoogleAuthProvider.credential(userInfo.idToken);
+      await signInWithCredential(FirebaseAuth, googleCredential);
+      navigation.navigate("InsideNavigation", {
+        screen: "HomeStack",
+        params: {
+          screen: "Home",
+        },
+      });
+    } catch (error: any) {
+      console.error(error);
+      switch (error.code) {
+        case statusCodes.SIGN_IN_CANCELLED:
+          alert("Sign in cancelled");
+          break;
+        case statusCodes.IN_PROGRESS:
+          alert("Sign in in progress");
+          break;
+        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+          alert("Play services not available");
+          break;
+        default:
+          alert("Google Sign-In Failed: " + error.message);
+          break;
+      }
+    }
+  };
+
   const backgroundImage = require("../profile.jpg");
 
   return (
     <View className="flex-1">
       <View className="w-scren justify-end h-3/6">
         <ImageBackground className="w-full h-full" source={backgroundImage} />
-        <View className="w-scren justify-end">
-          <View className="w-screen items-start justify-end bg-black rounded-t-full self-center absolute h-28">
-            <Text className="text-4xl pl-16 color-white absolute">Welcome</Text>
-          </View>
-        </View>
         <View className="w-screen items-end h-16 bg-black">
-          <Text className="text-4xl pr-16 color-white ">to Moview</Text>
+          <Text className="text-4xl pr-16 color-white ">Moview</Text>
         </View>
       </View>
 
@@ -84,7 +118,7 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
           <CustomButton
             classNameProp="w-1/5 my-4 mx-1 bg-white-500"
             title="G"
-            onPress={() => {}}
+            onPress={handleGoogleSignIn}
           />
 
           <CustomButton
