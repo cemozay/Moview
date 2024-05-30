@@ -11,6 +11,7 @@ interface ExtendedUser extends FirebaseUser {
   avatar?: string;
   followers?: number;
   following?: number;
+  id?:string;
 }
 
 type UserStore = {
