@@ -20,7 +20,6 @@ const CustomButton = (props: CustomButtonProps) => {
       ) : (
         <Text className="text-base font-bold color-black">{props.title}</Text>
       )}
-      l
     </TouchableOpacity>
   );
 };
