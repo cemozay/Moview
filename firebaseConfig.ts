@@ -36,9 +36,17 @@ const FirebaseProvider = new GoogleAuthProvider();
 const FirebaseAuth = initializeAuth(FirebaseApp, {
   persistence: getReactNativePersistence(AsyncStorage),
 });
-const app = initializeApp(firebaseConfig);
 
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-export {app, db, auth,FirebaseAuth, FirebaseDB, FirebaseStorage, FirebaseProvider };
+export {
+  app,
+  db,
+  auth,
+  FirebaseAuth,
+  FirebaseDB,
+  FirebaseStorage,
+  FirebaseProvider,
+};
