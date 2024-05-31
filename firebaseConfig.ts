@@ -5,6 +5,7 @@ import {
   getReactNativePersistence,
   GoogleAuthProvider,
   FacebookAuthProvider,
+  TwitterAuthProvider,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -57,4 +58,7 @@ export {
   FirebaseDB,
   FirebaseStorage,
   FirebaseProvider,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  TwitterAuthProvider,
 };

@@ -1,22 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, ImageBackground } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { OutsideStackParamList } from "../../navigation/OutsideNavigation";
 import CustomButton from "../../components/CustomButton";
-import { FirebaseAuth } from "../../firebaseConfig";
 import {
+  FirebaseAuth,
   GoogleAuthProvider,
+  FacebookAuthProvider,
+  TwitterAuthProvider,
+} from "../../firebaseConfig";
+import {
   signInWithCredential,
   signInWithEmailAndPassword,
-  FacebookAuthProvider,
 } from "firebase/auth";
 import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
+import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 
 type LoginScreenProp = NativeStackScreenProps<OutsideStackParamList, "Login">;
+
+const discovery = {
+  authorizationEndpoint: "https://twitter.com/i/oauth2/authorize",
+  tokenEndpoint: "https://twitter.com/i/oauth2/token",
+  revocationEndpoint: "https://twitter.com/i/oauth2/revoke",
+};
 
 const LoginScreen = ({ navigation }: LoginScreenProp) => {
   const [email, setEmail] = useState("");
@@ -101,6 +111,60 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
     }
   };
 
+  // Twitter login
+  const [, response, promptAsync] = useAuthRequest(
+    {
+      clientId: "azBRT0hZc1VTT29zUHFNYjh3Z0I6MTpjaQ",
+      redirectUri: makeRedirectUri({
+        scheme: "com.moview.test",
+      }),
+      usePKCE: true,
+      scopes: ["tweet.read", "email"],
+    },
+    discovery
+  );
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { code } = response.params;
+
+      const getAccessToken = async () => {
+        const tokenResponse = await fetch(
+          "https://api.twitter.com/2/oauth2/token",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `client_id=azBRT0hZc1VTT29zUHFNYjh3Z0I6MTpjaQ&redirect_uri=${makeRedirectUri(
+              {
+                scheme: "com.moview.test",
+              }
+            )}&code=${code}&grant_type=authorization_code`,
+          }
+        );
+        const tokenResult = await tokenResponse.json();
+        const { access_token, id_token } = tokenResult;
+
+        const credential = TwitterAuthProvider.credential(
+          access_token,
+          id_token
+        );
+        await signInWithCredential(FirebaseAuth, credential);
+
+        navigation.navigate("InsideNavigation", {
+          screen: "HomeStack",
+          params: { screen: "Home" },
+        });
+      };
+
+      getAccessToken();
+    } else if (response?.type === "error") {
+      console.error(response.error);
+      alert("Twitter Login Error: " + response.error);
+    }
+  }, [response]);
+
   const backgroundImage = require("../profile.jpg");
 
   return (
@@ -159,14 +223,14 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
 
           <CustomButton
             classNameProp="w-1/5 my-4 mx-1 bg-white-500"
-            title="T"
-            onPress={() => {}}
+            title="F"
+            onPress={handleFacebookSignIn}
           />
 
           <CustomButton
             classNameProp="w-1/5 my-4 mx-1 bg-white-500"
-            title="F"
-            onPress={handleFacebookSignIn}
+            title="T"
+            onPress={promptAsync}
           />
         </View>
 
