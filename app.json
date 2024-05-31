@@ -14,7 +14,18 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "plugins": ["@react-native-google-signin/google-signin"],
+    "plugins": [
+      ["@react-native-google-signin/google-signin"],
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "376809015394183",
+          "clientToken": "82bd0db1b619bb7975446273f9889ba9",
+          "displayName": "MoviewTest",
+          "scheme": "fb376809015394183"
+        }
+      ]
+    ],
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {

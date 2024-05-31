@@ -28,6 +28,7 @@
     "react-native": "0.73.2",
     "react-native-calendar-picker": "^8.0.1",
     "react-native-draggable-flatlist": "^4.0.1",
+    "react-native-fbsdk-next": "^13.0.0",
     "react-native-floating-action": "^1.22.0",
     "react-native-gesture-handler": "^2.16.2",
     "react-native-image-picker": "^7.1.0",

@@ -4,6 +4,7 @@ import {
   initializeAuth,
   getReactNativePersistence,
   GoogleAuthProvider,
+  FacebookAuthProvider,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -32,7 +33,6 @@ const firebaseConfig = {
 const FirebaseApp = initializeApp(firebaseConfig);
 const FirebaseDB = getFirestore(FirebaseApp);
 const FirebaseStorage = getStorage(FirebaseApp);
-const FirebaseProvider = new GoogleAuthProvider();
 
 const FirebaseAuth = initializeAuth(FirebaseApp, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -42,7 +42,12 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-GoogleSignin.configure();
+GoogleSignin.configure({
+  webClientId:
+    "93761073008-99c6leu9hov4epnecd2tsp8n24j6u10u.apps.googleusercontent.com",
+});
+
+const FirebaseProvider = new GoogleAuthProvider();
 
 export {
   app,

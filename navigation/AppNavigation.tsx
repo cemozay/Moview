@@ -4,6 +4,7 @@ import OutsideNavigation from "./OutsideNavigation";
 import InsideNavigation from "./InsideNavigation";
 import { useAuthentication } from "utils/hooks/useAuthentication";
 import { View, Text } from "react-native";
+import { Settings } from "react-native-fbsdk-next";
 
 export type RootStackParamList = {
   Navigation: undefined;
@@ -14,6 +15,8 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 const screenOptions = {
   headerShown: false,
 };
+
+Settings.initializeSDK();
 
 const AppNavigation = () => {
   const { user, loading } = useAuthentication();

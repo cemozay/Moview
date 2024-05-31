@@ -8,11 +8,13 @@ import {
   GoogleAuthProvider,
   signInWithCredential,
   signInWithEmailAndPassword,
+  FacebookAuthProvider,
 } from "firebase/auth";
 import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
+import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 
 type LoginScreenProp = NativeStackScreenProps<OutsideStackParamList, "Login">;
 
@@ -67,6 +69,35 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
           alert("Google Sign-In Failed: " + error.message);
           break;
       }
+    }
+  };
+
+  const handleFacebookSignIn = async () => {
+    try {
+      const result = await LoginManager.logInWithPermissions([
+        "public_profile",
+        "email",
+      ]);
+      if (result.isCancelled) {
+        throw new Error("User cancelled the login process");
+      }
+
+      const data = await AccessToken.getCurrentAccessToken();
+      if (!data) {
+        throw new Error("Something went wrong obtaining access token");
+      }
+
+      const facebookCredential = FacebookAuthProvider.credential(
+        data.accessToken
+      );
+      await signInWithCredential(FirebaseAuth, facebookCredential);
+      navigation.navigate("InsideNavigation", {
+        screen: "HomeStack",
+        params: { screen: "Home" },
+      });
+    } catch (error: any) {
+      console.error(error);
+      alert("Facebook Login Error: " + error.message);
     }
   };
 
@@ -135,7 +166,7 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
           <CustomButton
             classNameProp="w-1/5 my-4 mx-1 bg-white-500"
             title="F"
-            onPress={() => {}}
+            onPress={handleFacebookSignIn}
           />
         </View>
 
