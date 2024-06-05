@@ -11,7 +11,7 @@ interface ExtendedUser extends FirebaseUser {
   avatar?: string;
   followers?: number;
   following?: number;
-  id?:string;
+  id?: string;
 }
 
 type UserStore = {
@@ -43,36 +43,5 @@ const useUserStore = create<UserStore>((set) => ({
     }
   },
 }));
-/* 
-const fetchUserData = async (user: FirebaseUser): Promise<ExtendedUser> => {
-  const db = getFirestore();
-  const userDoc = await getDoc(doc(db, "users", user.uid));
-
-  if (userDoc.exists()) {
-    const userData = userDoc.data();
-    return {
-      ...user,
-      avatar: userData.avatar,
-      followers: userData.followers,
-      following: userData.following,
-    } as ExtendedUser;
-  } else {
-    return {
-      ...user,
-      followers: 0,
-      following: 0,
-    } as ExtendedUser;
-  }
-};
-
-const auth = getAuth();
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const extendedUser = await fetchUserData(user);
-    useUserStore.getState().setUser(extendedUser);
-  } else {
-    useUserStore.getState().setUser(null);
-  }
-}); */
 
 export default useUserStore;

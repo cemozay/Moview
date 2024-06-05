@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { FirebaseStorage } from "../../firebaseConfig";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import * as ImagePicker from "react-native-image-picker";
@@ -26,13 +27,11 @@ const SettingsHeaderComponents: React.FC<{
 
   const [username, setUsername] = useState(user?.displayName || "");
   const [email, setEmail] = useState(user?.email || "");
-  const [photoURL, setPhotoURL] = useState(user?.photoURL || "");
 
   useEffect(() => {
     if (user) {
       setUsername(user.displayName || "");
       setEmail(user.email || "");
-      setPhotoURL(user.photoURL || "");
     }
   }, [user]);
 
@@ -46,25 +45,27 @@ const SettingsHeaderComponents: React.FC<{
       if (response.assets && response.assets.length > 0) {
         const asset = response.assets[0];
         const uri = asset.uri;
-
         if (uri) {
-          const storage = getStorage();
-          const storageRef = ref(storage, `profile_pictures/${user?.uid}.jpg`);
-          const img = await fetch(uri);
-          const bytes = await img.blob();
-
-          try {
-            await uploadBytes(storageRef, bytes);
-            const downloadURL = await getDownloadURL(storageRef);
-            setPhotoURL(downloadURL);
-            await updateUserProfile({ photoURL: downloadURL });
-            console.log("Profile picture updated successfully");
-          } catch (error) {
-            console.error("Error uploading image:", error);
-          }
+          uploadImage(uri, "profile_pictures");
         }
       }
     });
+  };
+
+  const uploadImage = async (uri: string, folder: string) => {
+    const storage = FirebaseStorage;
+    const storageRef = ref(storage, `${folder}/${user?.uid}.jpg`);
+    const img = await fetch(uri);
+    const bytes = await img.blob();
+
+    try {
+      await uploadBytes(storageRef, bytes);
+      const downloadURL = await getDownloadURL(storageRef);
+      await updateUserProfile({ photoURL: downloadURL });
+      console.log("Profile picture uploaded successfully");
+    } catch (error: any) {
+      console.error("Error uploading image:", error.message);
+    }
   };
 
   return (
