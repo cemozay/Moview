@@ -1,17 +1,12 @@
 import { create } from "zustand";
-import {
-  getAuth,
-  onAuthStateChanged,
-  updateProfile,
-  User as FirebaseUser,
-} from "firebase/auth";
-import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import { getAuth, updateProfile, User as FirebaseUser } from "firebase/auth";
+import { doc, getFirestore, updateDoc } from "firebase/firestore";
 
 interface ExtendedUser extends FirebaseUser {
+  id?: string;
   avatar?: string;
   followers?: number;
   following?: number;
-  id?: string;
 }
 
 type UserStore = {
