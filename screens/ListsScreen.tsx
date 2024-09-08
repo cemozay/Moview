@@ -72,8 +72,8 @@ const MovieItem = ({ mediaId }: MovieItemProps) => {
 
 const ListScreen = ({ navigation }: ListScreenProp) => {
   const listsRef = collection(FirebaseDB, "lists");
-  const [lists, setLists] = useState<List[]>([]);
   const [array] = useState<Movies[]>([]);
+  const [lists, setLists] = useState<List[]>([]);
 
   const fetchData = async () => {
     try {

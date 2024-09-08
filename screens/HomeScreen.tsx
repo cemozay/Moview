@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Modal } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { Button } from "@rneui/themed";
 import {
@@ -8,16 +8,33 @@ import {
   HomeScreenTvSerials,
   HomeScreenAnimeScreen,
 } from "components/HomeScreenComponents";
+import YearsListComponent from "../components/YearsListComponent";
+
 export interface HomeScreenProp {
   navigation: any;
   route: any;
 }
-import YearsListComponent from "../components/YearsListComponent";
 
 const HomeScreen: React.FC<HomeScreenProp> = ({ navigation, route }) => {
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
+  const [selectedTypeButton, setSelectedTypeButton] = useState<string | null>(
+    null
+  );
+  const [modalVisible, setModalVisible] = useState(false);
+
   const handleButtonPress = (title: string) => {
     setSelectedButton(selectedButton === title ? null : title);
+    setSelectedTypeButton("Type");
+  };
+
+  const handleTypeButtonPress = (title: string) => {
+    setSelectedTypeButton(selectedTypeButton === title ? null : title);
+    setModalVisible(true);
+  };
+
+  const handleTypeSelect = (type: string) => {
+    setSelectedTypeButton(type);
+    setModalVisible(false);
   };
 
   return (
@@ -61,7 +78,55 @@ const HomeScreen: React.FC<HomeScreenProp> = ({ navigation, route }) => {
               onPress={() => handleButtonPress(title)}
             />
           ))}
+
+          <Button
+            key="Type"
+            title={selectedTypeButton ? `⌄ ${selectedTypeButton}` : "Type"}
+            buttonStyle={{
+              backgroundColor: selectedTypeButton ? "white" : "#1E1E1E",
+            }}
+            containerStyle={{
+              width: 80,
+              height: 40,
+              marginHorizontal: 3,
+              borderRadius: 30,
+              display: selectedButton === null ? "none" : "flex",
+            }}
+            titleStyle={{ color: "#FF5C00" }}
+            onPress={() => handleTypeButtonPress("Type")}
+          />
         </View>
+
+        <Modal visible={modalVisible} animationType="slide" transparent>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                padding: 20,
+                borderRadius: 10,
+                width: "80%",
+              }}
+            >
+              {["Type", "Type 1", "Type 2", "Type 3"].map((type) => (
+                <TouchableOpacity
+                  key={type}
+                  onPress={() => handleTypeSelect(type)}
+                >
+                  <Text style={{ fontSize: 18, paddingVertical: 10 }}>
+                    {type}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </Modal>
 
         {selectedButton === null && (
           <View>
