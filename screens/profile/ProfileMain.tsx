@@ -77,7 +77,6 @@ const ProfileMain = ({ user, navigation }: ProfileMainProp) => {
         snapshot.docs.forEach((doc) => {
           const showCaseArray = doc.data().showCase;
           setData(showCaseArray);
-          console.log(showCaseArray);
         });
       }
     };
@@ -91,7 +90,6 @@ const ProfileMain = ({ user, navigation }: ProfileMainProp) => {
           (doc) => doc.data() as List
         );
         setLists(fetchedLists);
-        console.log(fetchedLists);
       } catch (error) {
         console.error("Error fetching lists:", error);
       }

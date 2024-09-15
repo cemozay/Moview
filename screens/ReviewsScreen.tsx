@@ -82,13 +82,15 @@ const ReviewScreen: React.FC<ReviewsScreenProp> = ({ navigation }) => {
           <ReviewItem key={review.id} review={review} navigation={navigation} />
         ))}
       </ScrollView>
-      <View className="items-end pb-4 pr-4">
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Selectlist")}
-          className="ml-4 h-16 w-16 bg-white justify-center items-center rounded-full"
-        >
-          <Icon name="heart" size={30} color="black" />
-        </TouchableOpacity>
+      <View className="items-end justify-end">
+        <View className=" absolute z-1 pb-4 pr-4">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Selectlist")}
+            className="ml-4 h-16 w-16 bg-white justify-center items-center rounded-full"
+          >
+            <Icon name="heart" size={30} color="black" />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -126,7 +128,6 @@ const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
           <View className="flex-row justify-between">
             <View>
               <Text className="color-white text-2xl">{movie.title}</Text>
-              <Text className="color-white">{review.rating}</Text>
             </View>
           </View>
           <View className="flex-row m-2">
@@ -142,10 +143,6 @@ const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
               </Text>
               <View>
                 <View className="flex-row items-center m-2">
-                  <Image
-                    className="w-10 h-10 rounded-full"
-                    source={require("./avatar.jpg")}
-                  />
                   <View>
                     <Text className="text-xs color-white">Alperen Ağırman</Text>
                   </View>
@@ -176,18 +173,17 @@ const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
 const styles = StyleSheet.create({
   reviewContainer: {
     borderColor: "#585858",
-    borderWidth: 1,
+    borderWidth: 0.1,
     marginBottom: 16,
-    borderRadius: 40, // Add border radius to the container
-    overflow: "hidden", // Ensure child components are clipped to the rounded corners
+    borderRadius: 40,
+    overflow: "hidden",
   },
   imageBackground: {
     padding: 16,
   },
   imageBackgroundImage: {
-    borderRadius: 16, // Add border radius to the ImageBackground
+    borderRadius: 16,
   },
 });
-
 export default ReviewScreen;
 ReviewItem;

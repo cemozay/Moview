@@ -107,7 +107,6 @@ const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
           <View className="flex-row justify-between">
             <View>
               <Text className="color-white text-2xl">{movie.title}</Text>
-              <Text className="color-white">{review.rating}</Text>
             </View>
           </View>
           <View className="flex-row m-2">
@@ -157,7 +156,7 @@ const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
 const styles = StyleSheet.create({
   reviewContainer: {
     borderColor: "#585858",
-    borderWidth: 1,
+    borderWidth: 0.1,
     marginBottom: 16,
     borderRadius: 40,
     overflow: "hidden",

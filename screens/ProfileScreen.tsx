@@ -12,7 +12,6 @@ import ProfileMain from "./profile/ProfileMain";
 import ProfileActivity from "./profile/ProfileActivity";
 import ProfileList from "./profile/ProfileList";
 import ProfileReviews from "./profile/ProfileReviews";
-import ProfileDiary from "./profile/ProfileDiary";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Feather from "@expo/vector-icons/Feather";
 import { doc, getDoc } from "firebase/firestore";
@@ -84,12 +83,6 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
       <Text>Loading...</Text>
     );
 
-  const FourthRoute = () =>
-    user ? (
-      <ProfileDiary user={user} route={route} navigation={navigation} />
-    ) : (
-      <Text>Loading...</Text>
-    );
   const FifthRoute = () =>
     user ? (
       <ProfileActivity user={user} route={route} navigation={navigation} />
@@ -102,7 +95,6 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
     { key: "first", title: "Profile" },
     { key: "second", title: "List" },
     { key: "third", title: "Reviews" },
-    { key: "fourth", title: "Diary" },
     { key: "fifth", title: "Activity" },
   ]);
 
@@ -110,7 +102,6 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
     first: FirstRoute,
     second: SecondRoute,
     third: ThirdRoute,
-    fourth: FourthRoute,
     fifth: FifthRoute,
   });
 
