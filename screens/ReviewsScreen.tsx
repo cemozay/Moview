@@ -5,16 +5,14 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  ImageBackground,
-  StyleSheet,
+  SafeAreaView,
 } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
-
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { collection, query, getDocs } from "firebase/firestore";
-import { FirebaseDB } from "firebaseConfig";
-import { useMovieData } from "utils/hooks/useMovieData";
-import LinearGradient from "react-native-linear-gradient";
-import { formatTimestamp } from "utils/functions";
+import { FirebaseDB } from "../firebaseConfig";
+import { useMovieData } from "../utils/hooks/useMovieData";
+import { formatTimestamp } from "../utils/functions";
 export interface ReviewsScreenProp {
   navigation: any;
   route: any;
@@ -62,35 +60,48 @@ const ReviewScreen: React.FC<ReviewsScreenProp> = ({ navigation }) => {
   }, []);
 
   return (
-    <View className="flex-1 bg-black">
-      <View className="flex-row justify-between items-center py-3 px-3">
-        <View>
-          <Text className="color-white text-3xl">Review</Text>
-        </View>
-
-        <View className="flex-row gap-3">
-          <TouchableOpacity onPress={() => navigation.navigate("SearchScreen")}>
-            <Icon name="search" size={30} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleRefresh}>
-            <Icon name="refresh" size={30} color="white" />
+    <SafeAreaView className="flex-1 bg-black">
+      {/* Header */}
+      <View className="flex-row justify-between items-center px-5 py-4">
+        <Text className="color-white text-2xl font-bold">Reviews</Text>
+        <View className="flex-row gap-4">
+          <TouchableOpacity onPress={handleRefresh}>
+            <FontAwesome6 name="arrow-rotate-right" size={24} color="white" />
           </TouchableOpacity>
         </View>
       </View>
-      <ScrollView>
-        {reviews.map((review: Review) => (
-          <ReviewItem key={review.id} review={review} navigation={navigation} />
-        ))}
+
+      {/* Reviews List */}
+      <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
+        {reviews.length === 0 ? (
+          <View className="flex-1 justify-center items-center py-20">
+            <Text className="color-gray-400 text-lg mb-2">No reviews yet</Text>
+            <Text className="color-gray-500 text-sm text-center">
+              Be the first to share your thoughts!
+            </Text>
+          </View>
+        ) : (
+          reviews.map((review: Review) => (
+            <ReviewItem
+              key={review.id}
+              review={review}
+              navigation={navigation}
+            />
+          ))
+        )}
       </ScrollView>
-      <View className="items-end pb-4 pr-4">
+
+      {/* Floating Action Button */}
+      <View className="absolute bottom-20 right-6">
         <TouchableOpacity
           onPress={() => navigation.navigate("Selectlist")}
-          className="ml-4 h-16 w-16 bg-white justify-center items-center rounded-full"
+          className="h-14 w-14 bg-orange-500 justify-center items-center rounded-full shadow-lg"
+          style={{ elevation: 8 }}
         >
-          <Icon name="heart" size={30} color="black" />
+          <FontAwesome6 name="plus" size={24} color="white" />
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -98,11 +109,31 @@ const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
   const { data: movie, isLoading, isError } = useMovieData(review.mediaId);
 
   if (isLoading) {
-    return <Text className="color-white">Loading...</Text>;
+    return (
+      <View className="bg-gray-900/60 rounded-2xl p-5 mb-4 border border-gray-800/30">
+        <View className="flex-row items-center justify-center py-8">
+          <Text className="color-gray-400 text-center">Loading review...</Text>
+        </View>
+      </View>
+    );
   }
 
   if (isError) {
-    return <Text className="color-white">Error loading movie data</Text>;
+    return (
+      <View className="bg-gray-900/60 rounded-2xl p-5 mb-4 border border-red-700/30">
+        <View className="flex-row items-center justify-center py-8">
+          <FontAwesome6
+            name="exclamation-triangle"
+            size={16}
+            color="#EF4444"
+            className="mr-2"
+          />
+          <Text className="color-red-400 text-center ml-2">
+            Error loading movie data
+          </Text>
+        </View>
+      </View>
+    );
   }
 
   return (
@@ -110,84 +141,83 @@ const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
       onPress={() =>
         navigation.navigate("ReviewScreen", { reviewId: review.id })
       }
+      className="mb-4"
+      activeOpacity={0.8}
     >
-      <View style={styles.reviewContainer}>
-        <ImageBackground
-          style={styles.imageBackground}
-          imageStyle={styles.imageBackgroundImage}
-          source={{
-            uri: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
-          }}
-        >
-          <LinearGradient
-            colors={["rgba(0,0,0,0.5)", "rgba(0,0,0,0.5)"]}
-            style={StyleSheet.absoluteFillObject}
+      <View className="bg-gray-900/60 rounded-2xl p-5 border border-gray-800/30">
+        {/* Top section with user info */}
+        <View className="flex-row items-center mb-4">
+          <Image
+            className="w-10 h-10 rounded-full mr-3 border-2 border-gray-700"
+            source={require("./avatar.jpg")}
           />
-          <View className="flex-row justify-between">
-            <View>
-              <Text className="color-white text-2xl">{movie.title}</Text>
-              <Text className="color-white">{review.rating}</Text>
-            </View>
+          <View className="flex-1">
+            <Text className="color-white text-sm font-semibold">
+              {review.userId}
+            </Text>
+            <Text className="color-gray-500 text-xs">
+              {formatTimestamp(review.timestamp)}
+            </Text>
           </View>
-          <View className="flex-row m-2">
+          <View className="bg-orange-500/20 px-3 py-1 rounded-full">
+            <Text className="color-orange-400 text-sm font-medium">
+              ★ {review.rating}
+            </Text>
+          </View>
+        </View>
+
+        {/* Movie title */}
+        <View className="mb-4">
+          <Text className="color-white text-xl font-bold mb-2 leading-6">
+            {movie.title}
+          </Text>
+        </View>
+
+        {/* Review content */}
+        <View className="flex-row mb-4">
+          {/* Movie Poster */}
+          <View className="mr-4">
             <Image
-              className="h-36 w-24 rounded-xl"
+              className="h-24 w-16 rounded-lg border border-gray-700/50"
               source={{
-                uri: `https://image.tmdb.org/t/p/original${movie.poster_path}`,
+                uri: `https://image.tmdb.org/t/p/w342${movie.poster_path}`,
               }}
             />
-            <View className="flex-1 ml-3">
-              <Text numberOfLines={4} className="color-white">
-                {review.text}
-              </Text>
-              <View>
-                <View className="flex-row items-center m-2">
-                  <Image
-                    className="w-10 h-10 rounded-full"
-                    source={require("./avatar.jpg")}
-                  />
-                  <View>
-                    <Text className="text-xs color-white">Alperen Ağırman</Text>
-                  </View>
-                  <View className="justify-center items-center">
-                    <Icon name="search" size={24} color="white" />
+            <View className="absolute inset-0 bg-black/20 rounded-lg" />
+          </View>
 
-                    <Text className="color-white ml-2 text-xs">X Yorum</Text>
-                  </View>
-                  <View className="justify-center items-center">
-                    <Icon name="search" size={24} color="white" />
-                    <Text className="color-white ml-2 text-xs">X Beğeni</Text>
-                  </View>
-                </View>
-              </View>
-              <View className="items-end">
-                <Text className="color-white text-xs">
-                  {formatTimestamp(review.timestamp)}
-                </Text>
-              </View>
+          {/* Review Text */}
+          <View className="flex-1">
+            <Text
+              numberOfLines={4}
+              className="color-gray-300 text-sm leading-5"
+            >
+              {review.text}
+            </Text>
+          </View>
+        </View>
+
+        {/* Stats and Action */}
+        <View className="flex-row justify-between items-center pt-3 border-t border-gray-700/30">
+          <View className="flex-row gap-4">
+            <View className="flex-row items-center">
+              <Icon name="comment" size={12} color="#9CA3AF" />
+              <Text className="color-gray-500 text-xs ml-1">0 Comments</Text>
+            </View>
+            <View className="flex-row items-center">
+              <Icon name="heart" size={12} color="#9CA3AF" />
+              <Text className="color-gray-500 text-xs ml-1">0 Likes</Text>
             </View>
           </View>
-        </ImageBackground>
+
+          <View className="flex-row items-center">
+            <Text className="color-gray-500 text-xs mr-2">Read more</Text>
+            <FontAwesome6 name="chevron-right" size={12} color="#6B7280" />
+          </View>
+        </View>
       </View>
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  reviewContainer: {
-    borderColor: "#585858",
-    borderWidth: 1,
-    marginBottom: 16,
-    borderRadius: 40, // Add border radius to the container
-    overflow: "hidden", // Ensure child components are clipped to the rounded corners
-  },
-  imageBackground: {
-    padding: 16,
-  },
-  imageBackgroundImage: {
-    borderRadius: 16, // Add border radius to the ImageBackground
-  },
-});
-
 export default ReviewScreen;
-ReviewItem;

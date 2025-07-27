@@ -1,13 +1,20 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Modal } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
-import { Button } from "@rneui/themed";
 import {
   HomeScreenMovieScreen,
   ComingSoon,
   HomeScreenTvSerials,
   HomeScreenAnimeScreen,
-} from "components/HomeScreenComponents";
+} from "../components/HomeScreenComponents";
 import YearsListComponent from "../components/YearsListComponent";
 
 export interface HomeScreenProp {
@@ -24,7 +31,7 @@ const HomeScreen: React.FC<HomeScreenProp> = ({ navigation, route }) => {
 
   const handleButtonPress = (title: string) => {
     setSelectedButton(selectedButton === title ? null : title);
-    setSelectedTypeButton("Type");
+    setSelectedTypeButton(null);
   };
 
   const handleTypeButtonPress = (title: string) => {
@@ -38,120 +45,160 @@ const HomeScreen: React.FC<HomeScreenProp> = ({ navigation, route }) => {
   };
 
   return (
-    <View className="flex-1 bg-black">
-      <ScrollView>
-        <View className="flex-row justify-between items-center py-3 px-3">
-          <View>
-            <Text className="color-white text-3xl">Moview</Text>
-          </View>
+    <SafeAreaView className="flex-1 bg-black">
+      <StatusBar barStyle="light-content" backgroundColor="#000000" />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Simple Header */}
+        <View className="px-6 pt-6 pb-4">
+          <View className="flex-row justify-between items-center">
+            <Text className="color-white text-3xl font-bold">Moview</Text>
 
-          <View className="flex-row gap-3">
-            <TouchableOpacity
-              onPress={() => navigation.navigate("SearchScreen")}
-            >
-              <Icon name="search" size={30} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Icon name="heart" size={30} color="white" />
-            </TouchableOpacity>
+            <View className="flex-row gap-3">
+              <TouchableOpacity className="p-2" activeOpacity={0.7}>
+                <Icon name="bell" size={20} color="#FF5C00" />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-        <View className="flex-row pb-3">
-          {["Movie", "TV", "Anime"].map((title) => (
-            <Button
-              key={title}
-              title={selectedButton === title ? `● ${title}` : title}
-              buttonStyle={{
-                backgroundColor: selectedButton === title ? "white" : "#1E1E1E",
-              }}
-              containerStyle={{
-                width: 80,
-                height: 40,
-                marginHorizontal: 3,
-                borderRadius: 30,
-                display:
-                  selectedButton === null || selectedButton === title
-                    ? "flex"
-                    : "none",
-              }}
-              titleStyle={{ color: "#FF5C00" }}
-              onPress={() => handleButtonPress(title)}
-            />
-          ))}
+        {/* Simple Filter Buttons */}
+        <View className="px-6 pb-6">
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View className="flex-row gap-3">
+              {["Movie", "TV", "Anime"].map((title) => {
+                const isSelected = selectedButton === title;
+                const isVisible =
+                  selectedButton === null || selectedButton === title;
 
-          <Button
-            key="Type"
-            title={selectedTypeButton ? `⌄ ${selectedTypeButton}` : "Type"}
-            buttonStyle={{
-              backgroundColor: selectedTypeButton ? "white" : "#1E1E1E",
-            }}
-            containerStyle={{
-              width: 80,
-              height: 40,
-              marginHorizontal: 3,
-              borderRadius: 30,
-              display: selectedButton === null ? "none" : "flex",
-            }}
-            titleStyle={{ color: "#FF5C00" }}
-            onPress={() => handleTypeButtonPress("Type")}
-          />
+                if (!isVisible) return null;
+
+                return (
+                  <TouchableOpacity
+                    key={title}
+                    onPress={() => handleButtonPress(title)}
+                    activeOpacity={0.7}
+                    className={`
+                      px-4 py-2 rounded-lg
+                      ${isSelected ? "bg-orange-500" : "bg-gray-800"}
+                    `}
+                  >
+                    <Text
+                      className={`
+                        font-medium
+                        ${isSelected ? "text-white" : "text-gray-300"}
+                      `}
+                    >
+                      {title}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+
+              {/* Simple Filter Button */}
+              {selectedButton !== null && (
+                <TouchableOpacity
+                  onPress={() => handleTypeButtonPress("Type")}
+                  activeOpacity={0.7}
+                  className={`
+                    px-4 py-2 rounded-lg flex-row items-center gap-2
+                    ${selectedTypeButton ? "bg-orange-500" : "bg-gray-800"}
+                  `}
+                >
+                  <Text
+                    className={`
+                      font-medium
+                      ${selectedTypeButton ? "text-white" : "text-gray-300"}
+                    `}
+                  >
+                    {selectedTypeButton || "Filter"}
+                  </Text>
+                  <Icon
+                    name="chevron-down"
+                    size={12}
+                    color={selectedTypeButton ? "white" : "#999"}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          </ScrollView>
+
+          {/* Simple Active Filter */}
+          {selectedButton && selectedTypeButton && (
+            <View className="flex-row items-center justify-between mt-3 px-3 py-2 bg-gray-800 rounded-lg">
+              <Text className="text-gray-300 text-sm">
+                {selectedButton} • {selectedTypeButton}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedButton(null);
+                  setSelectedTypeButton(null);
+                }}
+                activeOpacity={0.7}
+              >
+                <Text className="text-orange-400 text-sm">Clear</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
-        <Modal visible={modalVisible} animationType="slide" transparent>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "white",
-                padding: 20,
-                borderRadius: 10,
-                width: "80%",
-              }}
-            >
-              {["Type", "Type 1", "Type 2", "Type 3"].map((type) => (
+        {/* Simple Modal */}
+        <Modal visible={modalVisible} animationType="fade" transparent>
+          <View className="flex-1 justify-center items-center bg-black/80">
+            <View className="bg-gray-900 p-6 rounded-xl w-4/5">
+              <Text className="text-white text-lg font-semibold mb-4 text-center">
+                Select Filter
+              </Text>
+
+              {["Genre", "Popular", "Top Rated", "Latest"].map((type) => (
                 <TouchableOpacity
                   key={type}
                   onPress={() => handleTypeSelect(type)}
+                  className="py-3 border-b border-gray-700 last:border-b-0"
+                  activeOpacity={0.7}
                 >
-                  <Text style={{ fontSize: 18, paddingVertical: 10 }}>
+                  <Text className="text-white text-center text-base">
                     {type}
                   </Text>
                 </TouchableOpacity>
               ))}
+
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                className="mt-4 py-3 bg-gray-800 rounded-lg"
+                activeOpacity={0.7}
+              >
+                <Text className="text-white text-center">Cancel</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
 
-        {selectedButton === null && (
-          <View>
-            <ComingSoon navigation={navigation} route={route} />
-            <YearsListComponent
-              navigation={navigation}
-              route={{
-                key: "YearsListComponent",
-                name: "YearsListComponent",
-                params: { start: "1990", end: "2000" },
-              }}
-            />
-          </View>
-        )}
-        {selectedButton === "Movie" && (
-          <HomeScreenMovieScreen navigation={navigation} route={route} />
-        )}
-        {selectedButton === "TV" && (
-          <HomeScreenTvSerials navigation={navigation} route={route} />
-        )}
-        {selectedButton === "Anime" && (
-          <HomeScreenAnimeScreen navigation={navigation} route={route} />
-        )}
+        {/* Content */}
+        <View className="px-4">
+          {selectedButton === null && (
+            <View>
+              <ComingSoon navigation={navigation} route={route} />
+              <YearsListComponent
+                navigation={navigation}
+                route={{
+                  key: "YearsListComponent",
+                  name: "YearsListComponent",
+                  params: { start: "1990", end: "2000" },
+                }}
+              />
+            </View>
+          )}
+          {selectedButton === "Movie" && (
+            <HomeScreenMovieScreen navigation={navigation} route={route} />
+          )}
+          {selectedButton === "TV" && (
+            <HomeScreenTvSerials navigation={navigation} route={route} />
+          )}
+          {selectedButton === "Anime" && (
+            <HomeScreenAnimeScreen navigation={navigation} route={route} />
+          )}
+        </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 

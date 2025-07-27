@@ -1,34 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-} from "react-native";
-import { collection, where, query, getDocs } from "firebase/firestore";
-import { FirebaseDB } from "../../firebaseConfig";
-import { useMovieData } from "../../utils/hooks/useMovieData";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "navigation/InsideNavigation";
+import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
-import { UserData } from "../ProfileScreen";
-import { formatTimestamp } from "../../utils/functions";
-import useUserStore from "../../utils/hooks/useUserStore";
-
-type ProfileReviewsStackProp = NativeStackScreenProps<
-  RootStackParamList,
-  "ProfileReviews"
->;
-
-type ProfileReviewsTabProp = {
-  user: UserData;
-  route?: any;
-  navigation?: any;
-};
-
-type ProfileReviewsProp = ProfileReviewsStackProp | ProfileReviewsTabProp;
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { collection, query, getDocs } from "firebase/firestore";
+import { FirebaseDB } from "../firebaseConfig";
+import { useMovieData } from "../utils/hooks/useMovieData";
+import { formatTimestamp } from "../utils/functions";
 
 type Review = {
   timestamp: any;
@@ -42,79 +19,13 @@ type Review = {
 type ReviewItemProps = {
   review: Review;
   navigation: any;
-  user: UserData;
 };
 
-const ProfileReviews = (props: ProfileReviewsProp) => {
-  // Handle both stack screen and tab component usage
-  const isStackScreen =
-    "route" in props && "navigation" in props && !("user" in props);
-  const currentUser = useUserStore((state) => state.user) as UserData;
+interface ReviewsTabProps {
+  navigation: any;
+}
 
-  const user = isStackScreen
-    ? currentUser
-    : (props as ProfileReviewsTabProp).user;
-  const navigation = isStackScreen
-    ? (props as ProfileReviewsStackProp).navigation
-    : (props as ProfileReviewsTabProp).navigation;
-  const baseUser = user;
-  const [reviews, setReviews] = useState<Review[]>([]);
-
-  const reviewRef = collection(FirebaseDB, "reviews");
-  const doc_query = query(reviewRef, where("userId", "==", baseUser.uid));
-
-  const fetchReviews = async () => {
-    try {
-      const snapshot = await getDocs(doc_query);
-      const reviewList = snapshot.docs.map((doc) => {
-        const reviewData = doc.data() as Review;
-        return { ...reviewData, id: doc.id };
-      });
-
-      setReviews(reviewList);
-    } catch (err) {
-      alert(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchReviews();
-  }, []);
-
-  return (
-    <SafeAreaView className="flex-1 bg-black">
-      <ScrollView
-        className="flex-1 px-4"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingVertical: 16 }}
-      >
-        {reviews.length === 0 ? (
-          <View className="flex-1 justify-center items-center py-20">
-            <View className="bg-gray-900/50 p-8 rounded-xl border border-gray-700/30">
-              <Text className="color-gray-300 text-lg text-center font-medium">
-                No reviews yet
-              </Text>
-              <Text className="color-gray-500 text-sm text-center mt-2">
-                Start reviewing movies to see them here!
-              </Text>
-            </View>
-          </View>
-        ) : (
-          reviews.map((review: Review) => (
-            <ReviewItem
-              key={review.id}
-              review={review}
-              navigation={navigation}
-              user={baseUser}
-            />
-          ))
-        )}
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-const ReviewItem = ({ navigation, review, user }: ReviewItemProps) => {
+const ReviewItem = ({ navigation, review }: ReviewItemProps) => {
   const { data: movie, isLoading, isError } = useMovieData(review.mediaId);
 
   if (isLoading) {
@@ -131,7 +42,7 @@ const ReviewItem = ({ navigation, review, user }: ReviewItemProps) => {
     return (
       <View className="bg-gray-900/60 rounded-2xl p-5 mb-4 border border-red-700/30">
         <View className="flex-row items-center justify-center py-8">
-          <Icon
+          <FontAwesome6
             name="exclamation-triangle"
             size={16}
             color="#EF4444"
@@ -158,11 +69,11 @@ const ReviewItem = ({ navigation, review, user }: ReviewItemProps) => {
         <View className="flex-row items-center mb-4">
           <Image
             className="w-10 h-10 rounded-full mr-3 border-2 border-gray-700"
-            source={require("../avatar.jpg")}
+            source={require("./avatar.jpg")}
           />
           <View className="flex-1">
             <Text className="color-white text-sm font-semibold">
-              {user.displayName || "User"}
+              {review.userId}
             </Text>
             <Text className="color-gray-500 text-xs">
               {formatTimestamp(review.timestamp)}
@@ -221,7 +132,7 @@ const ReviewItem = ({ navigation, review, user }: ReviewItemProps) => {
 
           <View className="flex-row items-center">
             <Text className="color-gray-500 text-xs mr-2">Read more</Text>
-            <Icon name="chevron-right" size={12} color="#6B7280" />
+            <FontAwesome6 name="chevron-right" size={12} color="#6B7280" />
           </View>
         </View>
       </View>
@@ -229,4 +140,52 @@ const ReviewItem = ({ navigation, review, user }: ReviewItemProps) => {
   );
 };
 
-export default ProfileReviews;
+const ReviewsTab: React.FC<ReviewsTabProps> = ({ navigation }) => {
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  const reviewRef = collection(FirebaseDB, "reviews");
+  const doc_query = query(reviewRef);
+
+  const fetchReviews = async () => {
+    try {
+      const snapshot = await getDocs(doc_query);
+      const reviewList = snapshot.docs.map((doc) => {
+        const reviewData = doc.data() as Review;
+        return { ...reviewData, id: doc.id };
+      });
+
+      setReviews(reviewList);
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  return (
+    <View className="flex-1">
+      <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
+        {reviews.length === 0 ? (
+          <View className="flex-1 justify-center items-center py-20">
+            <Text className="color-gray-400 text-lg mb-2">No reviews yet</Text>
+            <Text className="color-gray-500 text-sm text-center">
+              Be the first to share your thoughts!
+            </Text>
+          </View>
+        ) : (
+          reviews.map((review: Review) => (
+            <ReviewItem
+              key={review.id}
+              review={review}
+              navigation={navigation}
+            />
+          ))
+        )}
+      </ScrollView>
+    </View>
+  );
+};
+
+export default ReviewsTab;

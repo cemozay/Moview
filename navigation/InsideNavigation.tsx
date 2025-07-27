@@ -1,11 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Entypo } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { View, ViewStyle } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import SearchScreen from "../screens/SearchScreen";
+import CommunityScreen from "../screens/CommunityScreen";
 import MovieDetails from "../components/MovieDetails";
 import AddReview from "../components/AddReview";
 import ListDetailsScreen from "../components/ListDetailsScreen";
@@ -13,14 +13,11 @@ import ListContent from "../components/ListContent";
 import YearsListComponent from "../components/YearsListComponent";
 import Selectlist from "../components/Selectlist";
 import PersonScreen from "../screens/PersonScreen";
-import SearchScreen from "../screens/SearchScreen";
-import ListsScreen from "../screens/ListsScreen";
 import ReviewScreen from "../components/ReviewScreen";
 import AddList from "../components/AddList";
 import SelectFilmForList from "../components/SelectFilmForList";
 import MovieDetailAddlist from "../components/MovieDetailAddlist";
 import SeeMoreComponent from "../components/SeeMoreComponent";
-import ReviewsScreen from "../screens/ReviewsScreen";
 import ProfileReviews from "../screens/profile/ProfileReviews";
 import ProfileAyarlar from "../screens/profile/ProfileAyarlar";
 import ProfileList from "../screens/profile/ProfileList";
@@ -60,102 +57,45 @@ type People = {
   job?: string;
 };
 
-export type InsideStackParamList = {
-  HomeScreen: undefined;
+// Ana Tab Navigation Parametreleri
+export type TabParamList = {
+  HomeTab: undefined;
+  SearchTab: undefined;
+  CommunityTab: undefined;
+  ProfileTab: undefined;
+};
+
+// Stack Navigation Parametreleri (Modal ve Detail Sayfalar)
+export type RootStackParamList = {
+  // Tab Navigator
+  MainTabs: undefined;
+
+  // Modal/Detail Sayfalar
   MovieDetails: { movieId: string };
   PersonScreen: { personId: number };
-  SearchScreen: undefined;
-  ListsScreen: undefined;
   ListDetailsScreen: { listId: string | null };
-  Review: { movieid: string; route: string };
   ReviewScreen: { reviewId: string };
   AddReview: { movieId: string; reviewId: string | null };
-  ComingSoon: undefined;
-  Selectlist: undefined;
-  ReviewsScreen: undefined;
-  LikedMovies: undefined;
-  ProfileReviews: undefined;
-  ProfileScreen: { route: string };
-  ProfileAyarlar: undefined;
-  ProfileList: undefined;
   AddList: { movies: string[] | undefined; listId: string | null };
   ListContent: {
     movies: string[];
     listid: string | null;
     movieId: string | null;
   };
+  Selectlist: undefined;
   SelectFilmForList: { listId: string | null };
   MovieDetailAddlist: { movieId: string };
   SeeMoreComponent: { array: Result[] | People[]; name: string };
   YearsListComponent: { start: string; end: string };
-};
 
-const InsideStack = createNativeStackNavigator<InsideStackParamList>();
-
-const stackScreenOptions = {
-  headerShown: false,
-};
-
-const InsideNavigation = () => {
-  const user = useUserStore((state) => state.user);
-
-  if (!user) {
-    return null;
-  } else {
-    return (
-      <InsideStack.Navigator
-        screenOptions={stackScreenOptions}
-        initialRouteName="HomeScreen"
-      >
-        <InsideStack.Screen name="HomeScreen" component={HomeScreen} />
-        <InsideStack.Screen name="MovieDetails" component={MovieDetails} />
-        <InsideStack.Screen name="PersonScreen" component={PersonScreen} />
-        <InsideStack.Screen name="SearchScreen" component={SearchScreen} />
-        <InsideStack.Screen name="ListsScreen" component={ListsScreen} />
-        <InsideStack.Screen
-          name="ListDetailsScreen"
-          component={ListDetailsScreen}
-        />
-        <InsideStack.Screen name="AddReview" component={AddReview} />
-        <InsideStack.Screen name="ProfileList" component={ProfileList} />
-        <InsideStack.Screen name="Selectlist" component={Selectlist} />
-        <InsideStack.Screen name="ReviewsScreen" component={ReviewsScreen} />
-        <InsideStack.Screen name="ReviewScreen" component={ReviewScreen} />
-        <InsideStack.Screen name="ProfileReviews" component={ProfileReviews} />
-        <InsideStack.Screen name="ProfileScreen" component={ProfileScreen} />
-        <InsideStack.Screen name="ProfileAyarlar" component={ProfileAyarlar} />
-        <InsideStack.Screen name="AddList" component={AddList} />
-        <InsideStack.Screen name="ListContent" component={ListContent} />
-        <InsideStack.Screen
-          name="YearsListComponent"
-          component={YearsListComponent}
-        />
-
-        <InsideStack.Screen
-          name="SeeMoreComponent"
-          component={SeeMoreComponent}
-        />
-        <InsideStack.Screen
-          name="MovieDetailAddlist"
-          component={MovieDetailAddlist}
-        />
-        <InsideStack.Screen
-          name="SelectFilmForList"
-          component={SelectFilmForList}
-        />
-      </InsideStack.Navigator>
-    );
-  }
-};
-
-export type TabParamList = {
-  Home: undefined;
-  ListsScreen: undefined;
-  ProfileScreen: undefined;
-  ReviewsScreen: { movieid: string };
+  // Profile Alt Sayfalar
+  ProfileReviews: undefined;
+  ProfileAyarlar: undefined;
+  ProfileList: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
+const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const tabScreenOptions = {
   tabBarShowLabel: false,
@@ -165,77 +105,132 @@ const tabScreenOptions = {
     bottom: 0,
     right: 0,
     left: 0,
-    elevation: 0,
-    height: 60,
+    elevation: 10,
+    height: 70,
     backgroundColor: "#000",
+    borderTopWidth: 1,
+    borderTopColor: "#333",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   } as ViewStyle,
 };
 
-const HomeTabs = () => {
+const stackScreenOptions = {
+  headerShown: false,
+  presentation: "modal" as const,
+};
+
+// Tab Icon Component
+const TabIcon = ({
+  name,
+  focused,
+}: {
+  name: keyof typeof MaterialIcons.glyphMap;
+  focused: boolean;
+}) => (
+  <View className="items-center justify-center p-2">
+    <MaterialIcons name={name} size={26} color={focused ? "#FFD700" : "#fff"} />
+    {focused && <View className="w-1 h-1 bg-yellow-400 rounded-full mt-1" />}
+  </View>
+);
+
+// Ana Tab Navigator
+const MainTabs = () => {
   return (
     <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen
-        name="Home"
-        component={InsideNavigation}
+        name="HomeTab"
+        component={HomeScreen}
         options={{
-          tabBarStyle: {
-            backgroundColor: "black",
-          },
-          tabBarIcon: () => {
-            return (
-              <View className="items-center justify-center">
-                <Entypo name="home" size={24} color={"#fff"} />
-              </View>
-            );
-          },
+          tabBarIcon: ({ focused }) => (
+            <TabIcon name="movie" focused={focused} />
+          ),
         }}
       />
       <Tab.Screen
-        name="ListsScreen"
-        component={ListsScreen}
+        name="SearchTab"
+        component={SearchScreen}
         options={{
-          tabBarStyle: {
-            backgroundColor: "black",
-          },
-          tabBarIcon: () => {
-            return (
-              <View className="items-center justify-center">
-                <FontAwesome5 name="list-ul" size={24} color="white" />
-              </View>
-            );
-          },
+          tabBarIcon: ({ focused }) => (
+            <TabIcon name="search" focused={focused} />
+          ),
         }}
       />
       <Tab.Screen
-        name="ReviewsScreen"
-        component={ReviewsScreen}
+        name="CommunityTab"
+        component={CommunityScreen}
         options={{
-          tabBarStyle: {
-            backgroundColor: "black",
-          },
-          tabBarIcon: () => {
-            return (
-              <View className="items-center justify-center">
-                <MaterialIcons name="reviews" size={24} color="white" />
-              </View>
-            );
-          },
+          tabBarIcon: ({ focused }) => (
+            <TabIcon name="people" focused={focused} />
+          ),
         }}
       />
       <Tab.Screen
-        name="ProfileScreen"
+        name="ProfileTab"
         component={ProfileScreen}
         options={{
-          tabBarStyle: {
-            backgroundColor: "black",
-          },
-          tabBarIcon: () => {
-            return <View className="items-center justify-center"></View>;
-          },
+          tabBarIcon: ({ focused }) => (
+            <TabIcon name="account-circle" focused={focused} />
+          ),
         }}
       />
     </Tab.Navigator>
   );
 };
 
-export default HomeTabs;
+// Ana Root Navigator
+const AppNavigation = () => {
+  const user = useUserStore((state) => state.user);
+
+  if (!user) {
+    return null;
+  }
+
+  return (
+    <RootStack.Navigator
+      screenOptions={stackScreenOptions}
+      initialRouteName="MainTabs"
+    >
+      {/* Ana Tab Navigator */}
+      <RootStack.Screen name="MainTabs" component={MainTabs} />
+
+      {/* Modal ve Detail Sayfalar */}
+      <RootStack.Screen name="MovieDetails" component={MovieDetails} />
+      <RootStack.Screen name="PersonScreen" component={PersonScreen} />
+      <RootStack.Screen
+        name="ListDetailsScreen"
+        component={ListDetailsScreen}
+      />
+      <RootStack.Screen name="ReviewScreen" component={ReviewScreen} />
+      <RootStack.Screen name="AddReview" component={AddReview} />
+      <RootStack.Screen name="AddList" component={AddList} />
+      <RootStack.Screen name="ListContent" component={ListContent} />
+      <RootStack.Screen name="Selectlist" component={Selectlist} />
+      <RootStack.Screen
+        name="SelectFilmForList"
+        component={SelectFilmForList}
+      />
+      <RootStack.Screen
+        name="MovieDetailAddlist"
+        component={MovieDetailAddlist}
+      />
+      <RootStack.Screen name="SeeMoreComponent" component={SeeMoreComponent} />
+      <RootStack.Screen
+        name="YearsListComponent"
+        component={YearsListComponent}
+      />
+
+      {/* Profile Alt Sayfalar */}
+      <RootStack.Screen name="ProfileReviews" component={ProfileReviews} />
+      <RootStack.Screen name="ProfileAyarlar" component={ProfileAyarlar} />
+      <RootStack.Screen name="ProfileList" component={ProfileList} />
+    </RootStack.Navigator>
+  );
+};
+
+export default AppNavigation;

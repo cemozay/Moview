@@ -10,11 +10,11 @@ import {
   ImageBackground,
 } from "react-native";
 import { useWindowDimensions } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
+import { LinearGradient } from "expo-linear-gradient";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
-import { useFetch } from "utils/hooks/useFetch";
+import { useFetch } from "../utils/hooks/useFetch";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 type PersonScreenProps = NativeStackScreenProps<

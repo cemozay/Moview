@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import OnboardingScreen from "../screens/OnboardingScreen";
+import WelcomeScreen from "../screens/WelcomeScreen";
 import LoginScreen from "../screens/login/LoginScreen";
 import SignUpScreen from "../screens/login/SignUpScreen";
 import ForgotPasswordScreen from "../screens/login/ForgotPasswordScreen";
@@ -9,6 +10,7 @@ import { getStorageBoolean } from "../utils/Mmkv";
 
 export type OutsideStackParamList = {
   Onboarding: undefined;
+  Welcome: undefined;
   Login: undefined;
   SignUp: undefined;
   ForgotPassword: undefined;
@@ -28,8 +30,8 @@ const OutsideNavigation = () => {
     checkAlreadyOnboarded();
   }, []);
 
-  const checkAlreadyOnboarded = () => {
-    const alreadyOnboarded = getStorageBoolean("alreadyOnboarded");
+  const checkAlreadyOnboarded = async () => {
+    const alreadyOnboarded = await getStorageBoolean("alreadyOnboarded");
 
     if (alreadyOnboarded == null) setShowOnboarding(true);
     else setShowOnboarding(!alreadyOnboarded);
@@ -42,9 +44,10 @@ const OutsideNavigation = () => {
   return (
     <OutsideStack.Navigator
       screenOptions={screenOptions}
-      initialRouteName={showOnboarding == true ? "Onboarding" : "Login"}
+      initialRouteName={showOnboarding == true ? "Onboarding" : "Welcome"}
     >
       <OutsideStack.Screen name="Onboarding" component={OnboardingScreen} />
+      <OutsideStack.Screen name="Welcome" component={WelcomeScreen} />
       <OutsideStack.Screen name="Login" component={LoginScreen} />
       <OutsideStack.Screen name="SignUp" component={SignUpScreen} />
       <OutsideStack.Screen

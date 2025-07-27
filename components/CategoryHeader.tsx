@@ -11,18 +11,16 @@ const CategoryHeader = (props: CategoryHeaderProps) => {
   return (
     <TouchableOpacity
       onPress={props.onPress}
-      className="flex-row justify-between	 w-full"
+      className="flex-row justify-between w-full rounded-lg my-2 px-4 py-3 "
     >
-      <View className="flex-row  items-center">
-        <Text className="color-white pl-3 pr-2 py-3 text-2xl">
-          {props.title}
-        </Text>
+      <View className="flex-row items-center">
+        <Text className="color-white text-2xl font-bold">{props.title}</Text>
       </View>
-      <View className="flex-row pr-3 items-center">
-        <Text className="color-orange-400 pl-3 pr-2 py-3 text-xs">
+      <View className="flex-row items-center">
+        <Text className="color-orange-400 text-sm font-medium mr-2">
           See More
         </Text>
-        <Icon color={"orange"} name="chevron-right" size={8} />
+        <Icon color={"#FF5C00"} name="chevron-right" size={12} />
       </View>
     </TouchableOpacity>
   );

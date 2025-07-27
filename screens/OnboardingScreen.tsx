@@ -12,9 +12,9 @@ type OnboardingScreenProp = NativeStackScreenProps<
 >;
 
 const OnboardingScreen = ({ navigation }: OnboardingScreenProp) => {
-  const handleDone = () => {
-    setStorageItem("alreadyOnboarded", true);
-    navigation.replace("Login");
+  const handleDone = async () => {
+    await setStorageItem("alreadyOnboarded", true);
+    navigation.replace("Welcome");
   };
 
   const doneButton = ({ ...props }) => {

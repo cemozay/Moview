@@ -5,20 +5,17 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  FlatList,
+  SafeAreaView,
 } from "react-native";
-import Icon from "@expo/vector-icons/FontAwesome";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { collection, query, getDocs } from "firebase/firestore";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { InsideStackParamList } from "navigation/InsideNavigation";
-import { FirebaseDB } from "firebaseConfig";
-import { useMovieData } from "utils/hooks/useMovieData";
-import { formatTimestamp } from "utils/functions";
+import { FirebaseDB } from "../firebaseConfig";
+import { useMovieData } from "../utils/hooks/useMovieData";
+import { formatTimestamp } from "../utils/functions";
+import { RootStackParamList } from "navigation/InsideNavigation";
 
-type ListScreenProp = NativeStackScreenProps<
-  InsideStackParamList,
-  "ListsScreen"
->;
+type ListScreenProp = NativeStackScreenProps<RootStackParamList>;
 
 type List = {
   id: string;
@@ -33,46 +30,38 @@ type MovieItemProps = {
   mediaId: string;
 };
 
-type Movie = {
-  id: string;
-  title: string;
-  poster: string;
-};
-
-type Movies = Movie[];
-
 const MovieItem = ({ mediaId }: MovieItemProps) => {
   const { data: movie, isLoading, isError } = useMovieData(mediaId);
 
   if (isLoading) {
     return (
-      <View className="mr-3 h-48 w-24 bg-gray-500">
-        <Text className="text-white">Loading...</Text>
-      </View>
+      <View className="h-20 w-14 bg-gray-800/70 rounded-lg border border-gray-700/30 animate-pulse" />
     );
   }
 
   if (isError) {
     return (
-      <View className="mr-3 h-48 w-24 bg-gray-500">
-        <Text className="text-white">Error loading movie data</Text>
+      <View className="h-20 w-14 bg-gray-800/70 rounded-lg border border-gray-700/30 justify-center items-center">
+        <FontAwesome6 name="image" size={16} color="#6B7280" />
       </View>
     );
   }
 
   return (
-    <Image
-      className="h-36 w-24 rounded-xl"
-      source={{
-        uri: `https://image.tmdb.org/t/p/original${movie.poster_path}`,
-      }}
-    />
+    <View>
+      <Image
+        className="h-20 w-14 rounded-lg border border-gray-700/50"
+        source={{
+          uri: `https://image.tmdb.org/t/p/w342${movie.poster_path}`,
+        }}
+      />
+      <View className="absolute inset-0 bg-black/20 rounded-lg" />
+    </View>
   );
 };
 
 const ListScreen = ({ navigation }: ListScreenProp) => {
   const listsRef = collection(FirebaseDB, "lists");
-  const [array] = useState<Movies[]>([]);
   const [lists, setLists] = useState<List[]>([]);
 
   const fetchData = async () => {
@@ -99,81 +88,116 @@ const ListScreen = ({ navigation }: ListScreenProp) => {
   const renderListItem = ({ item }: { item: List }) => (
     <TouchableOpacity
       key={item.id}
-      className="flex-row justify-between bg-neutral-800 rounded-xl p-3 border border-neutral-600"
+      className="bg-gray-900/60 rounded-2xl p-5 mb-4 border border-gray-800/30"
       onPress={() =>
         navigation.navigate("ListDetailsScreen", { listId: item.id })
       }
     >
-      <View>
-        <View className="w-full flex-row justify-between">
-          <View>
-            <Text className="color-white text-xl">{item.name}</Text>
-          </View>
-          <View className="flex-row items-center">
-            <Text className="color-white">{item.userId}</Text>
-            <Image
-              className="w-10 h-10 rounded-full"
-              source={require("./avatar.jpg")}
-            />
-          </View>
-        </View>
-        <View className="pb-2">
-          <Text numberOfLines={2} className="color-white">
-            {item.description}
+      {/* Top section with user info */}
+      <View className="flex-row items-center mb-4">
+        <Image
+          className="w-10 h-10 rounded-full mr-3 border-2 border-gray-700"
+          source={require("./avatar.jpg")}
+        />
+        <View className="flex-1">
+          <Text className="color-white text-sm font-semibold">
+            {item.userId}
+          </Text>
+          <Text className="color-gray-500 text-xs">
+            {formatTimestamp(item.timestamp)}
           </Text>
         </View>
-        <FlatList
-          data={item.movies}
-          keyExtractor={(mediaId) => mediaId}
-          horizontal
-          ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
-          renderItem={({ item: mediaId }) => <MovieItem mediaId={mediaId} />}
-        />
-        <View className="flex-row justify-between gap-3">
-          <View className="gap-3">
-            <Text className="text-white">
-              {formatTimestamp(item.timestamp)}
-            </Text>
-          </View>
-          <View className="flex-row gap-3">
-            <Text className="text-white">
-              {item.movies ? item.movies.length : 0} Film
-            </Text>
-            <Text className="text-white">X Yorum</Text>
-            <Text className="text-white">X Beğeni</Text>
+        <View className="bg-gray-800/50 px-3 py-1 rounded-full">
+          <Text className="color-gray-400 text-xs font-medium">
+            {item.movies ? item.movies.length : 0} films
+          </Text>
+        </View>
+      </View>
+
+      {/* List Title and Description */}
+      <View className="mb-4">
+        <Text className="color-white text-xl font-bold mb-2 leading-6">
+          {item.name}
+        </Text>
+        {item.description ? (
+          <Text className="color-gray-400 text-sm leading-5" numberOfLines={3}>
+            {item.description}
+          </Text>
+        ) : null}
+      </View>
+
+      {/* Movie Posters Grid */}
+      {item.movies && item.movies.length > 0 && (
+        <View className="mb-4">
+          <View className="flex-row justify-between">
+            {/* Show first 4 movies when there are more than 5 */}
+            {item.movies.length > 5 ? (
+              <>
+                {item.movies.slice(0, 4).map((mediaId) => (
+                  <MovieItem key={mediaId} mediaId={mediaId} />
+                ))}
+                <View className="h-20 w-14 bg-gray-800/70 rounded-lg justify-center items-center border border-gray-700/50">
+                  <Text className="color-white text-xs font-bold">
+                    +{item.movies.length - 4}
+                  </Text>
+                  <Text className="color-gray-400 text-xs">more</Text>
+                </View>
+              </>
+            ) : (
+              /* Show all movies when 5 or less */
+              item.movies.map((mediaId) => (
+                <MovieItem key={mediaId} mediaId={mediaId} />
+              ))
+            )}
           </View>
         </View>
+      )}
+
+      {/* Action indicator */}
+      <View className="flex-row items-center justify-end">
+        <Text className="color-gray-500 text-xs mr-2">View list</Text>
+        <FontAwesome6 name="chevron-right" size={12} color="#6B7280" />
       </View>
     </TouchableOpacity>
   );
 
   return (
-    <View className="flex-1 bg-black">
-      <View className="flex-row justify-between items-center p-3">
-        <View>
-          <Text className="text-white text-3xl">Lists</Text>
-        </View>
-        <View className="flex-row gap-3">
-          <TouchableOpacity onPress={() => navigation.navigate("SearchScreen")}>
-            <Icon name="search" size={30} color="white" />
-          </TouchableOpacity>
+    <SafeAreaView className="flex-1 bg-black">
+      <View className="flex-row justify-between items-center px-5 py-4">
+        <Text className="color-white text-2xl font-bold">Lists</Text>
+        <View className="flex-row gap-4">
           <TouchableOpacity onPress={handleRefresh}>
-            <Icon name="refresh" size={30} color="white" />
+            <FontAwesome6 name="arrow-rotate-right" size={24} color="white" />
           </TouchableOpacity>
         </View>
       </View>
-      <ScrollView>
+
+      {/* Lists Content */}
+      <ScrollView className="flex-1 px-5">
         {lists.map((list) => renderListItem({ item: list }))}
+
+        {lists.length === 0 && (
+          <View className="flex-1 justify-center items-center py-20">
+            <Text className="color-gray-400 text-lg mb-2">No lists yet</Text>
+            <Text className="color-gray-500 text-sm text-center">
+              Create your first movie list to get started
+            </Text>
+          </View>
+        )}
       </ScrollView>
-      <View className="items-end pb-4 pr-4">
+
+      {/* Floating Add Button */}
+      <View className="absolute bottom-20 right-6">
         <TouchableOpacity
-          onPress={() => navigation.navigate("AddList", { movies: array })}
-          className="ml-4 h-16 w-16 bg-white justify-center items-center rounded-full"
+          onPress={() =>
+            navigation.navigate("AddList", { movies: undefined, listId: null })
+          }
+          className="h-14 w-14 bg-orange-500 justify-center items-center rounded-full shadow-lg"
         >
-          <Icon name="heart" size={30} color="black" />
+          <FontAwesome6 name="plus" size={24} color="white" />
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 export default ListScreen;

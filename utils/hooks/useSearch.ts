@@ -66,6 +66,7 @@ export function useSearch(
   refetch: () => void;
 } {
   const apiKey = process.env.EXPO_PUBLIC_TMDB_AUTH_KEY;
+  const enabled = searchQuery.length > 0;
 
   const { data, error, isLoading, isError, refetch } = useFetch(
     ["search", mediaType, searchQuery],
@@ -75,7 +76,8 @@ export function useSearch(
         accept: "application/json",
         Authorization: "Bearer " + apiKey,
       },
-    }
+    },
+    enabled
   );
 
   return { data, error, isLoading, isError, refetch };

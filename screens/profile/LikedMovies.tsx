@@ -4,8 +4,8 @@ import { getDoc, doc } from "firebase/firestore";
 import { FirebaseDB } from "../../firebaseConfig";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
-import useUserStore from "utils/hooks/useUserStore";
-import { useMovieData } from "utils/hooks/useMovieData";
+import useUserStore from "../utils/hooks/useUserStore";
+import { useMovieData } from "../utils/hooks/useMovieData";
 
 export type LikedMoviesProp = NativeStackScreenProps<
   InsideStackParamList,

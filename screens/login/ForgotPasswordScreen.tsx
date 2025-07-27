@@ -1,60 +1,88 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, ImageBackground } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  SafeAreaView,
+  StatusBar,
+  TouchableOpacity,
+} from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { OutsideStackParamList } from "navigation/OutsideNavigation";
 import CustomButton from "../../components/CustomButton";
+import Icon from "@expo/vector-icons/FontAwesome";
 
 type ForgotPasswordScreenProp = NativeStackScreenProps<
   OutsideStackParamList,
   "ForgotPassword"
 >;
 
-const ForgotPasswordScreen = ({}: ForgotPasswordScreenProp) => {
-  const [username, setUsername] = useState("");
+const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProp) => {
+  const [email, setEmail] = useState("");
 
-  const handleForgot = () => {};
-
-  const backgroundImage = require("../profile.jpg");
+  const handleForgot = () => {
+    // TODO: Implement forgot password functionality
+    console.log("Forgot password for:", email);
+  };
 
   return (
-    <View className="flex-1">
-      <View className="w-scren justify-end h-3/6">
-        <ImageBackground className="w-full h-full" source={backgroundImage} />
-        <View className="w-scren justify-end">
-          <View className="w-screen items-center justify-end bg-black rounded-t-full self-center absolute h-28">
-            <Text className="text-4xl color-white absolute">
-              Forgot Password
-            </Text>
-          </View>
-        </View>
-        <View className="w-screen items-center h-16 bg-black">
-          <Text className="color-white text-xl">
-            Giriş Yaparken Sorun mu Yaşıyorsun?
+    <SafeAreaView className="flex-1 bg-black">
+      <StatusBar barStyle="light-content" backgroundColor="#000000" />
+
+      {/* Back Button */}
+      <View className="px-6 pt-4">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="w-10 h-10 items-center justify-center"
+        >
+          <Icon name="arrow-left" size={20} color="white" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Content */}
+      <View className="flex-1 justify-center px-6">
+        <View className="mb-8">
+          <Text className="text-3xl font-bold text-white text-center mb-4">
+            Forgot Password?
+          </Text>
+          <Text className="text-lg text-gray-400 text-center leading-6">
+            Don't worry! It happens. Please enter the email address associated
+            with your account.
           </Text>
         </View>
-      </View>
-      <View className="flex-1 bg-black px-10">
-        <Text className="color-white pb-4 text-balance text-1xl">
-          E-posta adresini, telefon numaranı veya kullanıcı adını gir ve
-          hesabına yeniden girebilmen için sana bir bağlantı gönderelim.
-        </Text>
-        <TextInput
-          className="text-white bg-stone-800 h-12 border-gray-500 rounded-full border mb-3 pl-2"
-          onChangeText={(text) => setUsername(text)}
-          placeholder="Email"
-          placeholderTextColor="white"
-          value={username}
+
+        {/* Email Input */}
+        <View className="mb-6">
+          <TextInput
+            className="text-white bg-gray-800 h-14 rounded-2xl px-4 border border-gray-700"
+            onChangeText={(text) => setEmail(text)}
+            placeholder="Enter your email"
+            placeholderTextColor="#9CA3AF"
+            value={email}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
+
+        {/* Send Button */}
+        <CustomButton
+          classNameProp="h-14 bg-white mb-6"
+          title="Send Reset Link"
+          onPress={handleForgot}
         />
 
-        <CustomButton
-          classNameProp="mb-4 h-12"
-          title="Send Email"
-          onPress={() => {
-            handleForgot;
-          }}
-        />
+        {/* Back to Login */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Login")}
+          className="py-3"
+        >
+          <Text className="text-center text-gray-400">
+            Remember your password?{" "}
+            <Text className="text-white font-semibold">Sign In</Text>
+          </Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

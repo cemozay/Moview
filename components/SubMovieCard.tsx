@@ -47,17 +47,6 @@ const SubMovieCard = (props: SubMovieCardProps) => {
         <Text numberOfLines={1} style={styles.textTitle}>
           {props.title}
         </Text>
-        <Text className="color-white">{props.release_date?.toString()}</Text>
-        <View style={styles.genreContainer}>
-          {props.genre &&
-            props.genre.map((item) => {
-              return (
-                <View key={item}>
-                  <Text style={styles.genreText}>{genreMap[item]}</Text>
-                </View>
-              );
-            })}
-        </View>
       </View>
     </TouchableOpacity>
   );
@@ -72,7 +61,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     aspectRatio: 2 / 3,
-    borderRadius: 20,
+    borderRadius: 12, // Reduced from 20
   },
   textTitle: {
     fontSize: 14,

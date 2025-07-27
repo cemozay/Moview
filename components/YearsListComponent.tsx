@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import useFetchYearsMovie from "utils/hooks/useFetchYearsMovie";
+import useFetchYearsMovie from "../utils/hooks/useFetchYearsMovie";
 import { baseImagePath } from "../utils/functions";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { InsideStackParamList } from "navigation/InsideNavigation";
+import { RootStackParamList } from "navigation/InsideNavigation";
 import CategoryHeader from "./CategoryHeader";
 
 export type Page = {
@@ -36,7 +36,7 @@ type Result = {
   vote_count: number;
 };
 type YearsListComponentProps = NativeStackScreenProps<
-  InsideStackParamList,
+  RootStackParamList,
   "YearsListComponent"
 > & {
   route: {

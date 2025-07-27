@@ -12,23 +12,11 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "plugins": [
-      ["@react-native-google-signin/google-signin"],
-      [
-        "react-native-fbsdk-next",
-        {
-          "appID": "376809015394183",
-          "clientToken": "82bd0db1b619bb7975446273f9889ba9",
-          "displayName": "MoviewTest",
-          "scheme": "fb376809015394183"
-        }
-      ]
+      "expo-dev-client"
     ],
     "android": {
-      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -37,7 +25,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "bundleIdentifier": "com.moview.test"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { FirebaseDB } from "firebaseConfig";
+import { FirebaseDB } from "../firebaseConfig";
 import useUserStore from "../utils/hooks/useUserStore";
 import { collection, query, where, getDocs } from "firebase/firestore";
 

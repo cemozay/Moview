@@ -1,27 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "navigation/InsideNavigation";
-import { FirebaseDB } from "../../firebaseConfig";
-import { useMovieData } from "../../utils/hooks/useMovieData";
-import { UserData } from "../ProfileScreen";
-import { formatTimestamp } from "../../utils/functions";
-import useUserStore from "../../utils/hooks/useUserStore";
-
-type ProfileListStackProp = NativeStackScreenProps<
-  RootStackParamList,
-  "ProfileList"
->;
-
-type ProfileListTabProp = {
-  user: UserData;
-  route?: any;
-  navigation?: any;
-};
-
-type ProfileListProp = ProfileListStackProp | ProfileListTabProp;
+import { collection, query, getDocs } from "firebase/firestore";
+import { FirebaseDB } from "../firebaseConfig";
+import { useMovieData } from "../utils/hooks/useMovieData";
+import { formatTimestamp } from "../utils/functions";
 
 type List = {
   id: string;
@@ -66,25 +49,17 @@ const MovieItem = ({ mediaId }: MovieItemProps) => {
   );
 };
 
-const ProfileList = (props: ProfileListProp) => {
-  // Handle both stack screen and tab component usage
-  const isStackScreen =
-    "route" in props && "navigation" in props && !("user" in props);
-  const currentUser = useUserStore((state) => state.user) as UserData;
+interface ListsTabProps {
+  navigation: any;
+}
 
-  const user = isStackScreen ? currentUser : (props as ProfileListTabProp).user;
-  const navigation = isStackScreen
-    ? (props as ProfileListStackProp).navigation
-    : (props as ProfileListTabProp).navigation;
-
-  const baseUser = user;
+const ListsTab: React.FC<ListsTabProps> = ({ navigation }) => {
   const listsRef = collection(FirebaseDB, "lists");
   const [lists, setLists] = useState<List[]>([]);
-  const doc_query = query(listsRef, where("userId", "==", baseUser.uid));
 
   const fetchData = async () => {
     try {
-      const snapshot = await getDocs(doc_query);
+      const snapshot = await getDocs(query(listsRef));
       const listCollection = snapshot.docs.map((doc) => {
         const listData = doc.data() as List;
         return { ...listData, id: doc.id };
@@ -111,7 +86,7 @@ const ProfileList = (props: ProfileListProp) => {
       <View className="flex-row items-center mb-4">
         <Image
           className="w-10 h-10 rounded-full mr-3 border-2 border-gray-700"
-          source={require("../avatar.jpg")}
+          source={require("./avatar.jpg")}
         />
         <View className="flex-1">
           <Text className="color-white text-sm font-semibold">
@@ -176,11 +151,11 @@ const ProfileList = (props: ProfileListProp) => {
   );
 
   return (
-    <View className="flex-1 bg-black">
-      <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
-        {lists.length > 0 ? (
-          lists.map((list) => renderListItem({ item: list }))
-        ) : (
+    <View className="flex-1">
+      <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
+        {lists.map((list) => renderListItem({ item: list }))}
+
+        {lists.length === 0 && (
           <View className="flex-1 justify-center items-center py-20">
             <Text className="color-gray-400 text-lg mb-2">No lists yet</Text>
             <Text className="color-gray-500 text-sm text-center">
@@ -192,4 +167,5 @@ const ProfileList = (props: ProfileListProp) => {
     </View>
   );
 };
-export default ProfileList;
+
+export default ListsTab;

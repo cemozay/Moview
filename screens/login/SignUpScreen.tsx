@@ -1,36 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, ImageBackground } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  SafeAreaView,
+  StatusBar,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { OutsideStackParamList } from "navigation/OutsideNavigation";
 import CustomButton from "../../components/CustomButton";
-import {
-  FirebaseAuth,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
-  TwitterAuthProvider,
-} from "../../firebaseConfig";
-import {
-  signInWithCredential,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import {
-  GoogleSignin,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
-import { LoginManager, AccessToken } from "react-native-fbsdk-next";
-import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
+import { FirebaseAuth } from "../../firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { Ionicons } from "@expo/vector-icons";
 
 type SignUpScreenProp = NativeStackScreenProps<OutsideStackParamList, "SignUp">;
 
-const discovery = {
-  authorizationEndpoint: "https://twitter.com/i/oauth2/authorize",
-  tokenEndpoint: "https://twitter.com/i/oauth2/token",
-  revocationEndpoint: "https://twitter.com/i/oauth2/revoke",
-};
+const { height } = Dimensions.get("window");
 
 const SignUpScreen = ({ navigation }: SignUpScreenProp) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSignUp = async () => {
@@ -51,187 +43,104 @@ const SignUpScreen = ({ navigation }: SignUpScreenProp) => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      const googleCredential = GoogleAuthProvider.credential(userInfo.idToken);
-      await signInWithCredential(FirebaseAuth, googleCredential);
-      navigation.navigate("InsideNavigation", {
-        screen: "HomeStack",
-        params: {
-          screen: "Home",
-        },
-      });
-    } catch (error: any) {
-      console.error(error);
-      switch (error.code) {
-        case statusCodes.SIGN_IN_CANCELLED:
-          alert("Sign in cancelled");
-          break;
-        case statusCodes.IN_PROGRESS:
-          alert("Sign in in progress");
-          break;
-        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-          alert("Play services not available");
-          break;
-        default:
-          alert("Google Sign-In Failed: " + error.message);
-          break;
-      }
-    }
-  };
-
-  const handleFacebookSignIn = async () => {
-    try {
-      const result = await LoginManager.logInWithPermissions([
-        "public_profile",
-        "email",
-      ]);
-      if (result.isCancelled) {
-        throw new Error("User cancelled the login process");
-      }
-
-      const data = await AccessToken.getCurrentAccessToken();
-      if (!data) {
-        throw new Error("Something went wrong obtaining access token");
-      }
-
-      const facebookCredential = FacebookAuthProvider.credential(
-        data.accessToken
-      );
-      await signInWithCredential(FirebaseAuth, facebookCredential);
-      navigation.navigate("InsideNavigation", {
-        screen: "HomeStack",
-        params: { screen: "Home" },
-      });
-    } catch (error: any) {
-      console.error(error);
-      alert("Facebook Login Error: " + error.message);
-    }
-  };
-
-  // Twitter login
-  const [, response, promptAsync] = useAuthRequest(
-    {
-      clientId: "azBRT0hZc1VTT29zUHFNYjh3Z0I6MTpjaQ",
-      redirectUri: makeRedirectUri({
-        scheme: "com.moview.test",
-      }),
-      usePKCE: true,
-      scopes: ["tweet.read", "email"],
-    },
-    discovery
-  );
-
-  useEffect(() => {
-    if (response?.type === "success") {
-      const { code } = response.params;
-
-      const getAccessToken = async () => {
-        const tokenResponse = await fetch(
-          "https://api.twitter.com/2/oauth2/token",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: `client_id=azBRT0hZc1VTT29zUHFNYjh3Z0I6MTpjaQ&redirect_uri=${makeRedirectUri(
-              {
-                scheme: "com.moview.test",
-              }
-            )}&code=${code}&grant_type=authorization_code`,
-          }
-        );
-        const tokenResult = await tokenResponse.json();
-        const { access_token, id_token } = tokenResult;
-
-        const credential = TwitterAuthProvider.credential(
-          access_token,
-          id_token
-        );
-        await signInWithCredential(FirebaseAuth, credential);
-
-        navigation.navigate("InsideNavigation", {
-          screen: "HomeStack",
-          params: { screen: "Home" },
-        });
-      };
-
-      getAccessToken();
-    } else if (response?.type === "error") {
-      console.error(response.error);
-      alert("Twitter Login Error: " + response.error);
-    }
-  }, [response]);
-
-  const backgroundImage = require("../profile.jpg");
-
   return (
-    <View className="flex-1">
-      <View className="w-scren justify-end h-3/6">
-        <ImageBackground className="w-full h-full" source={backgroundImage} />
-        <View className="w-scren justify-end">
-          <View className="w-screen items-center justify-end bg-black rounded-t-full self-center absolute h-28">
-            <Text className="text-4xl color-white absolute">Sign Up</Text>
+    <SafeAreaView className="flex-1 bg-black">
+      <StatusBar barStyle="light-content" backgroundColor="#000000" />
+
+      {/* Back Button */}
+      <View className="absolute top-12 left-4 z-10">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="w-10 h-10 bg-gray-800 rounded-full items-center justify-center border border-gray-700"
+          activeOpacity={0.8}
+        >
+          <Ionicons name="arrow-back" size={20} color="white" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Image Section - 30% of screen */}
+      <View style={{ height: height * 0.2 }} className="relative">
+        <View className="flex-1 bg-gradient-to-b from-gray-800 to-gray-900 items-center justify-center relative overflow-hidden">
+          {/* Background decorative elements */}
+          <View className="absolute top-6 left-4 w-3 h-3 bg-white/10 rounded-full" />
+          <View className="absolute top-8 right-6 w-2 h-2 bg-white/20 rotate-45" />
+          <View className="absolute bottom-8 left-6 w-4 h-4 border-2 border-white/10 rounded-full" />
+
+          {/* Sign up illustration */}
+          <View className="items-center justify-center flex-1">
+            {/* User profile creation icon */}
+            <View className="bg-gray-700 rounded-full p-6 shadow-xl">
+              <View className="w-20 h-20 bg-gray-800 rounded-full items-center justify-center relative">
+                {/* User icon with plus */}
+                <View className="w-8 h-8 bg-white/80 rounded-full mb-1" />
+                <View className="w-12 h-6 bg-white/80 rounded-t-full" />
+
+                {/* Plus icon for new account */}
+                <View className="absolute -top-2 -right-2">
+                  <View className="w-6 h-6 bg-green-500 rounded-full items-center justify-center">
+                    <View className="w-3 h-0.5 bg-white rounded-full" />
+                    <View className="w-0.5 h-3 bg-white rounded-full absolute" />
+                  </View>
+                </View>
+              </View>
+            </View>
           </View>
         </View>
-        <View className="w-screen items-end h-16 bg-black"></View>
       </View>
 
-      <View className="flex-1 bg-black px-6">
-        <TextInput
-          className="text-white bg-stone-800 h-12 border-gray-500 rounded-full border mb-4 pl-2"
-          onChangeText={(text) => setEmail(text)}
-          placeholder="Email"
-          placeholderTextColor="white"
-          value={email}
-        />
+      {/* Content Section */}
+      <View className="flex-1 justify-center px-6">
+        <View className="mb-8">
+          <Text className="text-4xl font-bold text-white text-center mb-2">
+            Create Account
+          </Text>
+          <Text className="text-lg text-gray-400 text-center mt-4">
+            Join Moview community
+          </Text>
+        </View>
 
-        <TextInput
-          className="text-white bg-stone-800 h-12 border-gray-500 rounded-full border mb-4 pl-2"
-          onChangeText={(text) => setPassword(text)}
-          placeholder="Password"
-          placeholderTextColor="white"
-          value={password}
-          secureTextEntry
-        />
-        <TextInput
-          className="text-white bg-stone-800 h-12 border-gray-500 rounded-full border mb-4 pl-2"
-          placeholder="Kullanıcı Adı"
-          placeholderTextColor="white"
-        />
-
-        <CustomButton
-          classNameProp="mb-4 h-12"
-          title="Sign up"
-          loading={loading}
-          onPress={handleSignUp}
-        />
-        <Text className="text-center mb-4 color-white">Or sign up with </Text>
-        <View className="h-0.5 w-36 bg-white self-center" />
-
-        <View className="flex flex-row justify-center">
-          <CustomButton
-            classNameProp="w-1/5 my-4 mx-1 bg-white-500"
-            title="G"
-            onPress={handleGoogleSignIn}
+        {/* Sign Up Form */}
+        <View className="space-y-4">
+          <TextInput
+            className="text-white bg-gray-800 h-14 rounded-2xl px-4 border border-gray-700"
+            onChangeText={(text) => setUsername(text)}
+            placeholder="Username"
+            placeholderTextColor="#9CA3AF"
+            value={username}
+            autoCapitalize="none"
           />
 
-          <CustomButton
-            classNameProp="w-1/5 my-4 mx-1 bg-white-500"
-            title="F"
-            onPress={handleFacebookSignIn}
+          <TextInput
+            className="text-white bg-gray-800 h-14 rounded-2xl px-4 border border-gray-700"
+            onChangeText={(text) => setEmail(text)}
+            placeholder="Email"
+            placeholderTextColor="#9CA3AF"
+            value={email}
+            keyboardType="email-address"
+            autoCapitalize="none"
           />
 
+          <TextInput
+            className="text-white bg-gray-800 h-14 rounded-2xl px-4 border border-gray-700"
+            onChangeText={(text) => setPassword(text)}
+            placeholder="Password"
+            placeholderTextColor="#9CA3AF"
+            value={password}
+            secureTextEntry
+          />
+        </View>
+
+        {/* Sign Up Button */}
+        <View className="mt-6">
           <CustomButton
-            classNameProp="w-1/5 my-4 mx-1 bg-white-500"
-            title="T"
-            onPress={promptAsync}
+            classNameProp="h-14 bg-white"
+            title="Create Account"
+            loading={loading}
+            onPress={handleSignUp}
           />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

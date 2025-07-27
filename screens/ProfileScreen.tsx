@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
-  StatusBar,
-} from "react-native";
+import { View, Text, TouchableOpacity, Image, StatusBar } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import ProfileMain from "./profile/ProfileMain";
-import ProfileActivity from "./profile/ProfileActivity";
 import ProfileList from "./profile/ProfileList";
 import ProfileReviews from "./profile/ProfileReviews";
 import ProfileDiary from "./profile/ProfileDiary";
@@ -17,7 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Feather from "@expo/vector-icons/Feather";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import useUserStore from "utils/hooks/useUserStore";
+import useUserStore from "../utils/hooks/useUserStore";
 
 export interface ProfileScreenProp {
   navigation: any;
@@ -90,12 +82,6 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
     ) : (
       <Text>Loading...</Text>
     );
-  const FifthRoute = () =>
-    user ? (
-      <ProfileActivity user={user} route={route} navigation={navigation} />
-    ) : (
-      <Text>Loading...</Text>
-    );
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -103,7 +89,6 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
     { key: "second", title: "List" },
     { key: "third", title: "Reviews" },
     { key: "fourth", title: "Diary" },
-    { key: "fifth", title: "Activity" },
   ]);
 
   const renderScene = SceneMap({
@@ -111,28 +96,31 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
     second: SecondRoute,
     third: ThirdRoute,
     fourth: FourthRoute,
-    fifth: FifthRoute,
   });
 
   return (
-    <SafeAreaView className="flex-1">
-      <StatusBar hidden />
-      <ImageBackground
-        className="h-72 w-screen"
-        source={require("./profile.jpg")}
-      >
-        <View className="absolute z-10 w-screen items-end pr-2 pt-4">
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ProfileAyarlar")}
-          >
-            <Feather name="settings" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-        <View className="justify-end flex-reverse items-start flex-1">
-          <View className="flex-row">
+    <SafeAreaView className="flex-1 bg-black">
+      <StatusBar barStyle="light-content" backgroundColor="#000000" />
+
+      {/* Simple Header */}
+      <View className="flex-row justify-between items-center px-6 py-4">
+        <Text className="color-white text-2xl font-bold">Profile</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("ProfileAyarlar")}
+          className="p-2"
+          activeOpacity={0.7}
+        >
+          <Feather name="settings" size={20} color="white" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Profile Card */}
+      <View className="px-6 mb-6">
+        <View className="bg-gray-900/50 rounded-xl p-6 border border-gray-800/50">
+          <View className="flex-row items-center">
             <TouchableOpacity>
               <Image
-                className="h-24 w-24 rounded-full"
+                className="h-16 w-16 rounded-full"
                 source={
                   user?.photoURL
                     ? { uri: user.photoURL }
@@ -140,35 +128,30 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
                 }
               />
             </TouchableOpacity>
-            <View className="w-screen h-28">
-              <View className="flex-row">
-                <View>
-                  <Text className="color-white pt-4 text-xl font-bold">
-                    {user?.displayName}
-                  </Text>
-                  <View className="flex-row">
-                    <Text className="color-white text-xs pr-4">
-                      {user?.followers} Takipçi
-                    </Text>
-                    <Text className="color-white text-xs">
-                      {user?.following} Takip Edilen
-                    </Text>
-                  </View>
-                </View>
-                <View className="w-36 items-end px-3 py-4">
-                  <TouchableOpacity
-                    className="bg-black w-28 h-12 justify-center items-center border-1 border-white rounded-xl"
-                    style={[{ backgroundColor: "black" }]}
-                  >
-                    <Text className="color-white">{"Takip Et"}</Text>
-                  </TouchableOpacity>
-                </View>
+            <View className="ml-4 flex-1">
+              <Text className="color-white text-lg font-semibold mb-2">
+                {user?.displayName || "Kullanıcı"}
+              </Text>
+              <View className="flex-row gap-4 mb-3">
+                <Text className="color-gray-400 text-sm">
+                  {user?.followers || 0} Takipçi
+                </Text>
+                <Text className="color-gray-400 text-sm">
+                  {user?.following || 0} Takip
+                </Text>
               </View>
+              <TouchableOpacity
+                className="bg-orange-500 px-4 py-2 rounded-lg self-start"
+                activeOpacity={0.8}
+              >
+                <Text className="text-white text-sm font-medium">Takip Et</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
-      </ImageBackground>
+      </View>
 
+      {/* Tab Navigation */}
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -176,11 +159,12 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation, route }) => {
         renderTabBar={(props) => (
           <TabBar
             {...props}
-            indicatorStyle={{ backgroundColor: "white" }}
-            style={{ backgroundColor: "black" }}
-            activeColor={"white"}
-            inactiveColor={"white"}
-            labelStyle={{ fontSize: 12 }}
+            indicatorStyle={{ backgroundColor: "#FF5C00" }}
+            style={{ backgroundColor: "transparent" }}
+            activeColor={"#FF5C00"}
+            inactiveColor={"#6B7280"}
+            labelStyle={{ fontSize: 12, fontWeight: "500" }}
+            tabStyle={{ paddingVertical: 8 }}
           />
         )}
       />

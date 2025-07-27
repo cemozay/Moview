@@ -1,9 +1,7 @@
 import React from "react";
 import {
   View,
-  ScrollView,
   Dimensions,
-  StatusBar,
   FlatList,
   Text,
   ActivityIndicator,
@@ -14,7 +12,7 @@ import SubMovieCard from "./SubMovieCard";
 import MovieCard from "./MovieCard";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { InsideStackParamList } from "navigation/InsideNavigation";
-import { useMovieLists } from "utils/hooks/useMovieLists";
+import { useMovieLists } from "../utils/hooks/useMovieLists";
 
 const { width } = Dimensions.get("window");
 
@@ -36,7 +34,6 @@ const ComingSoon = ({
     popularMoviesData.isLoading ||
     upcomingMoviesData.isLoading
   ) {
-    console.log("Loading...");
   }
 
   const nowPlayingMoviesList = useMovieLists("now_playing").data?.results;
@@ -45,32 +42,33 @@ const ComingSoon = ({
 
   if (!nowPlayingMoviesList && !popularMoviesList && !upcomingMoviesList) {
     return (
-      <ScrollView
-        className="flex bg-black"
-        bounces={false}
-        contentContainerStyle={{ flex: 1 }}
-      >
-        <StatusBar hidden />
-        <View className="flex-1 justify-center self-center	">
-          <ActivityIndicator size={"large"} color={"white"} />
+      <View className="flex-1 justify-center items-center bg-black py-20">
+        <View className="bg-gray-900/50 p-8 rounded-xl border border-gray-700/30">
+          <ActivityIndicator size={"large"} color={"#FF5C00"} />
+          <Text className="color-gray-300 text-lg mt-4 text-center font-medium">
+            Loading amazing content...
+          </Text>
         </View>
-      </ScrollView>
+      </View>
     );
   }
 
   return (
-    <ScrollView className="flex bg-black" bounces={false}>
-      <StatusBar hidden />
+    <View className="bg-black">
+      {/* Hero Section */}
       <View>
         <FlatList
           data={nowPlayingMoviesList}
           keyExtractor={(item) => item.id.toString()}
           bounces={false}
-          snapToInterval={width * 0.7 + 36}
+          snapToInterval={width * 0.7 + 12} // Card width + gap
           horizontal
           showsHorizontalScrollIndicator={false}
           decelerationRate={0}
-          contentContainerStyle={{ gap: 36 }}
+          contentContainerStyle={{
+            gap: 12,
+            paddingVertical: 10,
+          }}
           renderItem={({ item, index }) => {
             if (!item.original_title) {
               return (
@@ -82,119 +80,177 @@ const ComingSoon = ({
               );
             }
             return (
-              <MovieCard
+              <View>
+                <MovieCard
+                  shouldMarginatedAtEnd={true}
+                  cardFunction={() => {
+                    navigation.navigate("MovieDetails", {
+                      movieId: item.id.toString(),
+                    });
+                  }}
+                  cardWidth={width * 0.7}
+                  isFirst={index == 0 ? true : false}
+                  isLast={
+                    index == upcomingMoviesList?.length - 1 ? true : false
+                  }
+                  title={item.original_title}
+                  imagePath={baseImagePath("w780", item.poster_path)}
+                  genre={item.genre_ids.slice(1, 4)}
+                  rating={item.vote_average}
+                />
+              </View>
+            );
+          }}
+        />
+      </View>
+      {/* Popular Section */}
+      <View className="mb-6 ">
+        <CategoryHeader
+          title={"Popüler"}
+          onPress={() =>
+            navigation.navigate("SeeMoreComponent", {
+              array: popularMoviesList,
+              name: "Popüler",
+            })
+          }
+        />
+        <FlatList
+          data={popularMoviesList}
+          keyExtractor={(item: any) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          bounces={false}
+          contentContainerStyle={{
+            gap: 20,
+          }}
+          renderItem={({ item, index }) => (
+            <View>
+              <SubMovieCard
                 shoudlMarginatedAtEnd={true}
                 cardFunction={() => {
                   navigation.navigate("MovieDetails", {
                     movieId: item.id.toString(),
                   });
                 }}
-                cardWidth={width * 0.7}
+                cardWidth={width / 3}
+                isFirst={index == 0 ? true : false}
+                isLast={index == popularMoviesList?.length - 1 ? true : false}
+                title={item.original_title}
+                imagePath={baseImagePath("w342", item.poster_path)}
+              />
+            </View>
+          )}
+        />
+      </View>
+      {/* Upcoming Section */}
+      <View className="mb-6">
+        <CategoryHeader
+          title={"Upcoming"}
+          onPress={() =>
+            navigation.navigate("SeeMoreComponent", {
+              array: upcomingMoviesList,
+              name: "Upcoming",
+            })
+          }
+        />
+        <FlatList
+          data={upcomingMoviesList}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            gap: 20,
+          }}
+          renderItem={({ item, index }) => (
+            <View>
+              <SubMovieCard
+                shoudlMarginatedAtEnd={true}
+                cardFunction={() => {
+                  navigation.navigate("MovieDetails", {
+                    movieId: item.id.toString(),
+                  });
+                }}
+                cardWidth={width / 3}
                 isFirst={index == 0 ? true : false}
                 isLast={index == upcomingMoviesList?.length - 1 ? true : false}
                 title={item.original_title}
-                imagePath={baseImagePath("w780", item.poster_path)}
+                imagePath={baseImagePath("w342", item.poster_path)}
+                release_date={item.release_date}
                 genre={item.genre_ids.slice(1, 4)}
               />
-            );
-          }}
+            </View>
+          )}
         />
       </View>
-      <CategoryHeader
-        title={"Popüler"}
-        onPress={() =>
-          navigation.navigate("SeeMoreComponent", {
-            array: popularMoviesList,
-            name: "Popüler",
-          })
-        }
-      />
-      <FlatList
-        data={popularMoviesList}
-        keyExtractor={(item: any) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        bounces={false}
-        contentContainerStyle={{ gap: 36 }}
-        renderItem={({ item, index }) => (
-          <SubMovieCard
-            shoudlMarginatedAtEnd={true}
-            cardFunction={() => {
-              navigation.navigate("MovieDetails", {
-                movieId: item.id.toString(),
-              });
-            }}
-            cardWidth={width / 3}
-            isFirst={index == 0 ? true : false}
-            isLast={index == upcomingMoviesList?.length - 1 ? true : false}
-            title={item.original_title}
-            imagePath={baseImagePath("w342", item.poster_path)}
-          />
-        )}
-      />
-      <CategoryHeader
-        title={"Upcoming"}
-        onPress={() =>
-          navigation.navigate("SeeMoreComponent", {
-            array: upcomingMoviesList,
-            name: "Upcoming",
-          })
-        }
-      />
-      <FlatList
-        data={upcomingMoviesList}
-        keyExtractor={(item) => item.id.toString()}
-        horizontal
-        bounces={false}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 36 }}
-        renderItem={({ item, index }) => (
-          <SubMovieCard
-            shoudlMarginatedAtEnd={true}
-            cardFunction={() => {
-              navigation.navigate("MovieDetails", {
-                movieId: item.id.toString(),
-              });
-            }}
-            cardWidth={width / 3}
-            isFirst={index == 0 ? true : false}
-            isLast={index == upcomingMoviesList?.length - 1 ? true : false}
-            title={item.original_title}
-            imagePath={baseImagePath("w342", item.poster_path)}
-            release_date={item.release_date}
-            genre={item.genre_ids.slice(1, 4)}
-          />
-        )}
-      />
-    </ScrollView>
+    </View>
   );
 };
 
 const HomeScreenAnimeScreen = ({
-  navigation,
+  navigation: _navigation,
 }: NativeStackScreenProps<InsideStackParamList, "HomeScreen">) => {
   return (
-    <ScrollView>
-      <Text className="color-red-500">HomeScreenAnimeScreen</Text>
-    </ScrollView>
+    <View className="flex-1 bg-black px-5 py-8">
+      <View className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-xl p-8 border border-purple-500/20">
+        <Text className="color-white text-2xl font-bold text-center mb-4">
+          🌸 Anime Section
+        </Text>
+        <Text className="color-gray-300 text-center text-base leading-6">
+          Anime content is coming soon! Stay tuned for the best anime movies and
+          series.
+        </Text>
+        <View className="bg-purple-500/10 rounded-lg p-6 mt-6">
+          <Text className="color-purple-400 text-center font-semibold">
+            Under Development 🚀
+          </Text>
+        </View>
+      </View>
+    </View>
   );
 };
 const HomeScreenMovieScreen = ({
-  navigation,
+  navigation: _navigation,
 }: NativeStackScreenProps<InsideStackParamList, "HomeScreen">) => {
   return (
-    <ScrollView>
-      <Text className="color-red-500">HomeScreenMovieScreen</Text>
-    </ScrollView>
+    <View className="flex-1 bg-black px-5 py-8">
+      <View className="bg-gradient-to-br from-orange-900/20 to-red-900/20 rounded-xl p-8 border border-orange-500/20">
+        <Text className="color-white text-2xl font-bold text-center mb-4">
+          🎬 Movies Section
+        </Text>
+        <Text className="color-gray-300 text-center text-base leading-6">
+          Discover the latest and greatest movies! This section will feature
+          curated movie collections.
+        </Text>
+        <View className="bg-orange-500/10 rounded-lg p-6 mt-6">
+          <Text className="color-orange-400 text-center font-semibold">
+            Under Development 🎯
+          </Text>
+        </View>
+      </View>
+    </View>
   );
 };
 const HomeScreenTvSerials = ({
-  navigation,
+  navigation: _navigation,
 }: NativeStackScreenProps<InsideStackParamList, "HomeScreen">) => {
   return (
-    <ScrollView>
-      <Text className="color-red-500">HomeScreenTvSerials</Text>
-    </ScrollView>
+    <View className="flex-1 bg-black px-5 py-8">
+      <View className="bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-xl p-8 border border-blue-500/20">
+        <Text className="color-white text-2xl font-bold text-center mb-4">
+          📺 TV Series Section
+        </Text>
+        <Text className="color-gray-300 text-center text-base leading-6">
+          Binge-watch the best TV series! From drama to comedy, find your next
+          favorite show here.
+        </Text>
+        <View className="bg-blue-500/10 rounded-lg p-6 mt-6">
+          <Text className="color-blue-400 text-center font-semibold">
+            Under Development 📺
+          </Text>
+        </View>
+      </View>
+    </View>
   );
 };
 export {
