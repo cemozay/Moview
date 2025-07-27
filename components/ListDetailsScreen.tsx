@@ -94,8 +94,8 @@ const ListDetailsScreen = ({ navigation, route }: ListDetailsScreenProp) => {
     if (isLoading) {
       return (
         <View
-          className="bg-gray-800/70 rounded-lg border border-gray-700/30 justify-center items-center m-1"
-          style={{ width: (width - 32) / 3, aspectRatio: 2 / 3 }}
+          className="bg-gray-800/70 rounded-lg border border-gray-700/30 justify-center items-center mx-1"
+          style={{ width: (width - 60) / 3, aspectRatio: 2 / 3 }}
         >
           <FontAwesome6 name="image" size={24} color="#6B7280" />
         </View>
@@ -105,8 +105,8 @@ const ListDetailsScreen = ({ navigation, route }: ListDetailsScreenProp) => {
     if (isError || !movieData) {
       return (
         <View
-          className="bg-gray-800/70 rounded-lg border border-gray-700/30 justify-center items-center m-1"
-          style={{ width: (width - 32) / 3, aspectRatio: 2 / 3 }}
+          className="bg-gray-800/70 rounded-lg border border-gray-700/30 justify-center items-center mx-1"
+          style={{ width: (width - 60) / 3, aspectRatio: 2 / 3 }}
         >
           <FontAwesome6 name="exclamation-triangle" size={20} color="#EF4444" />
           <Text className="color-red-400 text-xs mt-1 text-center">Error</Text>
@@ -121,8 +121,8 @@ const ListDetailsScreen = ({ navigation, route }: ListDetailsScreenProp) => {
             movieId: movieData.id.toString(),
           })
         }
-        className="m-1"
-        style={{ width: (width - 32) / 3 }}
+        className="mx-1"
+        style={{ width: (width - 60) / 3 }}
         activeOpacity={0.8}
       >
         <View>
@@ -251,8 +251,8 @@ const ListDetailsScreen = ({ navigation, route }: ListDetailsScreenProp) => {
           </View>
 
           {/* Movies Grid */}
-          <View className="px-5 py-6">
-            <View className="flex-row justify-between items-center mb-5">
+          <View className=" py-6">
+            <View className="px-5 flex-row justify-between items-center mb-5">
               <Text className="color-white text-xl font-bold">Movies</Text>
               {movies && movies.length > 0 && (
                 <View className="bg-gray-800/50 px-3 py-1 rounded-full">
@@ -264,7 +264,7 @@ const ListDetailsScreen = ({ navigation, route }: ListDetailsScreenProp) => {
             </View>
 
             {movies && movies.length > 0 ? (
-              <View className="bg-gray-900/30 rounded-2xl p-3 border border-gray-800/30">
+              <View className=" bg-gray-900/30 rounded-2xl border border-gray-800/30">
                 <FlatList
                   data={movies}
                   keyExtractor={(item) => item.toString()}
@@ -272,12 +272,16 @@ const ListDetailsScreen = ({ navigation, route }: ListDetailsScreenProp) => {
                   renderItem={({ item }) => <MovieItem movieId={item} />}
                   scrollEnabled={false}
                   showsVerticalScrollIndicator={false}
-                  columnWrapperStyle={{ justifyContent: "space-between" }}
-                  ItemSeparatorComponent={() => <View className="h-2" />}
+                  columnWrapperStyle={{
+                    justifyContent: "flex-start",
+                    paddingHorizontal: 0,
+                  }}
+                  ItemSeparatorComponent={() => <View className="h-3" />}
+                  contentContainerStyle={{ paddingHorizontal: 10 }}
                 />
               </View>
             ) : (
-              <View className="bg-gray-900/30 rounded-2xl p-8 border border-gray-800/30 items-center">
+              <View className=" bg-gray-900/30 rounded-2xl border border-gray-800/30 items-center">
                 <View className="bg-gray-800/50 rounded-full p-4 mb-4">
                   <Icon name="film" size={32} color="#6b7280" />
                 </View>
